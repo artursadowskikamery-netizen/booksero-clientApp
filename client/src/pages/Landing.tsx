@@ -28,7 +28,16 @@ export default function Landing() {
       return;
     }
     if (UUID_RE.test(v)) {
-      navigate(`/salon/${v}`);
+      // Auto-rozpoznanie: najpierw salon, a gdy nie istnieje — tenant.
+      setBusy(true);
+      try {
+        await api.salon(v);
+        navigate(`/salon/${v}`);
+      } catch {
+        navigate(`/t/${v}`);
+      } finally {
+        setBusy(false);
+      }
       return;
     }
     setBusy(true);
