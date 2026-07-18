@@ -16,9 +16,9 @@ export default function Booking() {
   const [, params] = useRoute("/salon/:salonId/book");
   const salonId = params?.salonId ?? "";
   const search = useSearch();
-  const couple = new URLSearchParams(search).get("couple") === "1";
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [couple, setCouple] = useState(new URLSearchParams(search).get("couple") === "1");
 
   const [step, setStep] = useState<Step>("service");
   const [serviceId, setServiceId] = useState("");
@@ -98,6 +98,22 @@ export default function Booking() {
       <Steps step={step} />
 
       {step === "service" && (
+        <>
+        <div className="text-[11px] font-bold uppercase tracking-widest text-muted mb-2">{t("booking.forHowMany")}</div>
+        <div className="flex gap-2 mb-3">
+          <button
+            onClick={() => setCouple(false)}
+            className={`rounded-lg border px-3 py-2 text-sm font-semibold ${!couple ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+          >
+            {t("booking.onePerson")}
+          </button>
+          <button
+            onClick={() => setCouple(true)}
+            className={`rounded-lg border px-3 py-2 text-sm font-semibold ${couple ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+          >
+            {t("booking.coupleShort")}
+          </button>
+        </div>
         <div className="divide-y divide-line">
           {(servicesQ.data ?? []).map((s) => (
             <button
@@ -113,31 +129,51 @@ export default function Booking() {
             </button>
           ))}
         </div>
+        </>
       )}
 
       {step === "staff" && (
         <>
           <StaffPicker label={couple ? t("booking.specialist1") : undefined} list={staffQ.data} value={staffId} onPick={setStaffId} />
           {couple && <StaffPicker label={t("booking.specialist2")} list={staffQ.data} value={staffId2} onPick={setStaffId2} />}
-          <button className="btn-primary mt-3" disabled={!staffId || (couple && !staffId2)} onClick={() => setStep("time")}>
-            {t("common.next")}
-          </button>
+          <Footer>
+            <button className="btn-primary" disabled={!staffId || (couple && !staffId2)} onClick={() => setStep("time")}>
+              {t("common.next")}
+            </button>
+          </Footer>
         </>
       )}
 
       {step === "time" && (
         <>
-          <div className="text-[11px] font-bold uppercase tracking-wider text-muted mt-1 mb-2">{t("booking.chooseDay")}</div>
-          <div className="flex gap-2 overflow-x-auto pb-1">
+          {service && (
+            <div className="rounded-xl border border-line bg-surface p-3 flex items-center gap-3 mb-3">
+              <span className="w-9 h-9 rounded-xl bg-surface-2 text-brand grid place-items-center shrink-0">
+                <Users size={16} />
+              </span>
+              <div className="min-w-0">
+                <div className="font-bold text-sm truncate">{service.name} · {service.durationMinutes} min</div>
+                <div className="text-xs text-muted">
+                  {(staffId === "any"
+                    ? t("booking.anyStaff")
+                    : (() => { const m = staffQ.data?.find((x) => x.id === staffId); return m ? (m.displayName || `${m.firstName} ${m.lastName ?? ""}`.trim()) : ""; })()
+                  )} · {service.price} {currency}
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="text-[11px] font-bold uppercase tracking-widest text-muted mt-1 mb-2">{t("booking.chooseDay")}</div>
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
             {days.map((d) => {
               const iso = format(d, "yyyy-MM-dd");
+              const wd = new Intl.DateTimeFormat(i18n.language, { weekday: "short" }).format(d);
               return (
                 <button
                   key={iso}
                   onClick={() => { setDate(iso); setTime(""); }}
-                  className={`shrink-0 flex flex-col items-center rounded-xl border px-3 py-2 min-w-[46px] ${date === iso ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+                  className={`shrink-0 flex flex-col items-center rounded-xl border px-3 py-2 min-w-[48px] ${date === iso ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
                 >
-                  <span className="text-[10px] uppercase opacity-80">{format(d, "EEE")}</span>
+                  <span className="text-[10px] uppercase opacity-80">{wd}</span>
                   <span className="font-extrabold">{format(d, "d")}</span>
                 </button>
               );
@@ -161,7 +197,9 @@ export default function Booking() {
             ))}
           </div>
 
-          <button className="btn-primary mt-4" disabled={!time} onClick={() => setStep("details")}>{t("common.next")}</button>
+          <Footer>
+            <button className="btn-primary" disabled={!time} onClick={() => setStep("details")}>{t("common.next")}</button>
+          </Footer>
         </>
       )}
 
@@ -180,9 +218,10 @@ export default function Booking() {
             </div>
           )}
 
-          {bookM.isError && <div className="text-sm text-red-600 mt-2">{(bookM.error as Error).message}</div>}
+          {bookM.isError && <div className="text-sm text-red-500 mt-2">{(bookM.error as Error).message}</div>}
+          <Footer>
           <button
-            className="btn-primary mt-3"
+            className="btn-primary"
             disabled={
               !clientName ||
               (couple && !secondClientName) ||
@@ -194,6 +233,7 @@ export default function Booking() {
           >
             {bookM.isPending ? t("common.loading") : t("booking.confirm")}
           </button>
+          </Footer>
         </>
       )}
     </Shell>
@@ -204,10 +244,18 @@ function prevStep(s: Step): Step {
   return s === "details" ? "time" : s === "time" ? "staff" : "service";
 }
 
+function Footer({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="fixed bottom-0 inset-x-0 z-20">
+      <div className="max-w-md mx-auto p-4 bg-bg border-t border-line">{children}</div>
+    </div>
+  );
+}
+
 function Shell({ title, onBack, children }: { title: string; onBack?: () => void; children: React.ReactNode }) {
   const { t } = useTranslation();
   return (
-    <div className="max-w-md mx-auto p-4">
+    <div className="max-w-md mx-auto min-h-screen p-4 pb-28">
       <header className="flex items-center gap-2 py-2">
         {onBack && (
           <button onClick={onBack} className="w-9 h-9 rounded-xl border border-line grid place-items-center text-ink-2" aria-label={t("common.back")}>
