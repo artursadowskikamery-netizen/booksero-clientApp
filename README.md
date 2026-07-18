@@ -8,8 +8,23 @@ którą salon promuje wśród własnych klientów. Multi-tenant, jeden backend
 
 ## Status
 
-📐 **Etap koncepcji / architektury.** Kod aplikacji jeszcze nie powstał — to
-repozytorium startowe dla nowego projektu.
+🚧 **Faza 1 — szkielet.** Fundament aplikacji postawiony: React + TypeScript + Vite +
+Tailwind na froncie, Express BFF proxujący **publiczne API Booksero**, i18n (15 języków,
+wykrywanie języka urządzenia + `X-Locale`), tokeny designu (akcent `#0071e3`).
+Działa: wejście po `salonId` → ekran salonu (galeria, usługi) z żywego API.
+
+## Uruchomienie
+
+```bash
+npm install
+# ustaw bazowy URL API Booksero (produkcja/dev):
+export BOOKSERO_API_BASE="https://<domena-booksero>"
+npm run dev      # dev (Vite + Express), port 5000 (lub $PORT)
+npm run build    # produkcja → dist/
+npm run start    # serwuje dist/
+```
+
+Na Replit: ustaw sekret `BOOKSERO_API_BASE`; `PORT` wstrzykuje Replit.
 
 ## Dokumenty
 
@@ -20,6 +35,9 @@ repozytorium startowe dla nowego projektu.
 - **[docs/API-KONTRAKT.md](./docs/API-KONTRAKT.md)** — zweryfikowany kontrakt
   publicznego API Booksero (rezerwacja, dostępność, dane salonu, i18n) + luki
   do domknięcia. Oparte na analizie kodu `booksero @ claude/hej-5yvvly`.
+- **[docs/TLUMACZENIA-BRIEF.md](./docs/TLUMACZENIA-BRIEF.md)** — brief dla sesji
+  tłumaczącej: co, gdzie i jak przetłumaczyć na 15 języków (komunikaty serwera
+  Booksero + etykiety aplikacji).
 - **Wersja wizualna (artefakt):**
   <https://claude.ai/code/artifact/4388b3d5-a2ba-4e29-b90a-56089551a69f>
   _(prywatny — wymaga zalogowania na konto właściciela)._

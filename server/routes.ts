@@ -1,0 +1,48 @@
+import type { Express, Request, Response } from "express";
+import { bookseroGet, bookseroPost } from "./booksero";
+
+const enc = encodeURIComponent;
+const loc = (req: Request) => String(req.headers["x-locale"] || "pl").slice(0, 2);
+const relay = (res: Response, r: { status: number; data: unknown }) => res.status(r.status).json(r.data);
+
+// BFF: mapuje /api/* aplikacji na publiczne /api/public/* Booksero.
+export function registerRoutes(app: Express) {
+  app.get("/api/health", (_req, res) => res.json({ ok: true, service: "booksero-clientapp" }));
+
+  // Tenant: marka + hierarchia kraj→miasto→salon.
+  // ZALEŻNOŚĆ: /api/public/tenant/:id trzeba dodać w Booksero (ARCHITEKTURA §8.1).
+  app.get("/api/tenant/:tenantId", async (req, res) => {
+    relay(res, await bookseroGet(`/api/public/tenant/${enc(req.params.tenantId)}`, loc(req)));
+  });
+
+  const s = (req: Request) => enc(req.params.salonId);
+
+  app.get("/api/salon/:salonId", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/book/${s(req)}`, loc(req))));
+
+  app.get("/api/salon/:salonId/categories", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/book/${s(req)}/categories`, loc(req))));
+
+  app.get("/api/salon/:salonId/services", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/book/${s(req)}/services`, loc(req))));
+
+  app.get("/api/salon/:salonId/staff", async (req, res) =>
+    relay(res, await bookseroGet(
+      `/api/public/book/${s(req)}/staff?serviceId=${enc(String(req.query.serviceId || ""))}`,
+      loc(req),
+    )));
+
+  app.get("/api/salon/:salonId/team", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/book/${s(req)}/team`, loc(req))));
+
+  app.get("/api/salon/:salonId/reviews", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/book/${s(req)}/reviews`, loc(req))));
+
+  app.get("/api/salon/:salonId/availability", async (req, res) => {
+    const q = new URLSearchParams(req.query as Record<string, string>).toString();
+    relay(res, await bookseroGet(`/api/public/book/${s(req)}/availability?${q}`, loc(req)));
+  });
+
+  app.post("/api/salon/:salonId/appointments", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/book/${s(req)}/appointments`, req.body, loc(req))));
+}

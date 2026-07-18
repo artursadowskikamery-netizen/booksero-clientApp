@@ -1,0 +1,70 @@
+import i18n from "./i18n";
+import type {
+  Tenant, SalonPublic, Category, Service, StaffMember, TeamMember, Review, Slot,
+  BookingRequest, BookingResult,
+} from "@shared/types";
+
+export class ApiError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
+async function req<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(path, {
+    ...init,
+    headers: {
+      Accept: "application/json",
+      "X-Locale": (i18n.language || "pl").slice(0, 2),
+      ...(init?.body ? { "Content-Type": "application/json" } : {}),
+      ...(init?.headers || {}),
+    },
+    credentials: "include",
+  });
+  if (!res.ok) {
+    let message = `HTTP ${res.status}`;
+    try {
+      const j = await res.json();
+      message = (j && (j.message as string)) || message;
+    } catch {
+      /* body nie-JSON */
+    }
+    throw new ApiError(res.status, message);
+  }
+  return (await res.json()) as T;
+}
+
+// Klient BFF: wołamy nasz serwer (/api/*), on proxuje do publicznego API Booksero.
+export const api = {
+  tenant: (tenantId: string) =>
+    req<Tenant>(`/api/tenant/${encodeURIComponent(tenantId)}`),
+  salon: (salonId: string) =>
+    req<SalonPublic>(`/api/salon/${encodeURIComponent(salonId)}`),
+  categories: (salonId: string) =>
+    req<Category[]>(`/api/salon/${encodeURIComponent(salonId)}/categories`),
+  services: (salonId: string) =>
+    req<Service[]>(`/api/salon/${encodeURIComponent(salonId)}/services`),
+  staff: (salonId: string, serviceId: string) =>
+    req<StaffMember[]>(
+      `/api/salon/${encodeURIComponent(salonId)}/staff?serviceId=${encodeURIComponent(serviceId)}`,
+    ),
+  team: (salonId: string) =>
+    req<TeamMember[]>(`/api/salon/${encodeURIComponent(salonId)}/team`),
+  reviews: (salonId: string) =>
+    req<Review[]>(`/api/salon/${encodeURIComponent(salonId)}/reviews`),
+  availability: (
+    salonId: string,
+    q: { staffId: string; serviceId: string; date: string; serviceId2?: string; staffId2?: string },
+  ) => {
+    const s = new URLSearchParams(
+      Object.fromEntries(Object.entries(q).filter(([, v]) => v != null)) as Record<string, string>,
+    );
+    return req<Slot[]>(`/api/salon/${encodeURIComponent(salonId)}/availability?${s.toString()}`);
+  },
+  book: (salonId: string, body: BookingRequest) =>
+    req<BookingResult>(`/api/salon/${encodeURIComponent(salonId)}/appointments`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+};

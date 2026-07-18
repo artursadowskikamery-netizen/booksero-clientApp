@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #E9E9E3;
+  --surface: #FFFFFF;
+  --surface-2: #F3F3EF;
+  --ink: #191A1D;
+  --ink-2: #565860;
+  --muted: #8B8D95;
+  --line: #E6E6E0;
+  /* Jedyny akcent aplikacji */
+  --brand: #0071e3;
+  --brand-contrast: #FFFFFF;
+}
+
+:root.dark {
+  --bg: #0A0C0D;
+  --surface: #14171A;
+  --surface-2: #1C2024;
+  --ink: #EEEFEA;
+  --ink-2: #A9AFB1;
+  --muted: #7C8286;
+  --line: #262B2F;
+  --brand: #0A84FF;
+  --brand-contrast: #FFFFFF;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
