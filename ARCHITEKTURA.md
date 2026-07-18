@@ -1,192 +1,179 @@
 # BookSero — Architektura aplikacji konsumenckiej
 
-> **Dokument architektury · v1** — wersja robocza do dyskusji, nie stanowi wdrożenia.
-> Opracowano na podstawie analizy repozytoriów `app-vivimassage` oraz
-> `booksero @ claude/hej-5yvvly` (odczyt, bez zmian).
+> **Dokument architektury · v2** — wersja robocza do dyskusji, nie stanowi wdrożenia.
+> Oparta na zweryfikowanej analizie repo `booksero @ claude/hej-5yvvly` (read-only).
+> Szczegółowy kontrakt API: [`docs/API-KONTRAKT.md`](./docs/API-KONTRAKT.md).
 
 Konsumencka aplikacja mobilna (B2C) platformy rezerwacyjnej **Booksero** —
-jedna apka dla wielu salonów, każdy z własną marką, którą salon promuje
-wśród własnych klientów.
+jedna apka dla wielu tenantów (sieci salonów), każdy z własnym logo i nazwą,
+którą tenant promuje wśród własnych klientów.
 
 | | |
 |---|---|
-| **Model** | multi-tenant · jeden backend |
-| **Backend** | Booksero (Twoja platforma) |
+| **Model** | multi-tenant · jeden backend (Booksero) |
+| **Tożsamość** | white-label per tenant TERAZ, architektura gotowa na marketplace |
+| **Akcent (design)** | `#0071e3` — jeden, stały kolor w całej apce |
 | **Dostarczanie** | PWA (+ opcjonalnie TWA do Google Play) |
-| **Prototyp** | APP Vivi Massage (jednotenantowy) |
+| **Prototyp/źródło** | `app-vivimassage` (jednotenantowy) |
 
 ---
 
 ## 1. Werdykt
 
-**W pełni wykonalne — i prostsze, niż zakładaliśmy.**
-
-Publiczne API konsumenckie Booksero **już istnieje i działa** — to samo, które
-napędza wizytówki salonów i widget rezerwacji. Nowa aplikacja BookSero nie
-buduje backendu; jest **nowym, brandowalnym klientem nad istniejącym API** pod
-adresem `/api/public/book/:salonId`. Klient wskazuje salon (ID / QR), aplikacja
-pobiera jego dane i markę, i wystawia kalendarze oraz rezerwację.
+**Wykonalne.** Rdzeń rezerwacji (przeglądanie usług, dostępność, utworzenie
+wizyty) działa **na istniejącym publicznym API Booksero** (`/api/public/book/:salonId`).
+Aplikacja to **cienki, brandowalny klient** nad tym API — nie budujemy backendu
+rezerwacji od zera. Dwie funkcje wymagają jednak **dodania backendu w Booksero**
+(patrz §8): endpoint tenanta oraz logowanie i self-service konsumenta.
 
 ---
 
 ## 2. Model produktu — dwie twarze jednej platformy
 
-Klasyczny układ „platforma B2B + apka konsumencka B2C" — jak Booksy Biz i
-Booksy. Booksero zarządza rezerwacjami po stronie biznesów; BookSero to apka,
-którą ich klienci trzymają w telefonie.
+Układ „platforma B2B + apka konsumencka B2C" (jak Booksy Biz + Booksy).
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  BOOKSERO  ·  Platforma · B2B · Twoja                    │
-│  Wielotenantowy system rezerwacji. Salony zarządzają     │
-│  kalendarzem, kadrą, usługami, klientami, płatnościami.  │
-│  Źródło prawdy.                                           │
-└─────────────────────────────────────────────────────────┘
-                          │
-             publiczne API · /api/public/book/:salonId
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│  BOOKSERO (apka)  ·  B2C · brandowana per salon          │
-│  Klient salonu: umawia wizytę, widzi wolne terminy,      │
-│  program lojalnościowy, dostaje przypomnienia push.      │
-│  Aplikacja przybiera markę salonu.                       │
-└─────────────────────────────────────────────────────────┘
-                          │
-     → salon promuje apkę wśród WŁASNYCH klientów (retencja)
+BOOKSERO (platforma B2B, Twoja, multi-tenant)
+   │  publiczne API  /api/public/book/:salonId
+   ▼
+APLIKACJA BOOKSERO (B2C, brandowana per tenant)
+   → tenant promuje apkę wśród WŁASNYCH klientów (retencja)
 ```
 
-> **Ważne:** multi-tenant dotyczy **salonów** (jest ich wiele, każdy ze swoją
-> marką) — nie backendów. Backend jest zawsze jeden: Booksero. Dlatego **nie
-> budujemy „adaptera wielu systemów".**
+**Dwie różne osie:** wiele **tenantów/salonów** — TAK; wiele **backendów** — NIE
+(zawsze Booksero). Aplikacja jest wielo-tenantowa, ale jedno-backendowa.
 
 ---
 
-## 3. Kluczowe odkrycie — publiczne API konsumenckie już istnieje
+## 3. Tożsamość produktu — white-label teraz, marketplace-ready
 
-Analiza repozytorium `booksero @ claude/hej-5yvvly` pokazała komplet
-publicznych, niewymagających logowania endpointów po `:salonId`. To dokładnie
-model „wpisz ID salonu → aplikacja pobiera dane i wystawia kalendarze".
-Aplikacja konsumuje to samo API, którego używają wizytówki i widget embed.
+- **Teraz:** apka per tenant. Klient wchodzi przez **link/QR/kod** swojego tenanta
+  i widzi tylko jego. Brak przeglądania konkurencji.
+- **NIE teraz:** wyszukiwarka po **typie** (barber/fryzjer) i katalog wszystkich
+  firm — to funkcje marketplace'u, odłożone.
+- **Zabezpieczenie przyszłości:** dane (miasto, kraj) trzymamy czyste. Marketplace
+  będzie później „dołożeniem modułu", a nie rewolucją — **pod warunkiem** uzupełnienia
+  luk z §8.3 (brak taksonomii typu biznesu i geo).
 
-| Metoda | Endpoint | Do czego w apce |
-|---|---|---|
-| `GET`  | `/api/public/book/:salonId` | Dane salonu + branding (nazwa, logo, adres, motyw, waluta) i ustawienia rezerwacji |
-| `GET`  | `/api/public/book/:salonId/categories` | Kategorie usług (krok „wybierz usługę") |
-| `GET`  | `/api/public/book/:salonId/services` | Usługi: nazwa, czas, cena, przedpłata |
-| `GET`  | `/api/public/book/:salonId/staff?serviceId=` | Pracownicy dostępni dla wybranej usługi |
-| `GET`  | `/api/public/book/:salonId/team` | Zespół salonu (prezentacja: avatar, bio) |
-| `GET`  | `/api/public/book/:salonId/reviews` | Opinie (opublikowane, zanonimizowane) |
-| `GET`  | `/api/public/book/:salonId/availability?staffId&serviceId&date` | **Wolne terminy** — serce „wystawiania kalendarzy" |
-| `POST` | `/api/public/book/:salonId/appointments` | **Utworzenie rezerwacji** (z przedpłatą Stripe, jeśli włączona) |
-| `GET`  | `/api/public/s/:slug` | Salon po slugu (linki / subdomeny wizytówek) |
-| `POST` | `/api/public/cancel/:token` | Anulowanie wizyty po tokenie |
-| `POST` | `/api/public/visit/:token/confirm` | Potwierdzenie wizyty po tokenie |
-
-**Konsekwencja:** nie projektujemy backendu ani integracji od zera. Faza
-„adapter" redukuje się do **cienkiego klienta HTTP** nad tym API.
+Zasada: **„zaprojektuj pod pivot, ale go nie buduj."**
 
 ---
 
-## 4. Model tenanta — jak apka rozpoznaje salon
+## 4. Model wejścia i tenanta
 
-Booksero rozróżnia salony na trzy sposoby — to przekłada się wprost na sposób
-wejścia do apki:
+**Znalezienie tenanta:** główną drogą **link/QR** (tenant rozdaje na paragonie,
+w SMS, na stronie, recepcji). Fallback: **kod tenanta**. Przy zimnym starcie
+(instalacja ze sklepu bez linku): **wyszukiwarka po NAZWIE** tenanta.
+(Wyszukiwanie po typie/branży — funkcja marketplace'u — odłożone.)
 
-| Identyfikator | Co to | Uwagi |
-|---|---|---|
-| `salons.id` (**UUID**) | Wewnętrzny, techniczny identyfikator | **To jego przyjmuje publiczne API** (`:salonId`). Idealny do QR / linku głębokiego. |
-| `salons.display_id` (**`ML########`**) | Krótki, ludzki numer (np. `ML04352678`) | Do dyktowania. Ręczne wpisanie wymaga rozwiązania ML → UUID. |
-| **slug** (`/api/public/s/:slug`) | Nazwa w adresie wizytówki | Gotowa trasa rozwiązująca slug → salon. Dobre dla ładnych linków per marka. |
+**Hierarchia wyboru salonu (geograficzna):**
+```
+kraj  →  miasto  →  salon  →  kalendarz
+```
+Poziom zwijany, gdy jest jedna opcja (tenant jednokrajowy pomija kraj; miasto
+z jednym salonem prowadzi wprost do kalendarza).
 
-**Rekomendacja wejścia:** główną drogą niech będzie **QR / link głęboki**
-(zaszyty UUID lub slug) — salon wiesza QR na recepcji, klient skanuje i apka od
-razu otwiera się jako jego salon. Ręczne wpisanie `ML` jako fallback (wymaga
-drobnego endpointu ML → UUID). Wybór jest zapamiętywany — potem apka wygląda
-jak apka jednego salonu.
+**Identyfikatory salonu (potwierdzone):** `salons.id` = **UUID** (przyjmuje je API);
+`salons.display_id` = **`ML########`** (ludzki, do dyktowania); **slug** (`/api/public/s/:slug`).
 
 ---
 
 ## 5. Warstwy aplikacji
 
-1. **Powłoka „BookSero"** — jedna apka w sklepie, jedno konto dewelopera.
-   Ledwie widoczny nagłówek; twarzą jest marka salonu.
-2. **Wybór salonu** — rozpoznanie tenanta po ID / QR / slugu. Zapamiętany
-   wybór, przełączanie salonu, publiczny widok bez logowania.
-3. **Branding runtime** — po wczytaniu salonu apka pobiera logo, motyw, kolory
-   i teksty z API i dynamicznie zmienia wygląd.
-4. **Warstwa zaangażowania** — lojalność, przypomnienia, push, polecenia. To,
-   co czyni z apki narzędzie retencji, a nie tylko formularz rezerwacji.
+1. **Powłoka „BookSero"** — jedna apka, jedno konto dewelopera. Ledwie widoczna.
+2. **Wybór tenanta** — link/QR/kod/nazwa; zapamiętany; ew. przełącznik tenantów
+   (model „workspace" jak w Slacku).
+3. **Wybór salonu** — kraj → miasto → salon.
+4. **Branding runtime** — logo + nazwa tenanta z API. **Kolor stały: `#0071e3`.**
+5. **Warstwa zaangażowania** — lojalność, przypomnienia, push (patrz zależność §8.2).
 
 ---
 
-## 6. Reużycie — co bierzemy z VIVI, co budujemy nowego
+## 6. System projektowy
 
-Obecna aplikacja **APP Vivi Massage** to działający, jednotenantowy prototyp
-dokładnie tego produktu. Większość wartości przenosimy; nowy jest głównie
-fundament.
-
-### ♻︎ Reużycie
-- Cały frontend i komponenty (React / shadcn)
-- Design system i wygląd (przenośny 1:1)
-- Program lojalnościowy: misje, polecenia, vouchery, VIVI Vote
-- Przypomnienia o wizytach (push + SMS)
-- Czat AI „Kasia"
-- Logika kreatora rezerwacji
-
-### ✎ Nowe
-- Warstwa tenantów + rozpoznanie salonu (ID / QR)
-- Klient HTTP nad publicznym API Booksero
-- Branding sterowany konfiguracją (nie forkiem)
-- Trwały magazyn sesji + auth per tenant
-- Push oznaczony tenantem i klientem
-- Powłoka + zapamiętywanie wyboru salonu
-
-> „Nowa aplikacja" nie oznacza „pisać od zera" — to nowy szkielet plus
-> odzyskane ekrany i logika.
+- **Akcent: `--blue #0071e3` (rgb 0,113,227)** — jedyny kolor akcentu w całej apce
+  (CTA, aktywne stany, wybrane sloty, linki). Tryb ciemny: `#0A84FF` dla czytelności.
+- **Marka tenanta = logo + nazwa (+ zdjęcia), NIE kolor.** Kolor pozostaje stały.
+- Baza neutralna (off-white / near-black), typografia systemowa + mono do ID/godzin.
+- Prototyp wizualny: patrz artefakt BookSero (link u właściciela).
 
 ---
 
-## 7. Dostarczanie — jedna apka, wiele marek, bez sklepowej biurokracji
+## 7. Międzynarodowość (zweryfikowane)
 
-| Warstwa | Rozwiązanie | Uwagi |
-|---|---|---|
-| **Rdzeń** | **PWA** | Instalowalna z przeglądarki, push (Android; iOS od 16.4), offline. Nowy salon = nowa marka bez pracy w sklepie. Niezależna od Google/Apple. |
-| **Opcja** | **TWA → Google Play** | Jedna apka „BookSero" opakowana (Bubblewrap), **jedno Twoje konto dewelopera**. Salon wybierany w apce po ID/QR — bez listingu per salon. |
-| **Później** | **Capacitor → iOS** | Ta sama baza kodu na App Store, gdy zajdzie potrzeba. Osobne konto Apple + recenzja — druga faza. |
-
----
-
-## 8. Roadmapa — kolejność wdrożenia
-
-| Faza | Zakres | Nakład |
-|---|---|---|
-| **0 · Fundament** | Klient HTTP nad publicznym API Booksero; schemat konfiguracji tenanta; rozstrzygnięcie rozpoznania salonu (UUID / ML / slug). API jest gotowe — mapujemy je. | niski |
-| **1 · Szkielet multi-tenant + pierwszy salon** | Powłoka BookSero, rozpoznanie salonu po QR/ID, branding runtime, kreator rezerwacji na żywym API (dostępność + utworzenie wizyty). | średni |
-| **2 · Warstwa zaangażowania** | Lojalność, przypomnienia, push per tenant, czat AI — przeniesione z VIVI jako moduły włączane per salon. | średni |
-| **3 · Samoobsługa i skala** | Panel: salon konfiguruje branding i promocje sam. Opcjonalne opakowanie TWA do Google Play. Domeny/subdomeny per marka. | średni–wysoki |
+- **15 języków** serwera. **Czeski `cs` — pełne wsparcie.** **Niderlandzki `nl` — brak**
+  → tenant flamandzki (Belgia) na `fr/de/en`. Apka wysyła nagłówek `X-Locale`.
+- **Waluta per salon** (`salons.currency`, dom. PLN); w publicznym API podawana raz
+  na poziomie salonu — ceny usług dziedziczą walutę salonu.
+- **Kraj** (`salons.country`, ISO2, notNull) i **miasto** (`salons.city`, wolny tekst,
+  nullable) istnieją — wystarczą do grupowania geograficznego w apce.
+- ⚠️ `stripePayments.currency` ma twardy default `pln` — do przeglądu przy płatnościach
+  wielokrajowych online.
 
 ---
 
-## 9. Decyzje otwarte — do rozstrzygnięcia przy Fazie 0
+## 8. ⚠️ Luki po stronie Booksero (zweryfikowane) — do domknięcia
 
-1. **Gdzie mieszka branding i reguły lojalności?**
-   Usługi, kadra, dostępność — z Booksero (już tam są). Ale logo/kolory/teksty
-   i reguły promocji: dodajemy do Booksero (wszystko w jednym miejscu), czy
-   trzyma je osobna warstwa ustawień apki?
+To jest najważniejszy wniosek weryfikacji. Trzy rzeczy trzeba **dodać w Booksero**:
 
-2. **Rozpoznanie salonu po „ML"?**
-   Publiczne API przyjmuje UUID. Jeśli klient ma móc wpisać `ML########`
-   ręcznie, potrzebny drobny endpoint ML → UUID. QR/slug omija problem.
+### 8.1 Endpoint tenanta (mały, wymagany do wejścia)
+`GET /api/public/tenant/:tenantId` → marka tenanta + lista jego **aktywnych,
+nieusuniętych** salonów. Dziś **nie istnieje** (publiczny dostęp jest tylko per salon).
+Uwaga: nie używać `getSalonsByTenant` wprost (zwraca usunięte/nieaktywne i pola
+wewnętrzne) — filtrować i rzutować na pola publiczne.
 
-3. **Logowanie klienta i dane osobowe.**
-   Publiczny widok (usługi, terminy, rezerwacja) działa po ID. Dane osobowe
-   (historia, lojalność) — dopiero po zalogowaniu klienta w kontekście salonu.
-   Do domknięcia z mechanizmem auth Booksero (SMS / Google).
+### 8.2 Logowanie konsumenta + self-service (duży, krytyczny dla retencji)
+**Booksero NIE ma logowania klienta.** SMS-2FA i Google to logowanie **personelu**.
+Klient widzi dziś tylko **pojedynczą wizytę po tokenie** z linku. **„Moje wizyty"
+(pełna historia) i „Lojalność" nie mają publicznego API** — dane są wyłącznie pod
+`/api/salon/*` z JWT pracownika.
+➡️ Warstwa zaangażowania (serce „promocji wśród klientów") wymaga zbudowania w Booksero:
+**(a) logowania klienta (kod SMS)** i **(b) endpointów self-service** (moje wizyty,
+moja lojalność, moje vouchery). To większa zależność, niż zakładaliśmy.
+
+### 8.3 Taksonomia typu biznesu + geo (dla przyszłego marketplace)
+Brak pola branży (barber/fryzjer) na tenancie i salonie; `service_categories` to
+wolny tekst per salon; brak współrzędnych geo. Marketplace-by-type wymaga migracji
+schematu. Do zrobienia dopiero przy pivocie.
 
 ---
 
-## Następny krok
+## 9. Reużycie z VIVI
 
-Domknięcie **Fazy 0**: dokładny kontrakt `POST /api/public/book/:salonId/appointments`
-(jakie pola przyjmuje) + rozstrzygnięcie rozpoznania salonu. To odblokowuje
-budowę kreatora rezerwacji na żywym API.
+**APP Vivi Massage** to działający, jednotenantowy prototyp tego produktu.
+Przenosimy: frontend/komponenty, design system, logikę kreatora rezerwacji,
+oraz — po zbudowaniu backendu z §8.2 — moduły lojalności, przypomnień, push, czatu AI.
+Nowe: warstwa tenantów, klient HTTP nad API Booksero, branding z konfiguracji,
+trwałe sesje.
+
+---
+
+## 10. Dostarczanie
+
+- **Rdzeń: PWA** — instalowalna, push (Android; iOS 16.4+). Nowy tenant = brak pracy w sklepie.
+- **Opcja: TWA → Google Play** — jedna apka, jedno Twoje konto dewelopera.
+- **Później: Capacitor → iOS App Store.**
+
+---
+
+## 11. Roadmapa (skorygowana o zależności)
+
+| Faza | Zakres | Zależność | Nakład |
+|---|---|---|---|
+| **0. Fundament** | Klient HTTP nad API; konfiguracja tenanta; endpoint `/api/public/tenant/:tenantId` (§8.1) | mały dodatek w Booksero | niski |
+| **1. Rezerwacja** | Powłoka, wybór tenanta/kraju/miasta/salonu, kreator (usługa→specjalista→termin→potwierdzenie→przedpłata) | **działa na istniejącym API** | średni |
+| **2. Zaangażowanie** | Moje wizyty, lojalność, push per klient | **wymaga §8.2 (logowanie + self-service konsumenta) w Booksero** | wysoki (backend + apka) |
+| **3. Skala** | Panel konfiguracji tenanta, TWA, domeny/subdomeny | — | średni–wysoki |
+
+Kluczowa korekta względem v1: **Faza 2 (retencja) jest zablokowana przez brak
+backendu konsumenta w Booksero** — to trzeba zbudować, zanim „lojalność/moje wizyty"
+zadziałają w apce.
+
+---
+
+## 12. Decyzje otwarte
+
+1. **Kolor akcentu w dark mode** — trzymamy `#0071e3` czy jaśniejszy `#0A84FF` dla kontrastu?
+2. **Logowanie konsumenta** — SMS-kod (spójne z Booksero) jako metoda? Zakres self-service (tylko wizyty, czy też lojalność od razu?).
+3. **Belgia/`nl`** — kierować flamandzkich tenantów na `fr/de/en`, czy dołożyć niderlandzki do Booksero?
+4. **Kolejność** — czy budujemy Fazę 1 (rezerwacja, gotowe API) niezależnie, a §8.2 równolegle?
