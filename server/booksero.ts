@@ -1,6 +1,7 @@
-// Serwerowy klient publicznego API Booksero. Bazowy URL z env (Replit),
-// żeby nie zaszywać domeny w kodzie. TODO: potwierdzić produkcyjny URL Booksero.
-const BASE = process.env.BOOKSERO_API_BASE || "https://app.booksero.com";
+// Serwerowy klient publicznego API Booksero. Bazowy URL z env (Replit) — sekret
+// BOOKSERO_API_BASE nadpisuje domyślny. Domyślny wskazuje panel (ten sam serwer
+// obsługuje /api/public/*). Potwierdzenie: <base>/api/public/plans zwraca JSON.
+const BASE = process.env.BOOKSERO_API_BASE || "https://panel.booksero.com";
 
 export interface UpstreamResult {
   status: number;
