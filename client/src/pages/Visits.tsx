@@ -55,8 +55,13 @@ export default function Visits() {
 
   const now = Date.now();
   const all = q.data ?? [];
-  const upcoming = all.filter((a) => new Date(a.startAt).getTime() >= now && a.status !== "cancelled");
-  const past = all.filter((a) => new Date(a.startAt).getTime() < now);
+  // Nadchodzące: najbliższa wizyta na górze. Historia: najnowsza na górze.
+  const upcoming = all
+    .filter((a) => new Date(a.startAt).getTime() >= now && a.status !== "cancelled")
+    .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
+  const past = all
+    .filter((a) => new Date(a.startAt).getTime() < now)
+    .sort((a, b) => new Date(b.startAt).getTime() - new Date(a.startAt).getTime());
 
   return (
     <div className="max-w-md mx-auto min-h-screen p-4 pb-24">
