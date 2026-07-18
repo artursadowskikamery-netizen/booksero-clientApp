@@ -74,6 +74,29 @@ export function registerRoutes(app: Express) {
   app.post("/api/visit/:token/cancel", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/cancel/${enc(req.params.token)}`, req.body ?? {}, loc(req))));
 
+  // ── Bonusy Etap A (SPEC-bonusy-etap-A) — program lojalnościowy klienta ──
+  app.get("/api/client/loyalty", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/client/loyalty`, loc(req), auth(req))));
+
+  app.post("/api/client/loyalty/join", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/loyalty/join`, req.body ?? {}, loc(req), auth(req))));
+
+  app.post("/api/client/loyalty/rewards/:rewardId/claim", async (req, res) =>
+    relay(res, await bookseroPost(
+      `/api/public/client/loyalty/rewards/${enc(String(req.params.rewardId))}/claim`,
+      req.body ?? {},
+      loc(req),
+      auth(req),
+    )));
+
+  app.post("/api/client/loyalty/claims/:id/cancel", async (req, res) =>
+    relay(res, await bookseroPost(
+      `/api/public/client/loyalty/claims/${enc(String(req.params.id))}/cancel`,
+      req.body ?? {},
+      loc(req),
+      auth(req),
+    )));
+
   // Odwołanie WŁASNEJ wizyty zalogowanego klienta (SPEC-rezerwacja-zalogowanego §3).
   app.post("/api/client/appointments/:id/cancel", async (req, res) =>
     relay(res, await bookseroPost(

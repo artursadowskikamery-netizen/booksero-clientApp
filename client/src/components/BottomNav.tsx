@@ -21,7 +21,7 @@ export default function BottomNav({ salonId, active }: { salonId: string; active
     { key: "salon", icon: Store, label: t("tabs.salon"), to: tenantId ? `/t/${tenantId}` : `/salon/${salonId}` },
     { key: "book", icon: CalendarPlus, label: t("tabs.book"), to: `/salon/${salonId}/book` },
     { key: "visits", icon: Clock, label: t("tabs.visits"), to: `/salon/${salonId}/visits` },
-    { key: "rewards", icon: Star, label: t("tabs.rewards"), to: `/salon/${salonId}/soon` },
+    { key: "rewards", icon: Star, label: t("tabs.rewards"), to: `/salon/${salonId}/rewards` },
     { key: "profile", icon: User, label: t("tabs.profile"), to: `/salon/${salonId}/profile` },
   ];
   return (

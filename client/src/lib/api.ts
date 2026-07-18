@@ -2,7 +2,7 @@ import i18n from "./i18n";
 import { getToken } from "./auth";
 import type {
   Tenant, SalonPublic, Category, Service, StaffMember, TeamMember, Review, Slot,
-  BookingRequest, BookingResult, ClientMe, ClientAppointment,
+  BookingRequest, BookingResult, ClientMe, ClientAppointment, LoyaltyState,
 } from "@shared/types";
 
 export class ApiError extends Error {
@@ -98,6 +98,21 @@ export const api = {
       method: "POST",
       body: JSON.stringify({}),
     }),
+  // ── Bonusy Etap A: program lojalnościowy (SPEC-bonusy-etap-A) ──
+  loyalty: () => req<LoyaltyState>(`/api/client/loyalty`),
+  loyaltyJoin: () =>
+    req<LoyaltyState | { ok: boolean }>(`/api/client/loyalty/join`, { method: "POST", body: JSON.stringify({}) }),
+  loyaltyClaim: (rewardId: string) =>
+    req<{ id: string; status: string }>(`/api/client/loyalty/rewards/${encodeURIComponent(rewardId)}/claim`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
+  loyaltyCancelClaim: (claimId: string) =>
+    req<{ success?: boolean }>(`/api/client/loyalty/claims/${encodeURIComponent(claimId)}/cancel`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
+
   // Odwołanie własnej wizyty po id (zalogowany klient) — także wizyt z panelu.
   cancelMyVisit: (appointmentId: string) =>
     req<{ success?: boolean; message?: string }>(

@@ -121,6 +121,41 @@ export interface BookingRequest {
   secondClientName?: string;
 }
 
+// ── Bonusy Etap A (SPEC-bonusy-etap-A) ──
+// Suwaki funkcji aplikacji per tenant — pojawią się w odpowiedziach
+// tenant/salon po wdrożeniu backendu.
+export interface AppFeatures {
+  loyalty?: boolean;
+}
+
+export interface LoyaltyTier {
+  name: string;
+  minPoints: number;
+  color?: string | null;
+}
+
+export interface LoyaltyRewardItem {
+  id: string;
+  name: string;
+  pointsCost: number;
+  rewardType: string;
+  rewardValue?: string | null;
+  canAfford: boolean;
+  claimStatus?: string | null; // "pending" gdy zgłoszono odbiór
+}
+
+export interface LoyaltyState {
+  joined: boolean;
+  joinBonus?: number;
+  balance?: number;
+  lifetime?: number;
+  tier?: { name: string; color?: string | null } | null;
+  nextTier?: { name: string; minPoints: number; missing: number } | null;
+  tiers?: LoyaltyTier[];
+  rewards?: LoyaltyRewardItem[];
+  pendingClaims?: { id: string; rewardName: string; requestedAt: string }[];
+}
+
 // ── Logowanie klienta + self-service (SPEC-logowanie-klienta) ──
 export interface ClientMe {
   name: string;
