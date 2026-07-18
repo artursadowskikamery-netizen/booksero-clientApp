@@ -20,7 +20,7 @@ export const LANG_LABELS: Record<Lang, string> = {
 // Komunikaty serwera Booksero (Zakres A) tłumaczone osobno (TLUMACZENIA-BRIEF).
 const resources = {
   pl: { translation: {
-    common: { book: "Rezerwuj wizytę", bookCouple: "Rezerwuj dla pary — 2 osoby", next: "Dalej", back: "Wstecz", chooseCountry: "Wybierz kraj", chooseCity: "Wybierz miasto", chooseSalon: "Wybierz salon", login: "Zaloguj", loading: "Ładowanie…", services: "Usługi", team: "Zespół", reviews: "Opinie", soon: "Dostępne wkrótce" },
+    common: { book: "Rezerwuj wizytę", bookCouple: "Rezerwuj dla pary — 2 osoby", next: "Dalej", back: "Wstecz", chooseCountry: "Wybierz kraj", chooseCity: "Wybierz miasto", chooseSalon: "Wybierz salon", login: "Zaloguj", loading: "Ładowanie…", services: "Usługi", team: "Zespół", reviews: "Opinie", soon: "Dostępne wkrótce", language: "Język", pageNotFound: "Nie znaleziono strony." },
     tabs: { salon: "Salon", book: "Rezerwuj", visits: "Wizyty", rewards: "Bonusy", profile: "Profil" },
     welcome: { title: "Witamy Cię w BookSero", subtitle: "Rezerwuj wizyty w swoim ulubionym miejscu — szybko i bez dzwonienia.", start: "Zaczynajmy" },
     salon: { selfcare: "Zadbaj o siebie", subtitle: "Wolne terminy już w tym tygodniu" },
@@ -28,7 +28,7 @@ const resources = {
     landing: { placeholder: "UUID salonu lub slug wizytówki", mlNotSupported: "Numer ML nie jest jeszcze obsługiwany — użyj adresu wizytówki (slug) lub UUID salonu.", notFound: "Nie znaleziono salonu.", title: "Znajdź swój salon", scanHint: "Najprościej — zeskanuj kod QR, który dostałeś w swoim salonie.", qr: "Zeskanuj kod QR", qrSoon: "Skaner QR — dostępny wkrótce.", or: "albo", codeLabel: "Wpisz adres wizytówki (slug) lub kod", privacyNote: "Nie przeglądasz tu innych firm — trafiasz tylko do swojego salonu." },
   }},
   en: { translation: {
-    common: { book: "Book an appointment", bookCouple: "Book for two", next: "Next", back: "Back", chooseCountry: "Choose a country", chooseCity: "Choose a city", chooseSalon: "Choose a salon", login: "Log in", loading: "Loading…", services: "Services", team: "Team", reviews: "Reviews", soon: "Coming soon" },
+    common: { book: "Book an appointment", bookCouple: "Book for two", next: "Next", back: "Back", chooseCountry: "Choose a country", chooseCity: "Choose a city", chooseSalon: "Choose a salon", login: "Log in", loading: "Loading…", services: "Services", team: "Team", reviews: "Reviews", soon: "Coming soon", language: "Language", pageNotFound: "Page not found." },
     tabs: { salon: "Salon", book: "Book", visits: "Visits", rewards: "Rewards", profile: "Profile" },
     welcome: { title: "Welcome to BookSero", subtitle: "Book appointments at your favourite place — fast, no phone calls.", start: "Get started" },
     salon: { selfcare: "Take care of yourself", subtitle: "Free slots this week" },
@@ -36,7 +36,7 @@ const resources = {
     landing: { placeholder: "Salon UUID or profile slug", mlNotSupported: "The ML number isn't supported yet — use the profile address (slug) or the salon UUID.", notFound: "Salon not found.", title: "Find your salon", scanHint: "Easiest way — scan the QR code you got at your salon.", qr: "Scan QR code", qrSoon: "QR scanner — coming soon.", or: "or", codeLabel: "Enter the profile address (slug) or code", privacyNote: "You're not browsing other businesses — you go straight to your salon." },
   }},
   de: { translation: {
-    common: { book: "Termin buchen", bookCouple: "Für zwei buchen", next: "Weiter", back: "Zurück", chooseCountry: "Land wählen", chooseCity: "Stadt wählen", chooseSalon: "Salon wählen", login: "Anmelden", loading: "Wird geladen…", services: "Leistungen", team: "Team", reviews: "Bewertungen", soon: "Bald verfügbar" },
+    common: { book: "Termin buchen", bookCouple: "Für zwei buchen", next: "Weiter", back: "Zurück", chooseCountry: "Land wählen", chooseCity: "Stadt wählen", chooseSalon: "Salon wählen", login: "Anmelden", loading: "Wird geladen…", services: "Leistungen", team: "Team", reviews: "Bewertungen", soon: "Bald verfügbar", language: "Sprache", pageNotFound: "Seite nicht gefunden." },
     tabs: { salon: "Salon", book: "Buchen", visits: "Termine", rewards: "Boni", profile: "Profil" },
     welcome: { title: "Willkommen bei BookSero", subtitle: "Buche Termine bei deinem Lieblingsort — schnell und ohne Anruf.", start: "Los geht's" },
     salon: { selfcare: "Tu dir etwas Gutes", subtitle: "Freie Termine diese Woche" },
@@ -44,7 +44,7 @@ const resources = {
     landing: { placeholder: "Salon-UUID oder Profil-Slug", mlNotSupported: "Die ML-Nummer wird noch nicht unterstützt — nutze die Profiladresse (Slug) oder die Salon-UUID.", notFound: "Salon nicht gefunden.", title: "Finde deinen Salon", scanHint: "Am einfachsten: Scanne den QR-Code aus deinem Salon.", qr: "QR-Code scannen", qrSoon: "QR-Scanner — bald verfügbar.", or: "oder", codeLabel: "Profiladresse (Slug) oder Code eingeben", privacyNote: "Du stöberst hier nicht in anderen Firmen — du landest direkt in deinem Salon." },
   }},
   nl: { translation: {
-    common: { book: "Afspraak boeken", bookCouple: "Boek voor twee", next: "Volgende", back: "Terug", chooseCountry: "Kies een land", chooseCity: "Kies een stad", chooseSalon: "Kies een salon", login: "Inloggen", loading: "Laden…", services: "Diensten", team: "Team", reviews: "Beoordelingen", soon: "Binnenkort beschikbaar" },
+    common: { book: "Afspraak boeken", bookCouple: "Boek voor twee", next: "Volgende", back: "Terug", chooseCountry: "Kies een land", chooseCity: "Kies een stad", chooseSalon: "Kies een salon", login: "Inloggen", loading: "Laden…", services: "Diensten", team: "Team", reviews: "Beoordelingen", soon: "Binnenkort beschikbaar", language: "Taal", pageNotFound: "Pagina niet gevonden." },
     tabs: { salon: "Salon", book: "Boeken", visits: "Afspraken", rewards: "Bonussen", profile: "Profiel" },
     welcome: { title: "Welkom bij BookSero", subtitle: "Boek afspraken op je favoriete plek — snel en zonder te bellen.", start: "Aan de slag" },
     salon: { selfcare: "Zorg goed voor jezelf", subtitle: "Vrije plekken deze week" },
@@ -52,7 +52,7 @@ const resources = {
     landing: { placeholder: "Salon-UUID of profiel-slug", mlNotSupported: "Het ML-nummer wordt nog niet ondersteund — gebruik het profieladres (slug) of de salon-UUID.", notFound: "Salon niet gevonden.", title: "Vind je salon", scanHint: "Het makkelijkst — scan de QR-code die je in je salon hebt gekregen.", qr: "QR-code scannen", qrSoon: "QR-scanner — binnenkort beschikbaar.", or: "of", codeLabel: "Voer het profieladres (slug) of de code in", privacyNote: "Je bladert hier niet door andere bedrijven — je gaat rechtstreeks naar je eigen salon." },
   }},
   cs: { translation: {
-    common: { book: "Rezervovat termín", bookCouple: "Rezervovat pro dva", next: "Dále", back: "Zpět", chooseCountry: "Vyberte zemi", chooseCity: "Vyberte město", chooseSalon: "Vyberte salon", login: "Přihlásit se", loading: "Načítání…", services: "Služby", team: "Tým", reviews: "Recenze", soon: "Již brzy" },
+    common: { book: "Rezervovat termín", bookCouple: "Rezervovat pro dva", next: "Dále", back: "Zpět", chooseCountry: "Vyberte zemi", chooseCity: "Vyberte město", chooseSalon: "Vyberte salon", login: "Přihlásit se", loading: "Načítání…", services: "Služby", team: "Tým", reviews: "Recenze", soon: "Již brzy", language: "Jazyk", pageNotFound: "Stránka nenalezena." },
     tabs: { salon: "Salon", book: "Rezervovat", visits: "Návštěvy", rewards: "Bonusy", profile: "Profil" },
     welcome: { title: "Vítejte v BookSero", subtitle: "Rezervujte si termíny ve svém oblíbeném místě — rychle a bez telefonování.", start: "Začít" },
     salon: { selfcare: "Dopřejte si péči", subtitle: "Volné termíny už tento týden" },
@@ -60,7 +60,7 @@ const resources = {
     landing: { placeholder: "UUID salonu nebo slug vizitky", mlNotSupported: "Číslo ML zatím není podporováno — použijte adresu vizitky (slug) nebo UUID salonu.", notFound: "Salon nenalezen.", title: "Najdi svůj salon", scanHint: "Nejjednodušší je naskenovat QR kód ze svého salonu.", qr: "Naskenovat QR kód", qrSoon: "QR skener — již brzy.", or: "nebo", codeLabel: "Zadej adresu vizitky (slug) nebo kód", privacyNote: "Neprocházíš tu jiné podniky — jdeš rovnou do svého salonu." },
   }},
   sv: { translation: {
-    common: { book: "Boka tid", bookCouple: "Boka för två", next: "Nästa", back: "Tillbaka", chooseCountry: "Välj land", chooseCity: "Välj stad", chooseSalon: "Välj salong", login: "Logga in", loading: "Laddar…", services: "Tjänster", team: "Team", reviews: "Recensioner", soon: "Kommer snart" },
+    common: { book: "Boka tid", bookCouple: "Boka för två", next: "Nästa", back: "Tillbaka", chooseCountry: "Välj land", chooseCity: "Välj stad", chooseSalon: "Välj salong", login: "Logga in", loading: "Laddar…", services: "Tjänster", team: "Team", reviews: "Recensioner", soon: "Kommer snart", language: "Språk", pageNotFound: "Sidan hittades inte." },
     tabs: { salon: "Salong", book: "Boka", visits: "Besök", rewards: "Bonusar", profile: "Profil" },
     welcome: { title: "Välkommen till BookSero", subtitle: "Boka tider på ditt favoritställe — snabbt och utan att ringa.", start: "Kom igång" },
     salon: { selfcare: "Unna dig lite omtanke", subtitle: "Lediga tider redan denna vecka" },
@@ -68,7 +68,7 @@ const resources = {
     landing: { placeholder: "Salong-UUID eller profil-slug", mlNotSupported: "ML-numret stöds inte än — använd profiladressen (slug) eller salongens UUID.", notFound: "Salongen hittades inte.", title: "Hitta din salong", scanHint: "Enklast — skanna QR-koden du fick i din salong.", qr: "Skanna QR-kod", qrSoon: "QR-skanner — kommer snart.", or: "eller", codeLabel: "Ange profiladress (slug) eller kod", privacyNote: "Du bläddrar inte bland andra företag — du kommer direkt till din salong." },
   }},
   es: { translation: {
-    common: { book: "Reservar cita", bookCouple: "Reservar para dos", next: "Siguiente", back: "Atrás", chooseCountry: "Elige un país", chooseCity: "Elige una ciudad", chooseSalon: "Elige un salón", login: "Iniciar sesión", loading: "Cargando…", services: "Servicios", team: "Equipo", reviews: "Opiniones", soon: "Próximamente" },
+    common: { book: "Reservar cita", bookCouple: "Reservar para dos", next: "Siguiente", back: "Atrás", chooseCountry: "Elige un país", chooseCity: "Elige una ciudad", chooseSalon: "Elige un salón", login: "Iniciar sesión", loading: "Cargando…", services: "Servicios", team: "Equipo", reviews: "Opiniones", soon: "Próximamente", language: "Idioma", pageNotFound: "Página no encontrada." },
     tabs: { salon: "Salón", book: "Reservar", visits: "Visitas", rewards: "Bonos", profile: "Perfil" },
     welcome: { title: "Bienvenido a BookSero", subtitle: "Reserva citas en tu lugar favorito — rápido y sin llamadas.", start: "Empezar" },
     salon: { selfcare: "Cuídate", subtitle: "Huecos libres esta semana" },
@@ -76,7 +76,7 @@ const resources = {
     landing: { placeholder: "UUID del salón o slug del perfil", mlNotSupported: "El número ML aún no es compatible — usa la dirección del perfil (slug) o el UUID del salón.", notFound: "Salón no encontrado.", title: "Encuentra tu salón", scanHint: "Lo más fácil: escanea el código QR de tu salón.", qr: "Escanear código QR", qrSoon: "Escáner QR — próximamente.", or: "o", codeLabel: "Escribe la dirección del perfil (slug) o el código", privacyNote: "No navegas entre otros negocios — vas directo a tu salón." },
   }},
   fr: { translation: {
-    common: { book: "Prendre rendez-vous", bookCouple: "Réserver pour deux", next: "Suivant", back: "Retour", chooseCountry: "Choisissez un pays", chooseCity: "Choisissez une ville", chooseSalon: "Choisissez un salon", login: "Se connecter", loading: "Chargement…", services: "Prestations", team: "Équipe", reviews: "Avis", soon: "Bientôt disponible" },
+    common: { book: "Prendre rendez-vous", bookCouple: "Réserver pour deux", next: "Suivant", back: "Retour", chooseCountry: "Choisissez un pays", chooseCity: "Choisissez une ville", chooseSalon: "Choisissez un salon", login: "Se connecter", loading: "Chargement…", services: "Prestations", team: "Équipe", reviews: "Avis", soon: "Bientôt disponible", language: "Langue", pageNotFound: "Page introuvable." },
     tabs: { salon: "Salon", book: "Réserver", visits: "Visites", rewards: "Bonus", profile: "Profil" },
     welcome: { title: "Bienvenue sur BookSero", subtitle: "Réservez dans votre lieu préféré — rapidement et sans appeler.", start: "Commencer" },
     salon: { selfcare: "Prenez soin de vous", subtitle: "Des créneaux libres cette semaine" },
@@ -84,7 +84,7 @@ const resources = {
     landing: { placeholder: "UUID du salon ou slug de la vitrine", mlNotSupported: "Le numéro ML n'est pas encore pris en charge — utilisez l'adresse de la vitrine (slug) ou l'UUID du salon.", notFound: "Salon introuvable.", title: "Trouvez votre salon", scanHint: "Le plus simple : scannez le QR code reçu dans votre salon.", qr: "Scanner le QR code", qrSoon: "Scanner QR — bientôt disponible.", or: "ou", codeLabel: "Saisissez l'adresse de la vitrine (slug) ou le code", privacyNote: "Vous ne parcourez pas d'autres établissements — vous arrivez directement dans votre salon." },
   }},
   it: { translation: {
-    common: { book: "Prenota un appuntamento", bookCouple: "Prenota per due", next: "Avanti", back: "Indietro", chooseCountry: "Scegli un paese", chooseCity: "Scegli una città", chooseSalon: "Scegli un salone", login: "Accedi", loading: "Caricamento…", services: "Servizi", team: "Team", reviews: "Recensioni", soon: "In arrivo" },
+    common: { book: "Prenota un appuntamento", bookCouple: "Prenota per due", next: "Avanti", back: "Indietro", chooseCountry: "Scegli un paese", chooseCity: "Scegli una città", chooseSalon: "Scegli un salone", login: "Accedi", loading: "Caricamento…", services: "Servizi", team: "Team", reviews: "Recensioni", soon: "In arrivo", language: "Lingua", pageNotFound: "Pagina non trovata." },
     tabs: { salon: "Salone", book: "Prenota", visits: "Visite", rewards: "Bonus", profile: "Profilo" },
     welcome: { title: "Benvenuto su BookSero", subtitle: "Prenota nel tuo posto preferito — veloce e senza chiamate.", start: "Inizia" },
     salon: { selfcare: "Prenditi cura di te", subtitle: "Orari liberi questa settimana" },
@@ -92,7 +92,7 @@ const resources = {
     landing: { placeholder: "UUID del salone o slug della vetrina", mlNotSupported: "Il numero ML non è ancora supportato — usa l'indirizzo della vetrina (slug) o l'UUID del salone.", notFound: "Salone non trovato.", title: "Trova il tuo salone", scanHint: "Il modo più semplice: scansiona il codice QR del tuo salone.", qr: "Scansiona il codice QR", qrSoon: "Scanner QR — in arrivo.", or: "oppure", codeLabel: "Inserisci l'indirizzo della vetrina (slug) o il codice", privacyNote: "Non sfogli altre attività — vai dritto al tuo salone." },
   }},
   hr: { translation: {
-    common: { book: "Rezerviraj termin", bookCouple: "Rezerviraj za dvoje", next: "Dalje", back: "Natrag", chooseCountry: "Odaberi državu", chooseCity: "Odaberi grad", chooseSalon: "Odaberi salon", login: "Prijava", loading: "Učitavanje…", services: "Usluge", team: "Tim", reviews: "Recenzije", soon: "Uskoro" },
+    common: { book: "Rezerviraj termin", bookCouple: "Rezerviraj za dvoje", next: "Dalje", back: "Natrag", chooseCountry: "Odaberi državu", chooseCity: "Odaberi grad", chooseSalon: "Odaberi salon", login: "Prijava", loading: "Učitavanje…", services: "Usluge", team: "Tim", reviews: "Recenzije", soon: "Uskoro", language: "Jezik", pageNotFound: "Stranica nije pronađena." },
     tabs: { salon: "Salon", book: "Rezerviraj", visits: "Posjete", rewards: "Bonusi", profile: "Profil" },
     welcome: { title: "Dobrodošli u BookSero", subtitle: "Rezervirajte termine na omiljenom mjestu — brzo i bez poziva.", start: "Započni" },
     salon: { selfcare: "Pobrini se za sebe", subtitle: "Slobodni termini već ovaj tjedan" },
@@ -100,7 +100,7 @@ const resources = {
     landing: { placeholder: "UUID salona ili slug vizitke", mlNotSupported: "Broj ML još nije podržan — upotrijebi adresu vizitke (slug) ili UUID salona.", notFound: "Salon nije pronađen.", title: "Pronađi svoj salon", scanHint: "Najjednostavnije — skeniraj QR kod iz svog salona.", qr: "Skeniraj QR kod", qrSoon: "QR skener — uskoro.", or: "ili", codeLabel: "Upiši adresu vizitke (slug) ili kod", privacyNote: "Ne pregledavaš druge tvrtke — ideš izravno u svoj salon." },
   }},
   el: { translation: {
-    common: { book: "Κλείσε ραντεβού", bookCouple: "Κράτηση για δύο", next: "Επόμενο", back: "Πίσω", chooseCountry: "Επίλεξε χώρα", chooseCity: "Επίλεξε πόλη", chooseSalon: "Επίλεξε σαλόνι", login: "Σύνδεση", loading: "Φόρτωση…", services: "Υπηρεσίες", team: "Ομάδα", reviews: "Κριτικές", soon: "Έρχεται σύντομα" },
+    common: { book: "Κλείσε ραντεβού", bookCouple: "Κράτηση για δύο", next: "Επόμενο", back: "Πίσω", chooseCountry: "Επίλεξε χώρα", chooseCity: "Επίλεξε πόλη", chooseSalon: "Επίλεξε σαλόνι", login: "Σύνδεση", loading: "Φόρτωση…", services: "Υπηρεσίες", team: "Ομάδα", reviews: "Κριτικές", soon: "Έρχεται σύντομα", language: "Γλώσσα", pageNotFound: "Η σελίδα δεν βρέθηκε." },
     tabs: { salon: "Σαλόνι", book: "Κράτηση", visits: "Επισκέψεις", rewards: "Μπόνους", profile: "Προφίλ" },
     welcome: { title: "Καλώς ήρθες στο BookSero", subtitle: "Κλείσε ραντεβού στο αγαπημένο σου μέρος — γρήγορα και χωρίς τηλέφωνο.", start: "Ξεκίνα" },
     salon: { selfcare: "Φρόντισε τον εαυτό σου", subtitle: "Ελεύθερες ώρες αυτή την εβδομάδα" },
@@ -108,7 +108,7 @@ const resources = {
     landing: { placeholder: "UUID σαλονιού ή slug προφίλ", mlNotSupported: "Ο αριθμός ML δεν υποστηρίζεται ακόμη — χρησιμοποίησε τη διεύθυνση προφίλ (slug) ή το UUID του σαλονιού.", notFound: "Το σαλόνι δεν βρέθηκε.", title: "Βρες το σαλόνι σου", scanHint: "Το πιο απλό — σκάναρε τον κωδικό QR από το σαλόνι σου.", qr: "Σάρωση κωδικού QR", qrSoon: "Σαρωτής QR — έρχεται σύντομα.", or: "ή", codeLabel: "Γράψε τη διεύθυνση προφίλ (slug) ή τον κωδικό", privacyNote: "Δεν βλέπεις άλλες επιχειρήσεις — πας κατευθείαν στο σαλόνι σου." },
   }},
   tr: { translation: {
-    common: { book: "Randevu al", bookCouple: "İki kişilik randevu", next: "İleri", back: "Geri", chooseCountry: "Ülke seç", chooseCity: "Şehir seç", chooseSalon: "Salon seç", login: "Giriş yap", loading: "Yükleniyor…", services: "Hizmetler", team: "Ekip", reviews: "Yorumlar", soon: "Çok yakında" },
+    common: { book: "Randevu al", bookCouple: "İki kişilik randevu", next: "İleri", back: "Geri", chooseCountry: "Ülke seç", chooseCity: "Şehir seç", chooseSalon: "Salon seç", login: "Giriş yap", loading: "Yükleniyor…", services: "Hizmetler", team: "Ekip", reviews: "Yorumlar", soon: "Çok yakında", language: "Dil", pageNotFound: "Sayfa bulunamadı." },
     tabs: { salon: "Salon", book: "Randevu", visits: "Ziyaretler", rewards: "Bonuslar", profile: "Profil" },
     welcome: { title: "BookSero'ya hoş geldin", subtitle: "Favori mekanında randevu al — hızlı ve telefonsuz.", start: "Başla" },
     salon: { selfcare: "Kendine iyi bak", subtitle: "Bu hafta boş saatler var" },
@@ -116,7 +116,7 @@ const resources = {
     landing: { placeholder: "Salon UUID veya profil slug", mlNotSupported: "ML numarası henüz desteklenmiyor — profil adresini (slug) veya salon UUID'sini kullan.", notFound: "Salon bulunamadı.", title: "Salonunu bul", scanHint: "En kolayı — salonundan aldığın QR kodu tarat.", qr: "QR kodu tarat", qrSoon: "QR tarayıcı — çok yakında.", or: "veya", codeLabel: "Profil adresini (slug) veya kodu gir", privacyNote: "Burada başka işletmelere bakmazsın — doğrudan kendi salonuna gidersin." },
   }},
   bg: { translation: {
-    common: { book: "Запази час", bookCouple: "Резервация за двама", next: "Напред", back: "Назад", chooseCountry: "Избери държава", chooseCity: "Избери град", chooseSalon: "Избери салон", login: "Вход", loading: "Зареждане…", services: "Услуги", team: "Екип", reviews: "Отзиви", soon: "Очаквайте скоро" },
+    common: { book: "Запази час", bookCouple: "Резервация за двама", next: "Напред", back: "Назад", chooseCountry: "Избери държава", chooseCity: "Избери град", chooseSalon: "Избери салон", login: "Вход", loading: "Зареждане…", services: "Услуги", team: "Екип", reviews: "Отзиви", soon: "Очаквайте скоро", language: "Език", pageNotFound: "Страницата не е намерена." },
     tabs: { salon: "Салон", book: "Резервирай", visits: "Посещения", rewards: "Бонуси", profile: "Профил" },
     welcome: { title: "Добре дошли в BookSero", subtitle: "Запазвай часове в любимото си място — бързо и без обаждания.", start: "Започни" },
     salon: { selfcare: "Погрижи се за себе си", subtitle: "Свободни часове още тази седмица" },
@@ -124,7 +124,7 @@ const resources = {
     landing: { placeholder: "UUID на салона или slug на визитката", mlNotSupported: "Номерът ML още не се поддържа — използвай адреса на визитката (slug) или UUID на салона.", notFound: "Салонът не е намерен.", title: "Намери своя салон", scanHint: "Най-лесно — сканирай QR кода от твоя салон.", qr: "Сканирай QR код", qrSoon: "QR скенер — очаквайте скоро.", or: "или", codeLabel: "Въведи адреса на визитката (slug) или код", privacyNote: "Не разглеждаш други фирми — отиваш направо в своя салон." },
   }},
   fi: { translation: {
-    common: { book: "Varaa aika", bookCouple: "Varaa kahdelle", next: "Seuraava", back: "Takaisin", chooseCountry: "Valitse maa", chooseCity: "Valitse kaupunki", chooseSalon: "Valitse salonki", login: "Kirjaudu", loading: "Ladataan…", services: "Palvelut", team: "Tiimi", reviews: "Arvostelut", soon: "Tulossa pian" },
+    common: { book: "Varaa aika", bookCouple: "Varaa kahdelle", next: "Seuraava", back: "Takaisin", chooseCountry: "Valitse maa", chooseCity: "Valitse kaupunki", chooseSalon: "Valitse salonki", login: "Kirjaudu", loading: "Ladataan…", services: "Palvelut", team: "Tiimi", reviews: "Arvostelut", soon: "Tulossa pian", language: "Kieli", pageNotFound: "Sivua ei löytynyt." },
     tabs: { salon: "Salonki", book: "Varaa", visits: "Käynnit", rewards: "Bonukset", profile: "Profiili" },
     welcome: { title: "Tervetuloa BookSeroon", subtitle: "Varaa aikoja suosikkipaikassasi — nopeasti ja ilman puheluita.", start: "Aloita" },
     salon: { selfcare: "Pidä huolta itsestäsi", subtitle: "Vapaita aikoja jo tällä viikolla" },
@@ -132,7 +132,7 @@ const resources = {
     landing: { placeholder: "Salongin UUID tai profiilin slug", mlNotSupported: "ML-numeroa ei vielä tueta — käytä profiilin osoitetta (slug) tai salongin UUID:tä.", notFound: "Salonkia ei löytynyt.", title: "Löydä salonkisi", scanHint: "Helpointa — skannaa salongistasi saamasi QR-koodi.", qr: "Skannaa QR-koodi", qrSoon: "QR-skanneri — tulossa pian.", or: "tai", codeLabel: "Syötä profiilin osoite (slug) tai koodi", privacyNote: "Et selaa muita yrityksiä — pääset suoraan omaan salonkiisi." },
   }},
   no: { translation: {
-    common: { book: "Bestill time", bookCouple: "Bestill for to", next: "Neste", back: "Tilbake", chooseCountry: "Velg land", chooseCity: "Velg by", chooseSalon: "Velg salong", login: "Logg inn", loading: "Laster…", services: "Tjenester", team: "Team", reviews: "Anmeldelser", soon: "Kommer snart" },
+    common: { book: "Bestill time", bookCouple: "Bestill for to", next: "Neste", back: "Tilbake", chooseCountry: "Velg land", chooseCity: "Velg by", chooseSalon: "Velg salong", login: "Logg inn", loading: "Laster…", services: "Tjenester", team: "Team", reviews: "Anmeldelser", soon: "Kommer snart", language: "Språk", pageNotFound: "Fant ikke siden." },
     tabs: { salon: "Salong", book: "Bestill", visits: "Besøk", rewards: "Bonuser", profile: "Profil" },
     welcome: { title: "Velkommen til BookSero", subtitle: "Bestill timer på ditt favorittsted — raskt og uten å ringe.", start: "Kom i gang" },
     salon: { selfcare: "Ta vare på deg selv", subtitle: "Ledige timer denne uken" },
@@ -140,7 +140,7 @@ const resources = {
     landing: { placeholder: "Salong-UUID eller profil-slug", mlNotSupported: "ML-nummeret støttes ikke ennå — bruk profiladressen (slug) eller salongens UUID.", notFound: "Fant ikke salongen.", title: "Finn salongen din", scanHint: "Enklest — skann QR-koden du fikk i salongen din.", qr: "Skann QR-kode", qrSoon: "QR-skanner — kommer snart.", or: "eller", codeLabel: "Skriv inn profiladressen (slug) eller koden", privacyNote: "Du blar ikke i andre bedrifter — du går rett til din egen salong." },
   }},
   uk: { translation: {
-    common: { book: "Записатися", bookCouple: "Бронювання для двох", next: "Далі", back: "Назад", chooseCountry: "Виберіть країну", chooseCity: "Виберіть місто", chooseSalon: "Виберіть салон", login: "Увійти", loading: "Завантаження…", services: "Послуги", team: "Команда", reviews: "Відгуки", soon: "Скоро" },
+    common: { book: "Записатися", bookCouple: "Бронювання для двох", next: "Далі", back: "Назад", chooseCountry: "Виберіть країну", chooseCity: "Виберіть місто", chooseSalon: "Виберіть салон", login: "Увійти", loading: "Завантаження…", services: "Послуги", team: "Команда", reviews: "Відгуки", soon: "Скоро", language: "Мова", pageNotFound: "Сторінку не знайдено." },
     tabs: { salon: "Салон", book: "Бронювати", visits: "Візити", rewards: "Бонуси", profile: "Профіль" },
     welcome: { title: "Ласкаво просимо до BookSero", subtitle: "Бронюйте візити в улюбленому місці — швидко та без дзвінків.", start: "Почати" },
     salon: { selfcare: "Подбай про себе", subtitle: "Вільні години вже цього тижня" },

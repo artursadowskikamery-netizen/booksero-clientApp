@@ -63,7 +63,7 @@ export default function Landing() {
           value={(i18n.language || "pl").slice(0, 2)}
           onChange={(e) => i18n.changeLanguage(e.target.value)}
           className="ml-auto rounded-lg border border-line bg-surface-2 px-2.5 py-1.5 text-xs text-ink"
-          aria-label="Język"
+          aria-label={t("common.language")}
         >
           {SUPPORTED_LANGS.map((l) => (
             <option key={l} value={l}>{LANG_LABELS[l]}</option>

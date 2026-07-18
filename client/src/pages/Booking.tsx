@@ -74,7 +74,9 @@ export default function Booking() {
           <div className="font-bold text-lg">{result.message}</div>
           <div className="text-sm text-muted">{result.service} · {result.staffName}</div>
           <div className="text-sm">
-            {format(new Date(result.startAt), "d MMM, HH:mm")} · {t("booking.code")}{" "}
+            {new Intl.DateTimeFormat(i18n.language, {
+              day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+            }).format(new Date(result.startAt))} · {t("booking.code")}{" "}
             <span className="font-mono font-bold">{result.bookingCode}</span>
           </div>
           {result.prepaymentRequired && (
