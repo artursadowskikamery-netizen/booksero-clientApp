@@ -2,10 +2,10 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./lib/i18n";
 import "./index.css";
-import { applyBranding, loadBranding } from "./lib/branding";
+import { applySalonTheme, loadTheme } from "./lib/themes";
 
-// Przywróć szatę tenanta (motyw + akcent) zapisaną z poprzedniej wizyty.
-applyBranding(loadBranding());
+// Przywróć motyw salonu (szablon wizytówki) zapisany z poprzedniej wizyty.
+applySalonTheme(loadTheme());
 
 createRoot(document.getElementById("root")!).render(<App />);
 

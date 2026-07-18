@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { Camera, Users, Bell, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
+import { applySalonTheme, saveTheme } from "../lib/themes";
 import BottomNav from "../components/BottomNav";
 
 // Ekran główny salonu w stylu prototypu: appbar (logo+nazwa+dzwonek), galeria
@@ -19,6 +20,15 @@ export default function SalonHome() {
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
   const servicesQ = useQuery({ queryKey: ["services", salonId], queryFn: () => api.services(salonId), enabled: !!salonId });
   const teamQ = useQuery({ queryKey: ["team", salonId], queryFn: () => api.team(salonId), enabled: !!salonId });
+
+  // Motyw apki = szablon wizytówki salonu (profile.theme) — te same palety.
+  const themeId = salonQ.data?.profile?.theme ?? null;
+  useEffect(() => {
+    if (salonQ.data) {
+      applySalonTheme(themeId);
+      saveTheme(themeId);
+    }
+  }, [salonQ.data, themeId]);
 
   if (salonQ.isLoading) return <div className="p-6 text-muted">{t("common.loading")}</div>;
   if (salonQ.isError)

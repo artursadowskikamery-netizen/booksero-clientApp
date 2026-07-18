@@ -8,15 +8,7 @@ export interface Tenant {
   id: string;
   name: string;
   logo?: string | null;
-  // Branding apki per tenant (SPEC-branding-tenanta): motyw + kolor akcentu.
-  // Opcjonalne — brak = domyślna szata BookSero (ciemna, #0071e3).
-  branding?: TenantBranding | null;
   countries: TenantCountry[];
-}
-
-export interface TenantBranding {
-  theme?: "light" | "dark" | null;
-  accentColor?: string | null; // #RRGGBB
 }
 export interface TenantCountry {
   country: string; // ISO 3166-1 alpha-2

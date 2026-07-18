@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
-import { applyBranding, saveBranding } from "../lib/branding";
 
 // Wejście tenanta: kraj → miasto → salon → (kalendarz). Poziomy z jedną opcją
 // są zwijane automatycznie. Wymaga endpointu /api/public/tenant/:tenantId (§8.1).
@@ -24,15 +23,6 @@ export default function TenantSelect() {
   });
 
   const tenant = tQ.data;
-
-  // Szata tenanta (motyw + akcent) — nakładana od razu i zapamiętywana.
-  useEffect(() => {
-    if (tenant) {
-      applyBranding(tenant.branding);
-      saveBranding(tenant.branding);
-    }
-  }, [tenant]);
-
   const countries = tenant?.countries ?? [];
   const activeCountry = country ?? (countries.length === 1 ? countries[0].country : null);
   const countryObj = countries.find((c) => c.country === activeCountry) ?? null;
