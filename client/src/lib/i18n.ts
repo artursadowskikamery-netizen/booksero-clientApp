@@ -2,17 +2,18 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-// 15 języków obsługiwanych dziś przez Booksero (BEZ 'nl' — patrz ARCHITEKTURA §7,
-// docs/TLUMACZENIA-BRIEF.md). Kolejność = priorytet wyświetlania w przełączniku.
+// 16 języków obsługiwanych przez Booksero (nl dodany dla Belgii/Flandrii —
+// Zakres A). Kolejność = priorytet wyświetlania w przełączniku.
 export const SUPPORTED_LANGS = [
-  "pl", "en", "de", "cs", "sv", "es", "fr", "it", "hr", "el", "tr", "bg", "fi", "no", "uk",
+  "pl", "en", "de", "nl", "cs", "sv", "es", "fr", "it", "hr", "el", "tr", "bg", "fi", "no", "uk",
 ] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
 
 export const LANG_LABELS: Record<Lang, string> = {
-  pl: "Polski", en: "English", de: "Deutsch", cs: "Čeština", sv: "Svenska",
-  es: "Español", fr: "Français", it: "Italiano", hr: "Hrvatski", el: "Ελληνικά",
-  tr: "Türkçe", bg: "Български", fi: "Suomi", no: "Norsk", uk: "Українська",
+  pl: "Polski", en: "English", de: "Deutsch", nl: "Nederlands", cs: "Čeština",
+  sv: "Svenska", es: "Español", fr: "Français", it: "Italiano", hr: "Hrvatski",
+  el: "Ελληνικά", tr: "Türkçe", bg: "Български", fi: "Suomi", no: "Norsk",
+  uk: "Українська",
 };
 
 // Etykiety UI aplikacji (Zakres B). Struktura kluczy = źródło prawdy dla tłumaczy.
@@ -41,6 +42,14 @@ const resources = {
     salon: { selfcare: "Tu dir etwas Gutes", subtitle: "Freie Termine diese Woche" },
     booking: { done: "Fertig!", backToSalon: "Zurück zum Salon", prepaymentNote: "Anzahlung von {{amount}} {{currency}} erforderlich — der Zahlungslink kommt separat.", stepService: "Leistung", stepStaff: "Fachkraft", stepTime: "Termin", stepDetails: "Daten", specialist1: "Fachkraft — Person 1", specialist2: "Fachkraft — Person 2", anyStaff: "Beliebig verfügbar", chooseDay: "Tag wählen", freeHours: "Freie Zeiten", chooseDayFirst: "Wähle oben einen Tag.", noSlots: "Keine freien Termine an diesem Tag.", name: "Vor- und Nachname", name2: "Vor- und Nachname — Person 2", phone: "Telefon", email: "E-Mail", price: "Preis", perPerson: "/ Pers.", confirm: "Buchung bestätigen", code: "Code", forHowMany: "Für wie viele Personen", onePerson: "1 Person", coupleShort: "Paar · 2 Personen" },
     landing: { placeholder: "Salon-UUID oder Profil-Slug", mlNotSupported: "Die ML-Nummer wird noch nicht unterstützt — nutze die Profiladresse (Slug) oder die Salon-UUID.", notFound: "Salon nicht gefunden.", title: "Finde deinen Salon", scanHint: "Am einfachsten: Scanne den QR-Code aus deinem Salon.", qr: "QR-Code scannen", qrSoon: "QR-Scanner — bald verfügbar.", or: "oder", codeLabel: "Profiladresse (Slug) oder Code eingeben", privacyNote: "Du stöberst hier nicht in anderen Firmen — du landest direkt in deinem Salon." },
+  }},
+  nl: { translation: {
+    common: { book: "Afspraak boeken", bookCouple: "Boek voor twee", next: "Volgende", back: "Terug", chooseCountry: "Kies een land", chooseCity: "Kies een stad", chooseSalon: "Kies een salon", login: "Inloggen", loading: "Laden…", services: "Diensten", team: "Team", reviews: "Beoordelingen", soon: "Binnenkort beschikbaar" },
+    tabs: { salon: "Salon", book: "Boeken", visits: "Afspraken", rewards: "Bonussen", profile: "Profiel" },
+    welcome: { title: "Welkom bij BookSero", subtitle: "Boek afspraken op je favoriete plek — snel en zonder te bellen.", start: "Aan de slag" },
+    salon: { selfcare: "Zorg goed voor jezelf", subtitle: "Vrije plekken deze week" },
+    booking: { done: "Klaar!", backToSalon: "Terug naar de salon", prepaymentNote: "Aanbetaling van {{amount}} {{currency}} vereist — de betaallink volgt apart.", stepService: "Dienst", stepStaff: "Specialist", stepTime: "Datum", stepDetails: "Gegevens", specialist1: "Specialist — persoon 1", specialist2: "Specialist — persoon 2", anyStaff: "Wie er beschikbaar is", chooseDay: "Kies een dag", freeHours: "Beschikbare tijden", chooseDayFirst: "Kies hierboven een dag.", noSlots: "Geen vrije tijden op die dag.", name: "Voor- en achternaam", name2: "Voor- en achternaam — persoon 2", phone: "Telefoon", email: "E-mail", price: "Prijs", perPerson: "/ pers.", confirm: "Boeking bevestigen", code: "code", forHowMany: "Voor hoeveel personen", onePerson: "1 persoon", coupleShort: "Duo · 2 personen" },
+    landing: { placeholder: "Salon-UUID of profiel-slug", mlNotSupported: "Het ML-nummer wordt nog niet ondersteund — gebruik het profieladres (slug) of de salon-UUID.", notFound: "Salon niet gevonden.", title: "Vind je salon", scanHint: "Het makkelijkst — scan de QR-code die je in je salon hebt gekregen.", qr: "QR-code scannen", qrSoon: "QR-scanner — binnenkort beschikbaar.", or: "of", codeLabel: "Voer het profieladres (slug) of de code in", privacyNote: "Je bladert hier niet door andere bedrijven — je gaat rechtstreeks naar je eigen salon." },
   }},
   cs: { translation: {
     common: { book: "Rezervovat termín", bookCouple: "Rezervovat pro dva", next: "Dále", back: "Zpět", chooseCountry: "Vyberte zemi", chooseCity: "Vyberte město", chooseSalon: "Vyberte salon", login: "Přihlásit se", loading: "Načítání…", services: "Služby", team: "Tým", reviews: "Recenze", soon: "Již brzy" },
