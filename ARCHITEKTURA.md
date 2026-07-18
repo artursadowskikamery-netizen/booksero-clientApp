@@ -122,14 +122,29 @@ nieusuniętych** salonów. Dziś **nie istnieje** (publiczny dostęp jest tylko 
 Uwaga: nie używać `getSalonsByTenant` wprost (zwraca usunięte/nieaktywne i pola
 wewnętrzne) — filtrować i rzutować na pola publiczne.
 
-### 8.2 Logowanie konsumenta + self-service (duży, krytyczny dla retencji)
-**Booksero NIE ma logowania klienta.** SMS-2FA i Google to logowanie **personelu**.
-Klient widzi dziś tylko **pojedynczą wizytę po tokenie** z linku. **„Moje wizyty"
-(pełna historia) i „Lojalność" nie mają publicznego API** — dane są wyłącznie pod
-`/api/salon/*` z JWT pracownika.
-➡️ Warstwa zaangażowania (serce „promocji wśród klientów") wymaga zbudowania w Booksero:
-**(a) logowania klienta (kod SMS)** i **(b) endpointów self-service** (moje wizyty,
-moja lojalność, moje vouchery). To większa zależność, niż zakładaliśmy.
+### 8.2 Logowanie konsumenta + self-service (do zbudowania — model POTWIERDZONY)
+Booksero nie ma dziś logowania klienta ani endpointów self-service (SMS-2FA/Google
+to logowanie **personelu**; klient widzi tylko pojedynczą wizytę po tokenie z linku).
+
+**Model docelowy (decyzja właściciela):**
+- Klient musi **istnieć w Booksero** (założony/zaimportowany przez tenanta) — **brak samorejestracji**.
+- **Logowanie = numer telefonu (obowiązkowy) → kod SMS → dopięcie do istniejącego klienta.**
+  Dopasowanie w ramach **tenanta**; unifikacja osoby po **`globalClientId`** (gdy pusty —
+  łączenie rekordów tego numeru). Wzorzec sprawdzony w VIVI (SerwerSMS, `customerCodes`, `loginBlocklist`).
+- Klient **bez numeru telefonu nie zaloguje się** (numer = klucz tożsamości).
+- **Rezerwacja pozostaje anonimowa** (publiczne API) — logowanie tylko do self-service.
+
+Do zbudowania w Booksero: **(a) logowanie klienta (telefon→SMS)** + **(b) endpointy
+self-service** (moje wizyty — agregat po tenancie; moje saldo/punkty; moje vouchery).
+Silnik lojalności już istnieje — patrz §8.2a. (auth.ts:45-61)
+
+### 8.2a Lojalność jest natywnie W RAMACH TENANTA (potwierdzone)
+`loyalty_programs.crossSalonPoints` = **domyślnie `true`** („wspólne saldo punktów we
+wszystkich salonach tenanta, po globalnym kliencie"). Programy, nagrody i transakcje
+kluczowane po **`tenantId`** (nie salonie); bonusy (dołączenie, polecenie, urodziny,
+imieniny, opinia) w konfiguracji programu. ➡️ „Punkty wspólne, zbierane w dowolnym
+salonie na rzecz tenanta" to **domyślne zachowanie Booksero** — nie budujemy nowej
+architektury lojalności, tylko odczyt dla klienta. (schema.ts:2011-2036, 2063-2077)
 
 ### 8.3 Taksonomia typu biznesu + geo (dla przyszłego marketplace)
 Brak pola branży (barber/fryzjer) na tenancie i salonie; `service_categories` to
@@ -161,19 +176,28 @@ trwałe sesje.
 | Faza | Zakres | Zależność | Nakład |
 |---|---|---|---|
 | **0. Fundament** | Klient HTTP nad API; konfiguracja tenanta; endpoint `/api/public/tenant/:tenantId` (§8.1) | mały dodatek w Booksero | niski |
-| **1. Rezerwacja** | Powłoka, wybór tenanta/kraju/miasta/salonu, kreator (usługa→specjalista→termin→potwierdzenie→przedpłata) | **działa na istniejącym API** | średni |
-| **2. Zaangażowanie** | Moje wizyty, lojalność, push per klient | **wymaga §8.2 (logowanie + self-service konsumenta) w Booksero** | wysoki (backend + apka) |
+| **1. Rezerwacja** | Powłoka, wybór tenanta/kraju/miasta/salonu, kreator (usługa→specjalista→termin→potwierdzenie→przedpłata), **w tym rezerwacja dla PARY** (§8.4) | **działa na istniejącym API** | średni |
+| **2. Zaangażowanie** | Moje wizyty (agregat po tenancie), lojalność (saldo tenanta), push per klient | **wymaga §8.2 (logowanie + odczyt self-service); silnik lojalności §8.2a już istnieje** | średni |
 | **3. Skala** | Panel konfiguracji tenanta, TWA, domeny/subdomeny | — | średni–wysoki |
 
-Kluczowa korekta względem v1: **Faza 2 (retencja) jest zablokowana przez brak
-backendu konsumenta w Booksero** — to trzeba zbudować, zanim „lojalność/moje wizyty"
-zadziałają w apce.
+Korekta względem v1: **Faza 2 jest lżejsza, niż sądziliśmy** — silnik lojalności
+(wspólne saldo tenanta) jest natywny (§8.2a); do zbudowania zostaje tylko logowanie
+klienta i endpointy odczytu (§8.2).
+
+### 8.4 Rezerwacja dla pary — natywnie wspierana (potwierdzone)
+API Booksero obsługuje rezerwację **dwóch osób jednocześnie**: `availability` przyjmuje
+`serviceId2`/`staffId2` i sprawdza wspólny pokój; `POST appointments` przyjmuje
+`partySize=2`, `serviceId2`, `staffId2`, `secondClientName`, a serwer dobiera dwóch
+różnych wolnych pracowników i wspólny pokój (409 `RESOURCE_BUSY`, gdy brak). ➡️ Kreator
+w apce **musi mieć opcję „Zarezerwuj dla pary"** — bez zmian w backendzie. (routes.ts:4950-5014, 5100-5197)
 
 ---
 
 ## 12. Decyzje otwarte
 
-1. **Kolor akcentu w dark mode** — trzymamy `#0071e3` czy jaśniejszy `#0A84FF` dla kontrastu?
-2. **Logowanie konsumenta** — SMS-kod (spójne z Booksero) jako metoda? Zakres self-service (tylko wizyty, czy też lojalność od razu?).
+1. ✅ **Logowanie konsumenta — ROZSTRZYGNIĘTE (§8.2):** telefon obowiązkowy → kod SMS →
+   dopięcie do istniejącego klienta tenanta; dedup po `globalClientId`; lojalność wspólna
+   w ramach tenanta (natywnie, §8.2a).
+2. **Kolor akcentu w dark mode** — trzymamy `#0071e3` czy jaśniejszy `#0A84FF` dla kontrastu?
 3. **Belgia/`nl`** — kierować flamandzkich tenantów na `fr/de/en`, czy dołożyć niderlandzki do Booksero?
-4. **Kolejność** — czy budujemy Fazę 1 (rezerwacja, gotowe API) niezależnie, a §8.2 równolegle?
+4. **Kolejność** — budujemy Fazę 1 (rezerwacja, gotowe API) niezależnie, a §8.2 równolegle?
