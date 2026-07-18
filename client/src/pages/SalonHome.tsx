@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRoute } from "wouter";
+import { useRoute, useLocation } from "wouter";
 import { Camera, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
@@ -9,6 +9,7 @@ import { api } from "../lib/api";
 export default function SalonHome() {
   const [, params] = useRoute("/salon/:salonId");
   const salonId = params?.salonId ?? "";
+  const [, navigate] = useLocation();
   const { t } = useTranslation();
 
   const salonQ = useQuery({
@@ -66,10 +67,16 @@ export default function SalonHome() {
 
       <div className="mt-2">
         <div className="font-semibold">{t("welcome.title", { defaultValue: "Zadbaj o siebie" })}</div>
-        <button className="w-full rounded-xl bg-brand text-brand-contrast font-bold py-3.5 mt-2">
+        <button
+          onClick={() => navigate(`/salon/${salonId}/book`)}
+          className="w-full rounded-xl bg-brand text-brand-contrast font-bold py-3.5 mt-2"
+        >
           {t("common.book")}
         </button>
-        <button className="w-full rounded-xl bg-surface-2 text-brand font-bold py-3 mt-2 ring-1 ring-inset ring-brand flex items-center justify-center gap-2">
+        <button
+          onClick={() => navigate(`/salon/${salonId}/book?couple=1`)}
+          className="w-full rounded-xl bg-surface-2 text-brand font-bold py-3 mt-2 ring-1 ring-inset ring-brand flex items-center justify-center gap-2"
+        >
           <Users size={16} /> {t("common.bookCouple")}
         </button>
       </div>

@@ -1,0 +1,21 @@
+modules = ["nodejs-20"]
+run = "npm run dev"
+hidden = [".config", ".git", "node_modules", "dist"]
+
+[nix]
+channel = "stable-24_05"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[env]
+PORT = "5000"
+
+[deployment]
+deploymentTarget = "autoscale"
+build = ["npm", "run", "build"]
+run = ["node", "./dist/index.cjs"]
+
+# Sekrety (NIE tutaj) — ustaw w Replit → Tools → Secrets:
+#   BOOKSERO_API_BASE = https://panel.booksero.com

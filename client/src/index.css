@@ -27,6 +27,12 @@
   --brand-contrast: #FFFFFF;
 }
 
+@layer components {
+  .btn-primary {
+    @apply w-full rounded-xl bg-brand text-brand-contrast font-bold py-3.5 transition disabled:opacity-40;
+  }
+}
+
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
 body {
