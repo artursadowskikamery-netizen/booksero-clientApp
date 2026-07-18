@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
+import { applyAccent } from "../lib/themes";
 
 // Wejście tenanta: kraj → miasto → salon → (kalendarz). Poziomy z jedną opcją
 // są zwijane automatycznie. Wymaga endpointu /api/public/tenant/:tenantId (§8.1).
@@ -21,6 +22,11 @@ export default function TenantSelect() {
     queryFn: () => api.tenant(tenantId),
     enabled: !!tenantId,
   });
+
+  // Ekran wyboru sieci/miasta — neutralny akcent (kolor salonu dopiero po wyborze).
+  useEffect(() => {
+    applyAccent(null);
+  }, []);
 
   const tenant = tQ.data;
   const countries = tenant?.countries ?? [];

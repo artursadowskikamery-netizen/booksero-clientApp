@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { QrCode, Search } from "lucide-react";
 import { api } from "../lib/api";
+import { applyAccent } from "../lib/themes";
 import { SUPPORTED_LANGS, LANG_LABELS } from "../lib/i18n";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -14,6 +15,12 @@ export default function Landing() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const { t, i18n } = useTranslation();
+
+  // Ekran startowy = neutralna powłoka BookSero — zawsze domyślny niebieski
+  // (kolor salonu wraca dopiero na ekranach salonu).
+  useEffect(() => {
+    applyAccent(null);
+  }, []);
 
   async function go() {
     const v = value.trim();
