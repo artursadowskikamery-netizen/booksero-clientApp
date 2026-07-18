@@ -1,13 +1,42 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
+import { api } from "../lib/api";
 
-// Faza 1 · szkielet — deweloperskie wejście po salonId.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Faza 1 · szkielet — deweloperskie wejście po UUID salonu lub slugu wizytówki.
 // Docelowo: zimny start (link/QR/kod/nazwa tenanta) → kraj → miasto → salon.
 export default function Landing() {
   const [, navigate] = useLocation();
-  const [salonId, setSalonId] = useState("");
+  const [value, setValue] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
   const { t } = useTranslation();
+
+  async function go() {
+    const v = value.trim();
+    if (!v) return;
+    setErr("");
+    if (/^ML\d+$/i.test(v)) {
+      setErr("Numer ML nie jest jeszcze obsługiwany — użyj adresu wizytówki (slug) lub UUID salonu.");
+      return;
+    }
+    if (UUID_RE.test(v)) {
+      navigate(`/salon/${v}`);
+      return;
+    }
+    // Traktuj jako slug wizytówki → rozwiąż na UUID.
+    setBusy(true);
+    try {
+      const { salonId } = await api.resolveSlug(v.toLowerCase());
+      navigate(`/salon/${salonId}`);
+    } catch (e) {
+      setErr((e as Error).message || "Nie znaleziono salonu.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <div className="min-h-full flex flex-col items-center justify-center gap-4 p-6 text-center">
@@ -17,22 +46,26 @@ export default function Landing() {
       <p className="text-muted text-sm max-w-xs">{t("welcome.subtitle")}</p>
 
       <input
-        value={salonId}
-        onChange={(e) => setSalonId(e.target.value.trim())}
-        placeholder="salonId (UUID)"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && go()}
+        placeholder="UUID salonu lub slug wizytówki"
         className="w-full max-w-xs rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand"
-        aria-label="salonId"
+        aria-label="UUID lub slug"
       />
       <button
-        onClick={() => salonId && navigate(`/salon/${salonId}`)}
-        disabled={!salonId}
+        onClick={go}
+        disabled={!value.trim() || busy}
         className="w-full max-w-xs rounded-xl bg-brand text-brand-contrast font-bold py-3 disabled:opacity-40"
       >
-        {t("welcome.start")}
+        {busy ? t("common.loading") : t("welcome.start")}
       </button>
 
+      {err && <p className="text-xs text-red-600 max-w-xs">{err}</p>}
+
       <p className="text-[11px] text-muted max-w-xs">
-        Faza 1 · szkielet — wejście deweloperskie. Docelowo link/QR/kod lub wyszukiwarka nazwy tenanta.
+        Faza 1 · wejście deweloperskie. Slug znajdziesz w adresie wizytówki salonu
+        (…/s/<b>slug</b>). Docelowo: link/QR/kod lub wyszukiwarka tenanta.
       </p>
     </div>
   );

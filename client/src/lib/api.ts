@@ -37,6 +37,8 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
 
 // Klient BFF: wołamy nasz serwer (/api/*), on proxuje do publicznego API Booksero.
 export const api = {
+  resolveSlug: (slug: string) =>
+    req<{ salonId: string }>(`/api/resolve/${encodeURIComponent(slug)}`),
   tenant: (tenantId: string) =>
     req<Tenant>(`/api/tenant/${encodeURIComponent(tenantId)}`),
   salon: (salonId: string) =>

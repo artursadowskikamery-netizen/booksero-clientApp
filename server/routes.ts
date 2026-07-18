@@ -9,6 +9,10 @@ const relay = (res: Response, r: { status: number; data: unknown }) => res.statu
 export function registerRoutes(app: Express) {
   app.get("/api/health", (_req, res) => res.json({ ok: true, service: "booksero-clientapp" }));
 
+  // Slug wizytówki → { salonId }. (Numer ML nie ma dziś publicznego rozwiązania.)
+  app.get("/api/resolve/:slug", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/s/${enc(req.params.slug)}`, loc(req))));
+
   // Tenant: marka + hierarchia kraj→miasto→salon.
   // ZALEŻNOŚĆ: /api/public/tenant/:id trzeba dodać w Booksero (ARCHITEKTURA §8.1).
   app.get("/api/tenant/:tenantId", async (req, res) => {
