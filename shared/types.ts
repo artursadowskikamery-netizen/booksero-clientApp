@@ -140,6 +140,9 @@ export interface ClientAppointment {
   salonId: string;
   salonName: string;
   cancellationToken?: string | null; // tylko przyszłe booked/confirmed
+  // Czy zalogowany klient może odwołać tę wizytę (SPEC-rezerwacja-zalogowanego §4)
+  // — działa też dla wizyt założonych w panelu (bez tokenu anulowania).
+  canCancel?: boolean;
 }
 
 // POST appointments → 201

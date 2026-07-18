@@ -40,11 +40,17 @@ export function bookseroGet(path: string, locale?: string, extraHeaders?: Record
   return bookseroFetch(path, { method: "GET" }, locale, extraHeaders);
 }
 
-export function bookseroPost(path: string, body: unknown, locale?: string) {
+export function bookseroPost(
+  path: string,
+  body: unknown,
+  locale?: string,
+  extraHeaders?: Record<string, string>,
+) {
   return bookseroFetch(
     path,
     { method: "POST", body: JSON.stringify(body), headers: { "Content-Type": "application/json" } },
     locale,
+    extraHeaders,
   );
 }
 

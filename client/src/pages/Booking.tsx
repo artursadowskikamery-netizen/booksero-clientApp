@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRoute, useSearch, useLocation } from "wouter";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { addDays, format } from "date-fns";
 import { ChevronLeft, Users, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -50,13 +50,18 @@ export default function Booking() {
     enabled: !!salonId && !!serviceId && !!staffId && !!date && step === "time",
   });
 
+  const qc = useQueryClient();
   const bookM = useMutation({
     mutationFn: () =>
       api.book(salonId, {
         serviceId, staffId, date, time, clientName, clientPhone, clientEmail,
         ...(couple ? { partySize: 2, serviceId2: serviceId, staffId2, secondClientName } : {}),
       }),
-    onSuccess: setResult,
+    onSuccess: (r) => {
+      setResult(r);
+      // Nowa wizyta ma się od razu pojawić na liście "Wizyty".
+      qc.invalidateQueries({ queryKey: ["clientAppointments"] });
+    },
   });
 
   const salon = salonQ.data;

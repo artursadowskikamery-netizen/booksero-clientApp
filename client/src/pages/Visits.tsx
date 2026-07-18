@@ -36,12 +36,16 @@ export default function Visits() {
     }
   }, [q.error, salonId, navigate]);
 
+  // Preferujemy odwołanie po id (działa też dla wizyt z panelu); token
+  // anulowania zostaje jako ścieżka zapasowa dla starszego backendu.
   const cancelM = useMutation({
-    mutationFn: (token: string) => api.cancelVisit(token),
+    mutationFn: (a: ClientAppointment) =>
+      a.canCancel ? api.cancelMyVisit(a.id) : api.cancelVisit(a.cancellationToken!),
     onSuccess: () => {
       setInfo(t("visits.cancelled"));
       qc.invalidateQueries({ queryKey: ["clientAppointments"] });
     },
+    onError: (e) => setInfo((e as Error).message),
   });
 
   const fmt = (iso: string) =>
@@ -86,10 +90,10 @@ export default function Visits() {
               <div className="text-sm text-muted flex items-center gap-1.5 mt-0.5">
                 <MapPin size={13} /> {a.salonName} · {a.staffName}
               </div>
-              {a.cancellationToken && (
+              {(a.canCancel || a.cancellationToken) && (
                 <button
                   onClick={() => {
-                    if (window.confirm(t("visits.cancelConfirm"))) cancelM.mutate(a.cancellationToken!);
+                    if (window.confirm(t("visits.cancelConfirm"))) cancelM.mutate(a);
                   }}
                   disabled={cancelM.isPending}
                   className="mt-3 rounded-lg bg-surface-2 text-ink-2 text-sm font-semibold px-4 py-2 disabled:opacity-50"

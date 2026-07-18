@@ -98,4 +98,10 @@ export const api = {
       method: "POST",
       body: JSON.stringify({}),
     }),
+  // Odwołanie własnej wizyty po id (zalogowany klient) — także wizyt z panelu.
+  cancelMyVisit: (appointmentId: string) =>
+    req<{ success?: boolean; message?: string }>(
+      `/api/client/appointments/${encodeURIComponent(appointmentId)}/cancel`,
+      { method: "POST", body: JSON.stringify({}) },
+    ),
 };

@@ -47,12 +47,14 @@ export function registerRoutes(app: Express) {
     relay(res, await bookseroGet(`/api/public/book/${s(req)}/availability?${q}`, loc(req)));
   });
 
-  app.post("/api/salon/:salonId/appointments", async (req, res) =>
-    relay(res, await bookseroPost(`/api/public/book/${s(req)}/appointments`, req.body, loc(req))));
-
   // ── Logowanie klienta (SMS) + self-service — przekazujemy Authorization ──
   const auth = (req: Request) =>
     req.headers.authorization ? { Authorization: String(req.headers.authorization) } : undefined;
+
+  // Rezerwacja: z tokenem klienta backend podpina wizytę pod jego konto
+  // (SPEC-rezerwacja-zalogowanego §2); bez tokenu działa jak dotychczas.
+  app.post("/api/salon/:salonId/appointments", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/book/${s(req)}/appointments`, req.body, loc(req), auth(req))));
 
   app.post("/api/client-auth/request-code", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client-auth/request-code`, req.body, loc(req))));
@@ -71,4 +73,13 @@ export function registerRoutes(app: Express) {
   // Odwołanie wizyty istniejącym publicznym tokenem anulowania.
   app.post("/api/visit/:token/cancel", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/cancel/${enc(req.params.token)}`, req.body ?? {}, loc(req))));
+
+  // Odwołanie WŁASNEJ wizyty zalogowanego klienta (SPEC-rezerwacja-zalogowanego §3).
+  app.post("/api/client/appointments/:id/cancel", async (req, res) =>
+    relay(res, await bookseroPost(
+      `/api/public/client/appointments/${enc(String(req.params.id))}/cancel`,
+      req.body ?? {},
+      loc(req),
+      auth(req),
+    )));
 }
