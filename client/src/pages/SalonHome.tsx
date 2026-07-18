@@ -66,7 +66,7 @@ export default function SalonHome() {
       )}
 
       <div className="mt-2">
-        <div className="font-semibold">{t("welcome.title", { defaultValue: "Zadbaj o siebie" })}</div>
+        <div className="font-semibold">{t("salon.selfcare")}</div>
         <button
           onClick={() => navigate(`/salon/${salonId}/book`)}
           className="w-full rounded-xl bg-brand text-brand-contrast font-bold py-3.5 mt-2"
