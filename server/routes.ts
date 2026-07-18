@@ -49,4 +49,22 @@ export function registerRoutes(app: Express) {
 
   app.post("/api/salon/:salonId/appointments", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/book/${s(req)}/appointments`, req.body, loc(req))));
+
+  // ── Logowanie klienta (SMS) + self-service — przekazujemy Authorization ──
+  const auth = (req: Request) =>
+    req.headers.authorization ? { Authorization: String(req.headers.authorization) } : undefined;
+
+  app.post("/api/client-auth/request-code", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client-auth/request-code`, req.body, loc(req))));
+
+  app.post("/api/client-auth/verify", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client-auth/verify`, req.body, loc(req))));
+
+  app.get("/api/client/me", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/client/me`, loc(req), auth(req))));
+
+  app.get("/api/client/appointments", async (req, res) => {
+    const q = new URLSearchParams(req.query as Record<string, string>).toString();
+    relay(res, await bookseroGet(`/api/public/client/appointments?${q}`, loc(req), auth(req)));
+  });
 }

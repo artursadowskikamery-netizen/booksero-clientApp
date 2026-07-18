@@ -13,12 +13,14 @@ async function bookseroFetch(
   path: string,
   init: RequestInit,
   locale?: string,
+  extraHeaders?: Record<string, string>,
 ): Promise<UpstreamResult> {
   const res = await fetch(`${BASE}${path}`, {
     ...init,
     headers: {
       Accept: "application/json",
       ...(locale ? { "X-Locale": locale } : {}),
+      ...(extraHeaders || {}),
       ...(init.headers || {}),
     },
   });
@@ -34,8 +36,8 @@ async function bookseroFetch(
   return { status: res.status, ok: res.ok, data };
 }
 
-export function bookseroGet(path: string, locale?: string) {
-  return bookseroFetch(path, { method: "GET" }, locale);
+export function bookseroGet(path: string, locale?: string, extraHeaders?: Record<string, string>) {
+  return bookseroFetch(path, { method: "GET" }, locale, extraHeaders);
 }
 
 export function bookseroPost(path: string, body: unknown, locale?: string) {

@@ -1,7 +1,8 @@
 import i18n from "./i18n";
+import { getToken } from "./auth";
 import type {
   Tenant, SalonPublic, Category, Service, StaffMember, TeamMember, Review, Slot,
-  BookingRequest, BookingResult,
+  BookingRequest, BookingResult, ClientMe, ClientAppointment,
 } from "@shared/types";
 
 export class ApiError extends Error {
@@ -17,6 +18,7 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
     headers: {
       Accept: "application/json",
       "X-Locale": (i18n.language || "pl").slice(0, 2),
+      ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
       ...(init?.body ? { "Content-Type": "application/json" } : {}),
       ...(init?.headers || {}),
     },
@@ -69,4 +71,19 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+
+  // ── Logowanie klienta (SMS) + self-service — SPEC-logowanie-klienta ──
+  requestLoginCode: (tenantId: string, phone: string) =>
+    req<{ ok: boolean }>(`/api/client-auth/request-code`, {
+      method: "POST",
+      body: JSON.stringify({ tenantId, phone }),
+    }),
+  verifyLoginCode: (tenantId: string, phone: string, code: string) =>
+    req<{ token: string; client: { name: string; phone: string } }>(`/api/client-auth/verify`, {
+      method: "POST",
+      body: JSON.stringify({ tenantId, phone, code }),
+    }),
+  clientMe: () => req<ClientMe>(`/api/client/me`),
+  clientAppointments: (scope: "upcoming" | "past" | "all" = "all") =>
+    req<ClientAppointment[]>(`/api/client/appointments?scope=${scope}`),
 };

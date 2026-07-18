@@ -37,6 +37,9 @@ export interface SalonPublic {
     openingHours?: unknown;
     logo?: string | null;
     currency: string; // waluta salonu (ceny usług ją dziedziczą)
+    // Tenant salonu — potrzebny do logowania klienta w kontekście sieci
+    // (SPEC-logowanie-klienta; pojawi się po wdrożeniu w Booksero).
+    tenantId?: string | null;
   };
   profile: {
     description?: string | null;
@@ -116,6 +119,27 @@ export interface BookingRequest {
   serviceId2?: string;
   staffId2?: string;
   secondClientName?: string;
+}
+
+// ── Logowanie klienta + self-service (SPEC-logowanie-klienta) ──
+export interface ClientMe {
+  name: string;
+  phone: string;
+  tenantId: string;
+  salons: { id: string; name: string }[];
+}
+
+export interface ClientAppointment {
+  id: string;
+  bookingCode: string;
+  startAt: string; // ISO
+  endAt: string; // ISO
+  status: string;
+  serviceName: string;
+  staffName: string;
+  salonId: string;
+  salonName: string;
+  cancellationToken?: string | null; // tylko przyszłe booked/confirmed
 }
 
 // POST appointments → 201

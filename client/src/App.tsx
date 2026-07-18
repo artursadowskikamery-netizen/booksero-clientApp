@@ -7,6 +7,8 @@ import TenantSelect from "./pages/TenantSelect";
 import SalonHome from "./pages/SalonHome";
 import Booking from "./pages/Booking";
 import Soon from "./pages/Soon";
+import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
         <Route path="/t/:tenantId" component={TenantSelect} />
         <Route path="/salon/:salonId/book" component={Booking} />
         <Route path="/salon/:salonId/soon" component={Soon} />
+        <Route path="/salon/:salonId/login" component={Login} />
+        <Route path="/salon/:salonId/profile" component={Profile} />
         <Route path="/salon/:salonId" component={SalonHome} />
         <Route component={NotFound} />
       </Switch>

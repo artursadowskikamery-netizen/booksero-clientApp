@@ -13,7 +13,7 @@ export default function BottomNav({ salonId, active }: { salonId: string; active
     { key: "book", icon: CalendarPlus, label: t("tabs.book"), to: `/salon/${salonId}/book` },
     { key: "visits", icon: Clock, label: t("tabs.visits"), to: `/salon/${salonId}/soon` },
     { key: "rewards", icon: Star, label: t("tabs.rewards"), to: `/salon/${salonId}/soon` },
-    { key: "profile", icon: User, label: t("tabs.profile"), to: `/salon/${salonId}/soon` },
+    { key: "profile", icon: User, label: t("tabs.profile"), to: `/salon/${salonId}/profile` },
   ];
   return (
     <nav className="fixed bottom-0 inset-x-0 z-20">
