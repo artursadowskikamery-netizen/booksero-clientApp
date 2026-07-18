@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { applyAccent, saveAccent } from "../lib/themes";
 import { isLoggedInFor } from "../lib/auth";
+import { saveLastSalon } from "../lib/lastSalon";
 import BottomNav from "../components/BottomNav";
 
 // Ekran główny salonu w stylu prototypu: appbar (logo+nazwa+dzwonek), galeria
@@ -28,8 +29,9 @@ export default function SalonHome() {
     if (salonQ.data) {
       applyAccent(accent);
       saveAccent(accent);
+      saveLastSalon(salonId);
     }
-  }, [salonQ.data, accent]);
+  }, [salonQ.data, accent, salonId]);
 
   // Salon tylko dla zalogowanych: bez sesji SMS w tej sieci → ekran logowania.
   const tenantId = salonQ.data?.salon.tenantId ?? null;

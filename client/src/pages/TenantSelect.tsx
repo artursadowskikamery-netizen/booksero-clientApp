@@ -5,6 +5,8 @@ import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { applyAccent } from "../lib/themes";
+import { loadLastSalon } from "../lib/lastSalon";
+import BottomNav from "../components/BottomNav";
 
 // Wejście tenanta: kraj → miasto → salon → (kalendarz). Poziomy z jedną opcją
 // są zwijane automatycznie. Wymaga endpointu /api/public/tenant/:tenantId (§8.1).
@@ -62,8 +64,12 @@ export default function TenantSelect() {
     else setCountry(null);
   };
 
+  // Dolne menu także na wyborze salonu — zakładki działają w kontekście
+  // ostatnio otwartego salonu.
+  const lastSalon = loadLastSalon();
+
   return (
-    <div className="max-w-md mx-auto p-4">
+    <div className="max-w-md mx-auto p-4 pb-24">
       <header className="flex items-center gap-3 py-2">
         {showBack && (
           <button onClick={goBack} className="w-9 h-9 rounded-xl border border-line grid place-items-center text-ink-2" aria-label={t("common.back")}>
@@ -124,6 +130,8 @@ export default function TenantSelect() {
           </div>
         </>
       )}
+
+      {lastSalon && <BottomNav salonId={lastSalon} active="salon" />}
     </div>
   );
 }
