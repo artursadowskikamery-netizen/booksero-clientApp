@@ -43,9 +43,11 @@ export default function Rewards() {
   const lifetime = d?.lifetime ?? 0;
   const tiers = d?.tiers ?? [];
   const curTier = [...tiers].filter((x) => x.minPoints <= lifetime).sort((a, b) => b.minPoints - a.minPoints)[0] ?? null;
+  // Postęp też przed pierwszym poziomem (baza = 0, gdy brak bieżącego tieru).
   const next = d?.nextTier ?? null;
-  const pct = next && curTier
-    ? Math.min(100, Math.round(((lifetime - curTier.minPoints) / Math.max(next.minPoints - curTier.minPoints, 1)) * 100))
+  const base = curTier?.minPoints ?? 0;
+  const pct = next
+    ? Math.min(100, Math.round(((lifetime - base) / Math.max(next.minPoints - base, 1)) * 100))
     : null;
 
   const claimIdFor = (rewardName: string) =>
@@ -139,28 +141,29 @@ export default function Rewards() {
                   const claimId = pending ? claimIdFor(r.name) : null;
                   return (
                     <div key={r.id} className="py-3">
-                      <div className="flex items-center gap-3">
+                      {/* Nazwa w pełnej szerokości (zawija się) — przycisk pod spodem */}
+                      <div className="flex items-start gap-3">
                         <span className="w-10 h-10 rounded-xl bg-surface-2 text-brand grid place-items-center shrink-0">
                           <Gift size={17} />
                         </span>
                         <span className="flex-1 min-w-0">
-                          <span className="block font-medium text-sm truncate">{r.name}</span>
-                          <span className="block text-xs text-muted">
+                          <span className="block font-medium text-sm">{r.name}</span>
+                          <span className="block text-xs text-muted mt-0.5">
                             {r.pointsCost} {t("loyalty.pointsShort")}
                           </span>
                         </span>
-                        {!pending && (
-                          <button
-                            onClick={() => claimM.mutate(r.id)}
-                            disabled={!r.canAfford || claimM.isPending}
-                            className="rounded-lg bg-brand text-brand-contrast text-xs font-bold px-3 py-2 disabled:opacity-40"
-                          >
-                            {t("loyalty.claim")}
-                          </button>
-                        )}
                       </div>
+                      {!pending && (
+                        <button
+                          onClick={() => claimM.mutate(r.id)}
+                          disabled={!r.canAfford || claimM.isPending}
+                          className="mt-2 ml-[52px] rounded-lg bg-brand text-brand-contrast text-xs font-bold px-3 py-1.5 disabled:opacity-40"
+                        >
+                          {t("loyalty.claim")}
+                        </button>
+                      )}
                       {pending && (
-                        <div className="flex items-center gap-2 mt-2 ml-[52px]">
+                        <div className="flex items-center gap-3 mt-2 ml-[52px]">
                           <span className="text-xs text-brand font-semibold">{t("loyalty.claimPending")}</span>
                           {claimId && (
                             <button
