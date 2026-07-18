@@ -45,6 +45,9 @@ export interface SalonPublic {
     mapUrl?: string | null;
     socialLinks?: unknown;
     theme?: string | null;
+    // Kolor akcentu aplikacji BookSero (SPEC-akcent-aplikacji) — nazwa z palety
+    // lub #RRGGBB. Brak = domyślny niebieski.
+    appAccent?: string | null;
   } | null;
   settings: BookingSettings;
 }

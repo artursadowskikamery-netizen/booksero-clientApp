@@ -4,7 +4,7 @@ import { useRoute, useLocation } from "wouter";
 import { Camera, Users, Bell, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
-import { applySalonTheme, saveTheme } from "../lib/themes";
+import { applyAccent, saveAccent } from "../lib/themes";
 import BottomNav from "../components/BottomNav";
 
 // Ekran główny salonu w stylu prototypu: appbar (logo+nazwa+dzwonek), galeria
@@ -21,14 +21,14 @@ export default function SalonHome() {
   const servicesQ = useQuery({ queryKey: ["services", salonId], queryFn: () => api.services(salonId), enabled: !!salonId });
   const teamQ = useQuery({ queryKey: ["team", salonId], queryFn: () => api.team(salonId), enabled: !!salonId });
 
-  // Motyw apki = szablon wizytówki salonu (profile.theme) — te same palety.
-  const themeId = salonQ.data?.profile?.theme ?? null;
+  // Szata: zawsze ciemna; kolor akcentu (guziki) per salon z profilu Booksero.
+  const accent = salonQ.data?.profile?.appAccent ?? null;
   useEffect(() => {
     if (salonQ.data) {
-      applySalonTheme(themeId);
-      saveTheme(themeId);
+      applyAccent(accent);
+      saveAccent(accent);
     }
-  }, [salonQ.data, themeId]);
+  }, [salonQ.data, accent]);
 
   if (salonQ.isLoading) return <div className="p-6 text-muted">{t("common.loading")}</div>;
   if (salonQ.isError)

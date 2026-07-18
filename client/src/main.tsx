@@ -2,10 +2,10 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./lib/i18n";
 import "./index.css";
-import { applySalonTheme, loadTheme } from "./lib/themes";
+import { applyAccent, loadAccent } from "./lib/themes";
 
-// Przywróć motyw salonu (szablon wizytówki) zapisany z poprzedniej wizyty.
-applySalonTheme(loadTheme());
+// Zawsze ciemna szata + przywrócenie akcentu salonu z poprzedniej wizyty.
+applyAccent(loadAccent());
 
 createRoot(document.getElementById("root")!).render(<App />);
 

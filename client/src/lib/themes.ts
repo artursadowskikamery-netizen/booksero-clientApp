@@ -1,95 +1,60 @@
-// Motywy aplikacji = SZABLONY WIZYTÓWKI Booksero (identyczne palety,
-// źródło: booksero client/src/lib/wizytowka-templates.ts). Salon wybiera
-// szablon w panelu (Profil → „Szablon wizytówki"), publiczne API zwraca go
-// w profile.theme — apka maluje się tak samo jak wizytówka. Zero backendu.
+// Szata aplikacji: ZAWSZE ciemna BookSero + kolor AKCENTU per salon
+// (decyzja właściciela). Akcent pochodzi z pola profilu salonu w Booksero
+// (SPEC-akcent-aplikacji: profile.appAccent, wybór z gotowej palety w panelu).
+// Brak pola = domyślny niebieski #0A84FF (wariant dark #0071e3).
 
-export interface AppTheme {
-  dark: boolean;
-  vars: Record<string, string>;
-}
+const KEY = "booksero_accent";
+const HEX_RE = /^#[0-9a-f]{6}$/i;
 
-const t = (dark: boolean, vars: Record<string, string>): AppTheme => ({ dark, vars });
-
-export const APP_THEMES: Record<string, AppTheme> = {
-  classic: t(false, {
-    "--bg": "#ffffff", "--surface": "#ffffff", "--surface-2": "#f1f5f9",
-    "--ink": "#0f172a", "--ink-2": "#475569", "--muted": "#64748b", "--line": "#e2e8f0",
-    "--brand": "#2563eb", "--brand-contrast": "#ffffff",
-  }),
-  minimal: t(false, {
-    "--bg": "#ffffff", "--surface": "#ffffff", "--surface-2": "#f7f7f7",
-    "--ink": "#171717", "--ink-2": "#4a4a4a", "--muted": "#737373", "--line": "#e5e5e5",
-    "--brand": "#171717", "--brand-contrast": "#ffffff",
-  }),
-  vivid: t(false, {
-    "--bg": "#ffffff", "--surface": "#ffffff", "--surface-2": "#f5f0ff",
-    "--ink": "#1e1b2e", "--ink-2": "#4c4570", "--muted": "#7a7397", "--line": "#e6e0f5",
-    "--brand": "#7c3aed", "--brand-contrast": "#ffffff",
-  }),
-  botanic: t(false, {
-    "--bg": "#f4f8f3", "--surface": "#ffffff", "--surface-2": "#e8f0e6",
-    "--ink": "#19301f", "--ink-2": "#3e5747", "--muted": "#6b7f70", "--line": "#d9e2d6",
-    "--brand": "#2f5d3a", "--brand-contrast": "#ffffff",
-  }),
-  blush: t(false, {
-    "--bg": "#fdf7f9", "--surface": "#ffffff", "--surface-2": "#f6e6eb",
-    "--ink": "#33141f", "--ink-2": "#6b3c4e", "--muted": "#97687a", "--line": "#ebd3da",
-    "--brand": "#c2306b", "--brand-contrast": "#ffffff",
-  }),
-  warm: t(false, {
-    "--bg": "#f9f3ea", "--surface": "#ffffff", "--surface-2": "#efe6d8",
-    "--ink": "#322218", "--ink-2": "#64503f", "--muted": "#8c7862", "--line": "#e0d4bf",
-    "--brand": "#8a5a33", "--brand-contrast": "#ffffff",
-  }),
-  ocean: t(false, {
-    "--bg": "#f3f8fb", "--surface": "#ffffff", "--surface-2": "#e3eef5",
-    "--ink": "#0f2a3a", "--ink-2": "#3c5a6e", "--muted": "#6d8494", "--line": "#cfe0eb",
-    "--brand": "#075985", "--brand-contrast": "#ffffff",
-  }),
-  noir: t(true, {
-    "--bg": "#121212", "--surface": "#1a1a1a", "--surface-2": "#212121",
-    "--ink": "#f2f2f2", "--ink-2": "#bdbdbd", "--muted": "#8c8c8c", "--line": "#2b2b2b",
-    "--brand": "#f5f5f5", "--brand-contrast": "#141414",
-  }),
-  gold: t(true, {
-    "--bg": "#0f0f0f", "--surface": "#191614", "--surface-2": "#242019",
-    "--ink": "#f1ede4", "--ink-2": "#c4bba9", "--muted": "#948d80", "--line": "#2e2921",
-    "--brand": "#c9a24b", "--brand-contrast": "#141414",
-  }),
-  editorial: t(false, {
-    "--bg": "#faf7f1", "--surface": "#faf7f1", "--surface-2": "#f0ebe0",
-    "--ink": "#232019", "--ink-2": "#57524a", "--muted": "#7e786c", "--line": "#d9d2c2",
-    "--brand": "#232019", "--brand-contrast": "#faf7f2",
-  }),
+// Gotowa paleta akcentów (te same wartości waliduje panel Booksero).
+export const ACCENT_PALETTE: Record<string, string> = {
+  blue: "#0A84FF", gold: "#C9A24B", rose: "#E0518D", violet: "#8B5CF6",
+  green: "#4C9A66", teal: "#2AA6A0", orange: "#E8853D", red: "#E05252",
+  sky: "#38A3DD", lime: "#9BBF3B", copper: "#C98A5B", silver: "#C7CCD1",
 };
 
-const KEY = "booksero_theme";
-const TOKEN_VARS = ["--bg", "--surface", "--surface-2", "--ink", "--ink-2", "--muted", "--line", "--brand", "--brand-contrast"];
-
-// Nakłada motyw salonu; brak/nieznany = domyślna szata BookSero (ciemna, #0071e3).
-export function applySalonTheme(id?: string | null) {
+export function applyAccent(accent?: string | null) {
   const root = document.documentElement;
-  TOKEN_VARS.forEach((v) => root.style.removeProperty(v));
-  const theme = id ? APP_THEMES[id] : undefined;
-  if (!theme) {
-    root.classList.add("dark");
-    return;
+  root.classList.add("dark"); // apka jest zawsze ciemna
+
+  const hex = normalizeAccent(accent);
+  if (hex) {
+    root.style.setProperty("--brand", hex);
+    root.style.setProperty("--brand-contrast", bestContrast(hex));
+  } else {
+    root.style.removeProperty("--brand");
+    root.style.removeProperty("--brand-contrast");
   }
-  root.classList.toggle("dark", theme.dark);
-  Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v));
 }
 
-export function saveTheme(id?: string | null) {
+// Przyjmuje nazwę z palety ("gold") albo hex "#RRGGBB".
+function normalizeAccent(a?: string | null): string | null {
+  if (!a) return null;
+  if (ACCENT_PALETTE[a]) return ACCENT_PALETTE[a];
+  return HEX_RE.test(a) ? a : null;
+}
+
+export function saveAccent(a?: string | null) {
   try {
-    if (id && APP_THEMES[id]) localStorage.setItem(KEY, id);
+    if (a) localStorage.setItem(KEY, a);
     else localStorage.removeItem(KEY);
   } catch { /* brak localStorage */ }
 }
 
-export function loadTheme(): string | null {
+export function loadAccent(): string | null {
   try {
     return localStorage.getItem(KEY);
   } catch {
     return null;
   }
+}
+
+// Czarny lub biały tekst guzika — zależnie od jasności akcentu
+// (złoty/srebrny → ciemny tekst; niebieski/zielony → biały).
+function bestContrast(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance > 160 ? "#111111" : "#FFFFFF";
 }
