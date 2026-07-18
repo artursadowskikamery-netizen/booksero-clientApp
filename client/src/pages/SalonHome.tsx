@@ -139,8 +139,9 @@ export default function SalonHome() {
       <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted mt-6 mb-1">
         {t("common.services")}
       </h2>
+      {/* Skrót cennika (5 pozycji) — pełna lista z wyszukiwarką w "Rezerwuj" */}
       <div className="divide-y divide-line">
-        {(servicesQ.data ?? []).map((svc) => (
+        {(servicesQ.data ?? []).slice(0, 5).map((svc) => (
           <button
             key={svc.id}
             onClick={() => navigate(`/salon/${salonId}/book`)}
@@ -159,6 +160,14 @@ export default function SalonHome() {
           </button>
         ))}
       </div>
+      {(servicesQ.data?.length ?? 0) > 5 && (
+        <button
+          onClick={() => navigate(`/salon/${salonId}/book`)}
+          className="w-full rounded-xl bg-surface text-brand font-bold py-3 mt-2 ring-1 ring-inset ring-line"
+        >
+          {t("salon.allServices", { count: servicesQ.data!.length })}
+        </button>
+      )}
 
       {/* Zespół */}
       {(teamQ.data?.length ?? 0) > 0 && (

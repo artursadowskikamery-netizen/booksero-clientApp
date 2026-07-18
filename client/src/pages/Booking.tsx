@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRoute, useSearch, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { addDays, format } from "date-fns";
-import { ChevronLeft, Users, Check } from "lucide-react";
+import { ChevronLeft, Users, Check, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { isLoggedIn, isLoggedInFor } from "../lib/auth";
@@ -22,6 +22,8 @@ export default function Booking() {
   const [couple, setCouple] = useState(new URLSearchParams(search).get("couple") === "1");
 
   const [step, setStep] = useState<Step>("service");
+  const [svcQuery, setSvcQuery] = useState("");
+  const [catId, setCatId] = useState("");
   const [serviceId, setServiceId] = useState("");
   const [staffId, setStaffId] = useState("");
   const [staffId2, setStaffId2] = useState(ANY);
@@ -35,6 +37,7 @@ export default function Booking() {
 
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
   const servicesQ = useQuery({ queryKey: ["services", salonId], queryFn: () => api.services(salonId), enabled: !!salonId });
+  const categoriesQ = useQuery({ queryKey: ["categories", salonId], queryFn: () => api.categories(salonId), enabled: !!salonId });
   const staffQ = useQuery({
     queryKey: ["staff", salonId, serviceId],
     queryFn: () => api.staff(salonId, serviceId),
@@ -86,6 +89,21 @@ export default function Booking() {
 
   const service = servicesQ.data?.find((s) => s.id === serviceId);
   const days = useMemo(() => Array.from({ length: DAYS_AHEAD }, (_, i) => addDays(new Date(), i)), []);
+
+  // Wyszukiwarka usług: bez rozróżniania wielkości liter i znaków diakrytycznych
+  // ("masaz" znajdzie "Masaż"). Do tego filtr po kategorii salonu.
+  const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ł/g, "l");
+  const categories = useMemo(
+    () => (categoriesQ.data ?? []).slice().sort((a, b) => a.sortOrder - b.sortOrder),
+    [categoriesQ.data],
+  );
+  const showCategories = categories.length >= 2 && (servicesQ.data ?? []).some((s) => s.categoryId);
+  const filteredServices = useMemo(() => {
+    const q = norm(svcQuery.trim());
+    return (servicesQ.data ?? []).filter(
+      (s) => (!catId || s.categoryId === catId) && (!q || norm(s.name).includes(q)),
+    );
+  }, [servicesQ.data, svcQuery, catId]);
 
   if (gated) return null;
 
@@ -141,8 +159,44 @@ export default function Booking() {
             {t("booking.coupleShort")}
           </button>
         </div>
+        {/* Wyszukiwarka usług — przy długim cenniku klient wpisuje kilka liter */}
+        <div className="relative mb-3">
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+          <input
+            value={svcQuery}
+            onChange={(e) => setSvcQuery(e.target.value)}
+            placeholder={t("booking.searchService")}
+            className="w-full rounded-xl border border-line bg-surface-2 pl-9 pr-4 py-2.5 text-sm text-ink outline-none focus:ring-2 focus:ring-brand"
+            aria-label={t("booking.searchService")}
+          />
+        </div>
+
+        {/* Kategorie usług (jeśli salon je ma) */}
+        {showCategories && (
+          <div className="flex gap-2 overflow-x-auto pb-1 mb-2 scrollbar-none">
+            <button
+              onClick={() => setCatId("")}
+              className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${!catId ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+            >
+              {t("booking.allCategories")}
+            </button>
+            {categories.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setCatId(catId === c.id ? "" : c.id)}
+                className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${catId === c.id ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+              >
+                {c.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {filteredServices.length === 0 && (servicesQ.data?.length ?? 0) > 0 && (
+          <div className="text-sm text-muted py-3">{t("booking.noServicesFound")}</div>
+        )}
         <div className="divide-y divide-line">
-          {(servicesQ.data ?? []).map((s) => (
+          {filteredServices.map((s) => (
             <button
               key={s.id}
               onClick={() => { setServiceId(s.id); setStaffId(""); setStep("staff"); }}
