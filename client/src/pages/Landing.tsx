@@ -23,6 +23,11 @@ export default function Landing() {
       setErr(t("landing.mlNotSupported"));
       return;
     }
+    if (v.toLowerCase().startsWith("t:")) {
+      // Wejście tenanta (dev): "t:<tenantId>" → wybór kraj → miasto → salon.
+      navigate(`/t/${v.slice(2)}`);
+      return;
+    }
     if (UUID_RE.test(v)) {
       navigate(`/salon/${v}`);
       return;
