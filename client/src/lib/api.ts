@@ -86,4 +86,9 @@ export const api = {
   clientMe: () => req<ClientMe>(`/api/client/me`),
   clientAppointments: (scope: "upcoming" | "past" | "all" = "all") =>
     req<ClientAppointment[]>(`/api/client/appointments?scope=${scope}`),
+  cancelVisit: (token: string) =>
+    req<{ success?: boolean; message?: string }>(`/api/visit/${encodeURIComponent(token)}/cancel`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
 };

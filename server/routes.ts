@@ -67,4 +67,8 @@ export function registerRoutes(app: Express) {
     const q = new URLSearchParams(req.query as Record<string, string>).toString();
     relay(res, await bookseroGet(`/api/public/client/appointments?${q}`, loc(req), auth(req)));
   });
+
+  // Odwołanie wizyty istniejącym publicznym tokenem anulowania.
+  app.post("/api/visit/:token/cancel", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/cancel/${enc(req.params.token)}`, req.body ?? {}, loc(req))));
 }

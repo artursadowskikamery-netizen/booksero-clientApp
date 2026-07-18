@@ -9,6 +9,7 @@ import Booking from "./pages/Booking";
 import Soon from "./pages/Soon";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import Visits from "./pages/Visits";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/salon/:salonId/soon" component={Soon} />
         <Route path="/salon/:salonId/login" component={Login} />
         <Route path="/salon/:salonId/profile" component={Profile} />
+        <Route path="/salon/:salonId/visits" component={Visits} />
         <Route path="/salon/:salonId" component={SalonHome} />
         <Route component={NotFound} />
       </Switch>
