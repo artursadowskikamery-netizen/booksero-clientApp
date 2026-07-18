@@ -6,6 +6,7 @@ import { ChevronLeft, Users, Check, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { isLoggedIn, isLoggedInFor } from "../lib/auth";
+import BottomNav from "../components/BottomNav";
 import type { BookingResult, StaffMember } from "@shared/types";
 
 type Step = "service" | "staff" | "time" | "details";
@@ -131,6 +132,7 @@ export default function Booking() {
             {t("booking.backToSalon")}
           </button>
         </div>
+        <BottomNav salonId={salonId} active="book" />
       </Shell>
     );
   }
@@ -171,45 +173,50 @@ export default function Booking() {
           />
         </div>
 
-        {/* Kategorie usług (jeśli salon je ma) */}
-        {showCategories && (
-          <div className="flex gap-2 overflow-x-auto pb-1 mb-2 scrollbar-none">
-            <button
-              onClick={() => setCatId("")}
-              className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${!catId ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
-            >
-              {t("booking.allCategories")}
-            </button>
-            {categories.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => setCatId(catId === c.id ? "" : c.id)}
-                className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${catId === c.id ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
-              >
-                {c.name}
-              </button>
-            ))}
-          </div>
-        )}
-
         {filteredServices.length === 0 && (servicesQ.data?.length ?? 0) > 0 && (
           <div className="text-sm text-muted py-3">{t("booking.noServicesFound")}</div>
         )}
-        <div className="divide-y divide-line">
-          {filteredServices.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => { setServiceId(s.id); setStaffId(""); setStep("staff"); }}
-              className={`w-full flex items-center text-left py-3 ${serviceId === s.id ? "text-brand" : ""}`}
-            >
-              <div className="flex-1">
-                <div className="font-medium text-sm">{s.name}</div>
-                <div className="text-xs text-muted">{s.durationMinutes} min</div>
-              </div>
-              <div className="font-bold text-sm text-brand whitespace-nowrap">{s.price} {currency}</div>
-            </button>
-          ))}
+        {/* Lista usług w przewijanym oknie — długi cennik nie rozciąga strony */}
+        <div className="max-h-[48vh] overflow-y-auto rounded-xl border border-line bg-surface px-3">
+          <div className="divide-y divide-line">
+            {filteredServices.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => { setServiceId(s.id); setStaffId(""); setStep("staff"); }}
+                className={`w-full flex items-center text-left py-3 ${serviceId === s.id ? "text-brand" : ""}`}
+              >
+                <div className="flex-1">
+                  <div className="font-medium text-sm">{s.name}</div>
+                  <div className="text-xs text-muted">{s.durationMinutes} min</div>
+                </div>
+                <div className="font-bold text-sm text-brand whitespace-nowrap">{s.price} {currency}</div>
+              </button>
+            ))}
+          </div>
         </div>
+
+        {/* Kategorie usług — pasek na dole, nad dolnym menu */}
+        {showCategories && (
+          <div className="fixed bottom-16 inset-x-0 z-10 bg-bg border-t border-line">
+            <div className="max-w-md mx-auto px-4 py-2.5 flex gap-2 overflow-x-auto scrollbar-none">
+              <button
+                onClick={() => setCatId("")}
+                className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${!catId ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+              >
+                {t("booking.allCategories")}
+              </button>
+              {categories.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => setCatId(catId === c.id ? "" : c.id)}
+                  className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${catId === c.id ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         </>
       )}
 
@@ -317,6 +324,8 @@ export default function Booking() {
           </Footer>
         </>
       )}
+
+      <BottomNav salonId={salonId} active="book" />
     </Shell>
   );
 }
@@ -326,8 +335,9 @@ function prevStep(s: Step): Step {
 }
 
 function Footer({ children }: { children: React.ReactNode }) {
+  // Nad dolnym menu (BottomNav ma h-16), nie zamiast niego.
   return (
-    <div className="fixed bottom-0 inset-x-0 z-20">
+    <div className="fixed bottom-16 inset-x-0 z-10">
       <div className="max-w-md mx-auto p-4 bg-bg border-t border-line">{children}</div>
     </div>
   );
@@ -336,7 +346,7 @@ function Footer({ children }: { children: React.ReactNode }) {
 function Shell({ title, onBack, children }: { title: string; onBack?: () => void; children: React.ReactNode }) {
   const { t } = useTranslation();
   return (
-    <div className="max-w-md mx-auto min-h-screen p-4 pb-28">
+    <div className="max-w-md mx-auto min-h-screen p-4 pb-44">
       <header className="flex items-center gap-2 py-2">
         {onBack && (
           <button onClick={onBack} className="w-9 h-9 rounded-xl border border-line grid place-items-center text-ink-2" aria-label={t("common.back")}>
