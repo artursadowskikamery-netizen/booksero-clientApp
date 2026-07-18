@@ -1,15 +1,24 @@
 import { useLocation } from "wouter";
-import { Home, CalendarPlus, Clock, Star, User } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Store, CalendarPlus, Clock, Star, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { api } from "../lib/api";
 
 type Tab = "salon" | "book" | "visits" | "rewards" | "profile";
 
-// Dolne menu jak w prototypie. Wizyty/Bonusy/Profil -> ekran "wkrótce" (Faza 2).
+// Dolne menu. "Salon" prowadzi do listy salonów sieci (wybór salonu tenanta);
+// prezentacja konkretnego salonu otwiera się po jego wybraniu.
 export default function BottomNav({ salonId, active }: { salonId: string; active?: Tab }) {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
-  const items: { key: Tab; icon: typeof Home; label: string; to: string }[] = [
-    { key: "salon", icon: Home, label: t("tabs.salon"), to: `/salon/${salonId}` },
+
+  // Tenant bieżącego salonu — zapytanie jest współdzielone (cache react-query)
+  // ze stronami, które i tak pobierają dane salonu.
+  const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
+  const tenantId = salonQ.data?.salon.tenantId ?? null;
+
+  const items: { key: Tab; icon: typeof Store; label: string; to: string }[] = [
+    { key: "salon", icon: Store, label: t("tabs.salon"), to: tenantId ? `/t/${tenantId}` : `/salon/${salonId}` },
     { key: "book", icon: CalendarPlus, label: t("tabs.book"), to: `/salon/${salonId}/book` },
     { key: "visits", icon: Clock, label: t("tabs.visits"), to: `/salon/${salonId}/visits` },
     { key: "rewards", icon: Star, label: t("tabs.rewards"), to: `/salon/${salonId}/soon` },
