@@ -73,15 +73,22 @@ export const api = {
     }),
 
   // ── Logowanie klienta (SMS) + self-service — SPEC-logowanie-klienta ──
-  requestLoginCode: (tenantId: string, phone: string) =>
+  // salonId: kontekst dla auto-rejestracji nowego numeru (SPEC-auto-rejestracja).
+  requestLoginCode: (tenantId: string, phone: string, salonId: string) =>
     req<{ ok: boolean }>(`/api/client-auth/request-code`, {
       method: "POST",
-      body: JSON.stringify({ tenantId, phone }),
+      body: JSON.stringify({ tenantId, phone, salonId }),
     }),
-  verifyLoginCode: (tenantId: string, phone: string, code: string) =>
+  verifyLoginCode: (
+    tenantId: string,
+    phone: string,
+    code: string,
+    salonId: string,
+    name?: { firstName: string; lastName?: string },
+  ) =>
     req<{ token: string; client: { name: string; phone: string } }>(`/api/client-auth/verify`, {
       method: "POST",
-      body: JSON.stringify({ tenantId, phone, code }),
+      body: JSON.stringify({ tenantId, phone, code, salonId, ...(name ?? {}) }),
     }),
   clientMe: () => req<ClientMe>(`/api/client/me`),
   clientAppointments: (scope: "upcoming" | "past" | "all" = "all") =>

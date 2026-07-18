@@ -5,6 +5,7 @@ import { Camera, Users, Bell, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { applyAccent, saveAccent } from "../lib/themes";
+import { isLoggedInFor } from "../lib/auth";
 import BottomNav from "../components/BottomNav";
 
 // Ekran główny salonu w stylu prototypu: appbar (logo+nazwa+dzwonek), galeria
@@ -30,6 +31,14 @@ export default function SalonHome() {
     }
   }, [salonQ.data, accent]);
 
+  // Salon tylko dla zalogowanych: bez sesji SMS w tej sieci → ekran logowania.
+  const tenantId = salonQ.data?.salon.tenantId ?? null;
+  const gated = !!salonQ.data && !!tenantId && !isLoggedInFor(tenantId);
+  useEffect(() => {
+    if (gated) navigate(`/salon/${salonId}/login`);
+  }, [gated, salonId, navigate]);
+
+  if (gated) return null;
   if (salonQ.isLoading) return <div className="p-6 text-muted">{t("common.loading")}</div>;
   if (salonQ.isError)
     return <div className="p-6 text-red-500 text-sm">{(salonQ.error as Error).message}</div>;

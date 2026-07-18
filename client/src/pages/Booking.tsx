@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRoute, useSearch, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { addDays, format } from "date-fns";
 import { ChevronLeft, Users, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
+import { isLoggedIn, isLoggedInFor } from "../lib/auth";
 import type { BookingResult, StaffMember } from "@shared/types";
 
 type Step = "service" | "staff" | "time" | "details";
@@ -61,8 +62,27 @@ export default function Booking() {
   const salon = salonQ.data;
   const currency = salon?.salon.currency ?? "";
   const settings = salon?.settings;
+
+  // Rezerwacja tylko dla zalogowanych (SPEC-auto-rejestracja).
+  const tenantId = salon?.salon.tenantId ?? null;
+  const gated = !!salon && !!tenantId && !isLoggedInFor(tenantId);
+  useEffect(() => {
+    if (gated) navigate(`/salon/${salonId}/login`);
+  }, [gated, salonId, navigate]);
+
+  // Zalogowany klient: imię i telefon wpisują się same (dane z konta).
+  const meQ = useQuery({ queryKey: ["me"], queryFn: () => api.clientMe(), enabled: isLoggedIn() });
+  useEffect(() => {
+    const me = meQ.data;
+    if (!me) return;
+    setName((v) => v || me.name);
+    setPhone((v) => v || me.phone);
+  }, [meQ.data]);
+
   const service = servicesQ.data?.find((s) => s.id === serviceId);
   const days = useMemo(() => Array.from({ length: DAYS_AHEAD }, (_, i) => addDays(new Date(), i)), []);
+
+  if (gated) return null;
 
   if (result) {
     return (

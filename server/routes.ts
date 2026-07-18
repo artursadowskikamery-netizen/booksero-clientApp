@@ -19,7 +19,7 @@ export function registerRoutes(app: Express) {
     relay(res, await bookseroGet(`/api/public/tenant/${enc(req.params.tenantId)}`, loc(req)));
   });
 
-  const s = (req: Request) => enc(req.params.salonId);
+  const s = (req: Request) => enc(String(req.params.salonId));
 
   app.get("/api/salon/:salonId", async (req, res) =>
     relay(res, await bookseroGet(`/api/public/book/${s(req)}`, loc(req))));

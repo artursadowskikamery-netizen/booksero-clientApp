@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { api } from "../lib/api";
-import { setToken } from "../lib/auth";
+import { api, ApiError } from "../lib/api";
+import { setToken, isLoggedInFor } from "../lib/auth";
 
 // Logowanie klienta: telefon → kod SMS → sesja (SPEC-logowanie-klienta).
-// Wymaga tenantId z danych salonu (pojawi się po wdrożeniu backendu w Booksero).
+// Nowy numer: po poprawnym kodzie backend prosi o imię (422) i tworzy konto
+// klienta w tym salonie (SPEC-auto-rejestracja).
 export default function Login() {
   const [, params] = useRoute("/salon/:salonId/login");
   const salonId = params?.salonId ?? "";
@@ -16,18 +17,25 @@ export default function Login() {
 
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
-  const [stage, setStage] = useState<"phone" | "code">("phone");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [stage, setStage] = useState<"phone" | "code" | "name">("phone");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
   const tenantId = salonQ.data?.salon.tenantId ?? null;
 
+  // Już zalogowany w tej sieci → od razu do salonu.
+  useEffect(() => {
+    if (salonQ.data && tenantId && isLoggedInFor(tenantId)) navigate(`/salon/${salonId}`);
+  }, [salonQ.data, tenantId, salonId, navigate]);
+
   async function sendCode() {
     if (!tenantId) return;
     setErr(""); setBusy(true);
     try {
-      await api.requestLoginCode(tenantId, phone.trim());
+      await api.requestLoginCode(tenantId, phone.trim(), salonId);
       setStage("code");
     } catch (e) {
       setErr((e as Error).message);
@@ -36,15 +44,23 @@ export default function Login() {
     }
   }
 
-  async function verify() {
+  async function verify(withName: boolean) {
     if (!tenantId) return;
     setErr(""); setBusy(true);
     try {
-      const { token } = await api.verifyLoginCode(tenantId, phone.trim(), code.trim());
-      setToken(token);
-      navigate(`/salon/${salonId}/profile`);
+      const { token } = await api.verifyLoginCode(
+        tenantId,
+        phone.trim(),
+        code.trim(),
+        salonId,
+        withName ? { firstName: firstName.trim(), lastName: lastName.trim() || undefined } : undefined,
+      );
+      setToken(token, tenantId);
+      navigate(`/salon/${salonId}`);
     } catch (e) {
-      setErr((e as Error).message);
+      // 422 = kod poprawny, ale numer jest nowy — potrzebne imię (auto-rejestracja).
+      if (e instanceof ApiError && e.status === 422) setStage("name");
+      else setErr((e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -54,13 +70,13 @@ export default function Login() {
     <div className="max-w-md mx-auto min-h-screen p-4 flex flex-col">
       <header className="flex items-center gap-2 py-2">
         <button
-          onClick={() => navigate(`/salon/${salonId}`)}
+          onClick={() => navigate("/")}
           className="w-9 h-9 rounded-xl border border-line grid place-items-center text-ink-2"
           aria-label={t("common.back")}
         >
           <ChevronLeft size={18} />
         </button>
-        <div className="font-bold">{t("auth.title")}</div>
+        <div className="font-bold">{salonQ.data?.salon.name ?? t("auth.title")}</div>
       </header>
 
       <div className="flex-1 flex flex-col justify-center pb-16">
@@ -77,7 +93,7 @@ export default function Login() {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="+48 601 234 567"
-          disabled={stage === "code"}
+          disabled={stage !== "phone"}
           className="w-full mt-1.5 mb-4 rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm font-mono outline-none focus:ring-2 focus:ring-brand disabled:opacity-60"
         />
 
@@ -98,11 +114,34 @@ export default function Login() {
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
               className="w-full mt-1.5 mb-4 rounded-xl border border-line bg-surface-2 px-4 py-3 text-xl font-mono tracking-[0.4em] text-center outline-none focus:ring-2 focus:ring-brand"
             />
-            <button className="btn-primary" disabled={code.length < 4 || busy} onClick={verify}>
+            <button className="btn-primary" disabled={code.length < 4 || busy} onClick={() => verify(false)}>
               {busy ? t("common.loading") : t("auth.verify")}
             </button>
             <button className="w-full text-sm text-brand font-semibold py-3" disabled={busy} onClick={sendCode}>
               {t("auth.resend")}
+            </button>
+          </>
+        )}
+
+        {stage === "name" && (
+          <>
+            <div className="rounded-xl bg-surface-2 p-3 text-sm text-ink-2 mb-4">{t("auth.newHere")}</div>
+            <label className="text-[11px] font-bold text-ink-2">{t("auth.firstName")}</label>
+            <input
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              autoComplete="given-name"
+              className="w-full mt-1.5 mb-3 rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand"
+            />
+            <label className="text-[11px] font-bold text-ink-2">{t("auth.lastName")}</label>
+            <input
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              autoComplete="family-name"
+              className="w-full mt-1.5 mb-4 rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand"
+            />
+            <button className="btn-primary" disabled={!firstName.trim() || busy} onClick={() => verify(true)}>
+              {busy ? t("common.loading") : t("auth.register")}
             </button>
           </>
         )}
