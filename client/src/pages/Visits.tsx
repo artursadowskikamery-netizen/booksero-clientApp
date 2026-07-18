@@ -17,6 +17,9 @@ export default function Visits() {
   const { t, i18n } = useTranslation();
   const qc = useQueryClient();
   const [info, setInfo] = useState("");
+  // Wizyta czekająca na potwierdzenie odwołania — własne okienko w stylu
+  // aplikacji zamiast systemowego window.confirm (pokazywało adres serwera).
+  const [confirmFor, setConfirmFor] = useState<ClientAppointment | null>(null);
 
   const logged = isLoggedIn();
   useEffect(() => {
@@ -97,9 +100,7 @@ export default function Visits() {
               </div>
               {(a.canCancel || a.cancellationToken) && (
                 <button
-                  onClick={() => {
-                    if (window.confirm(t("visits.cancelConfirm"))) cancelM.mutate(a);
-                  }}
+                  onClick={() => setConfirmFor(a)}
                   disabled={cancelM.isPending}
                   className="mt-3 rounded-lg bg-surface-2 text-ink-2 text-sm font-semibold px-4 py-2 disabled:opacity-50"
                 >
@@ -127,6 +128,41 @@ export default function Visits() {
             ))}
           </div>
         </>
+      )}
+
+      {/* Potwierdzenie odwołania — okienko w stylu aplikacji */}
+      {confirmFor && (
+        <div
+          className="fixed inset-0 z-30 bg-black/60 flex items-end sm:items-center justify-center p-4"
+          onClick={() => setConfirmFor(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-surface border border-line p-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="font-bold text-lg">{t("visits.cancelConfirm")}</div>
+            <div className="text-sm text-muted mt-2">
+              {fmt(confirmFor.startAt)} · {confirmFor.serviceName}
+            </div>
+            <div className="flex gap-2 mt-5">
+              <button
+                onClick={() => setConfirmFor(null)}
+                className="flex-1 rounded-xl bg-surface-2 text-ink font-semibold py-3"
+              >
+                {t("common.back")}
+              </button>
+              <button
+                onClick={() => {
+                  cancelM.mutate(confirmFor);
+                  setConfirmFor(null);
+                }}
+                className="flex-1 rounded-xl bg-brand text-brand-contrast font-bold py-3"
+              >
+                {t("visits.cancel")}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       <BottomNav salonId={salonId} active="visits" />
