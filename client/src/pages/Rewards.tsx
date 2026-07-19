@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Gift, Star } from "lucide-react";
@@ -16,6 +16,10 @@ export default function Rewards() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const qc = useQueryClient();
+
+  // Pod-zakładki Bonusów (jak kafelki kategorii w Rezerwuj). Kolejne moduły
+  // (Polecenia SMS, Notatnik kodów, ...) dojdą tu wraz z suwakami następnych etapów.
+  const [tab, setTab] = useState<"points" | "rewards">("points");
 
   const logged = isLoggedIn();
   useEffect(() => {
@@ -101,9 +105,25 @@ export default function Rewards() {
         </div>
       )}
 
-      {/* Członek programu: karta punktów + poziom + nagrody */}
+      {/* Członek programu: pod-zakładki (Punkty | Nagrody) + treść modułu */}
       {d?.joined && (
         <>
+          <div className="flex gap-2 overflow-x-auto pb-1 mt-1 mb-2 scrollbar-none">
+            {([
+              { key: "points", label: t("loyalty.tabPoints") },
+              { key: "rewards", label: t("loyalty.rewards") },
+            ] as const).map((m) => (
+              <button
+                key={m.key}
+                onClick={() => setTab(m.key)}
+                className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${tab === m.key ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+
+          {tab === "points" && (
           <div className="rounded-2xl border border-brand bg-surface p-5 mt-2">
             <div className="text-[11px] font-bold uppercase tracking-widest text-muted">{t("loyalty.balance")}</div>
             <div className="flex items-end gap-2 mt-1">
@@ -129,12 +149,10 @@ export default function Rewards() {
               </>
             )}
           </div>
+          )}
 
-          {(d.rewards?.length ?? 0) > 0 && (
+          {tab === "rewards" && (d.rewards?.length ?? 0) > 0 && (
             <>
-              <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted mt-6 mb-1">
-                {t("loyalty.rewards")}
-              </h2>
               <div className="divide-y divide-line">
                 {d.rewards!.map((r) => {
                   const pending = r.claimStatus === "pending";
