@@ -53,6 +53,9 @@ export interface SalonPublic {
     appAccent?: string | null;
   } | null;
   settings: BookingSettings;
+  // Suwaki funkcji aplikacji per tenant (SPEC-bonusy). Pojawiają się po
+  // wdrożeniu backendu; brak = traktujemy jak wyłączone.
+  appFeatures?: AppFeatures;
 }
 
 export interface BookingSettings {
@@ -126,6 +129,24 @@ export interface BookingRequest {
 // tenant/salon po wdrożeniu backendu.
 export interface AppFeatures {
   loyalty?: boolean;
+  referrals?: boolean;
+}
+
+// ── Polecenia SMS (SPEC-bonusy-etap-B) ──
+export type ReferralStatus = "sent" | "joined" | "rewarded" | "expired";
+
+export interface ReferralItem {
+  id: string;
+  phoneMasked: string;
+  status: ReferralStatus;
+  sentAt: string;
+  rewardGranted: boolean;
+}
+
+export interface ReferralsState {
+  sentThisMonth: number;
+  monthlyLimit: number;
+  items: ReferralItem[];
 }
 
 export interface LoyaltyTier {

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { applyAccent } from "../lib/themes";
 import { loadLastSalon } from "../lib/lastSalon";
+import { captureRefFromUrl } from "../lib/referral";
 import BottomNav from "../components/BottomNav";
 
 // Wejście tenanta: kraj → miasto → salon → (kalendarz). Poziomy z jedną opcją
@@ -26,8 +27,10 @@ export default function TenantSelect() {
   });
 
   // Ekran wyboru sieci/miasta — neutralny akcent (kolor salonu dopiero po wyborze).
+  // Wejście z linku polecającego (?ref=) zapamiętujemy do czasu rejestracji.
   useEffect(() => {
     applyAccent(null);
+    captureRefFromUrl();
   }, []);
 
   const tenant = tQ.data;

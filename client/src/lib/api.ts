@@ -2,7 +2,7 @@ import i18n from "./i18n";
 import { getToken } from "./auth";
 import type {
   Tenant, SalonPublic, Category, Service, StaffMember, TeamMember, Review, Slot,
-  BookingRequest, BookingResult, ClientMe, ClientAppointment, LoyaltyState,
+  BookingRequest, BookingResult, ClientMe, ClientAppointment, LoyaltyState, ReferralsState,
 } from "@shared/types";
 
 export class ApiError extends Error {
@@ -85,10 +85,15 @@ export const api = {
     code: string,
     salonId: string,
     name?: { firstName: string; lastName?: string },
+    referralCode?: string | null,
   ) =>
     req<{ token: string; client: { name: string; phone: string } }>(`/api/client-auth/verify`, {
       method: "POST",
-      body: JSON.stringify({ tenantId, phone, code, salonId, ...(name ?? {}) }),
+      body: JSON.stringify({
+        tenantId, phone, code, salonId,
+        ...(name ?? {}),
+        ...(referralCode ? { referralCode } : {}),
+      }),
     }),
   clientMe: () => req<ClientMe>(`/api/client/me`),
   clientAppointments: (scope: "upcoming" | "past" | "all" = "all") =>
@@ -98,6 +103,14 @@ export const api = {
       method: "POST",
       body: JSON.stringify({}),
     }),
+  // ── Polecenia SMS (SPEC-bonusy-etap-B) ──
+  referrals: () => req<ReferralsState>(`/api/client/referrals`),
+  sendReferral: (phone: string) =>
+    req<{ ok: boolean; sent: number; remaining: number }>(`/api/client/referrals`, {
+      method: "POST",
+      body: JSON.stringify({ phone }),
+    }),
+
   // ── Bonusy Etap A: program lojalnościowy (SPEC-bonusy-etap-A) ──
   loyalty: () => req<LoyaltyState>(`/api/client/loyalty`),
   loyaltyJoin: () =>

@@ -74,6 +74,13 @@ export function registerRoutes(app: Express) {
   app.post("/api/visit/:token/cancel", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/cancel/${enc(req.params.token)}`, req.body ?? {}, loc(req))));
 
+  // ── Polecenia SMS (SPEC-bonusy-etap-B) ──
+  app.get("/api/client/referrals", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/client/referrals`, loc(req), auth(req))));
+
+  app.post("/api/client/referrals", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/referrals`, req.body ?? {}, loc(req), auth(req))));
+
   // ── Bonusy Etap A (SPEC-bonusy-etap-A) — program lojalnościowy klienta ──
   app.get("/api/client/loyalty", async (req, res) =>
     relay(res, await bookseroGet(`/api/public/client/loyalty`, loc(req), auth(req))));

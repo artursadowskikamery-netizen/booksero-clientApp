@@ -5,6 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { setToken, isLoggedInFor } from "../lib/auth";
+import { loadRef, clearRef } from "../lib/referral";
 
 // Logowanie klienta: telefon → kod SMS → sesja (SPEC-logowanie-klienta).
 // Nowy numer: po poprawnym kodzie backend prosi o imię (422) i tworzy konto
@@ -48,13 +49,17 @@ export default function Login() {
     if (!tenantId) return;
     setErr(""); setBusy(true);
     try {
+      // Kod polecającego przekazujemy tylko przy rejestracji (withName) — backend
+      // i tak uwzględnia go wyłącznie przy tworzeniu nowego klienta (§5).
       const { token } = await api.verifyLoginCode(
         tenantId,
         phone.trim(),
         code.trim(),
         salonId,
         withName ? { firstName: firstName.trim(), lastName: lastName.trim() || undefined } : undefined,
+        withName ? loadRef() : undefined,
       );
+      if (withName) clearRef();
       setToken(token, tenantId);
       navigate(`/salon/${salonId}`);
     } catch (e) {
