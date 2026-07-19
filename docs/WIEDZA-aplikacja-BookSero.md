@@ -157,6 +157,102 @@ Plan kolejnych etapów (jeszcze NIE dostępne): notatnik kodów rabatowych,
 misje z voucherem, rabaty czasowe. Każda funkcja będzie miała własny
 suwak per tenant.
 
+## 7b. Punkty — skąd się biorą i co jest nadrzędne (WAŻNE dla wsparcia)
+
+### Wszystkie źródła punktów klienta
+
+Punkty na koncie klienta mogą pochodzić z KILKU źródeł naraz — dlatego
+saldo bywa „zaskakująco" wysokie. Pełna lista:
+
+1. **Wydatki na wizytach** — po ZAKOŃCZONEJ wizycie: cena × przelicznik
+   pkt/zł z programu lojalnościowego (osobny przelicznik za usługi
+   i za produkty). To zwykle największe kwoty.
+2. **Przystąpienie do programu** — jednorazowo, po kliknięciu „Dołącz
+   do programu" w aplikacji (stawka z programu lojalnościowego).
+3. **Bonus powitalny z polecenia** — dla POLECONEGO, przy rejestracji
+   z linku polecającego (kwota z „Akcji premiowanych").
+4. **Nagroda za skuteczne polecenie** — dla POLECAJĄCEGO, po pierwszej
+   zakończonej wizycie poleconego (kwota z „Akcji premiowanych").
+5. **Bonusy okazjonalne** — urodziny, imieniny, opinia, opinia w social
+   media (stawki z programu lojalnościowego).
+6. **Odejmowanie**: tylko przy wydaniu nagrody z katalogu („Wydano"
+   na karcie klienta w panelu) — saldo maleje o koszt nagrody.
+
+### Dwa miejsca konfiguracji — które wygrywa (PRIORYTETY)
+
+W panelu są DWA miejsca dotyczące punktów i to myli:
+
+- **Moduł „Program lojalnościowy"** — przeliczniki pkt/zł, bonusy
+  okazjonalne (urodziny, opinia…), bonus za dołączenie ORAZ domyślna
+  stawka „Polecenie nowego klienta".
+- **Ustawienia → Aplikacja dla klientów → „Akcje premiowane"** —
+  nagrody za polecenia w APLIKACJI: osobno dla polecającego i poleconego
+  (punkty albo kod rabatowy/voucher).
+
+**Zasada priorytetu:** przy poleceniach z aplikacji **„Akcje premiowane"
+są NADRZĘDNE**. Domyślna stawka „Polecenie nowego klienta" z programu
+lojalnościowego jest używana TYLKO wtedy, gdy nagroda polecającego
+w „Akcjach premiowanych" ma wartość **0**.
+Przykład: program ma „Polecenie: 200", Akcje premiowane „500" →
+polecający dostaje **500**, nie 200 (i nie 700 — kwoty się NIE sumują).
+
+### Saldo vs dorobek (dlaczego poziom nie spada)
+
+- **Saldo** — punkty do wydania na nagrody; maleje przy „Wydano".
+- **Dorobek (lifetime)** — suma wszystkich DODATNICH naliczeń; nigdy
+  nie maleje i to z niego liczony jest POZIOM (Start→VIP).
+Efekt: po odebraniu nagrody saldo spada, ale poziom zostaje.
+
+### Pułapka wyświetlania na karcie klienta
+
+Lista bonusów z „ptaszkami" na karcie klienta (zakładka Lojalność)
+pokazuje **skonfigurowane stawki programu**, a NIE faktycznie naliczone
+kwoty. Faktyczne kwoty są w historii transakcji punktowych. Przykład:
+ptaszek przy „Polecenie nowego klienta: 200 pkt", a klient dostał 300 —
+bo naliczyła się nadrzędna kwota z „Akcji premiowanych".
+
+### Przykład pełnego rozliczenia (autentyczny przypadek testowy)
+
+Nowy klient zarejestrował się z linku polecającego i odbył wizytę
+za 180 zł (przelicznik 5 pkt/zł):
+
+| Zdarzenie | Punkty |
+|---|---|
+| Bonus powitalny z polecenia (Akcje premiowane) | +300 |
+| Dołączenie do programu (klik w aplikacji) | +100 |
+| Zakończona wizyta 180 zł × 5 pkt/zł | +900 |
+| **Saldo klienta** | **1300** |
+
+A polecający dostał osobno **+500** (Akcje premiowane, po zakończonej
+wizycie poleconego).
+
+### Gotowe odpowiedzi na pytania klientów
+
+**„Skąd mam nagle tyle punktów?"**
+Sprawdź historię transakcji na karcie klienta — saldo to suma kilku
+źródeł (wizyta + bonusy). Najczęściej „niespodziewane" punkty to bonus
+z polecenia + bonus za dołączenie + punkty za pierwszą wizytę.
+
+**„Dostałem inną kwotę niż na liście bonusów."**
+Lista pokazuje stawki domyślne programu; przy poleceniach z aplikacji
+obowiązuje nadrzędna kwota z „Akcji premiowanych". Prawda jest zawsze
+w historii transakcji.
+
+**„Wydałem punkty na nagrodę i nie spadł mi poziom."**
+To celowe: poziom liczy się z dorobku (lifetime), który nigdy nie
+maleje. Spada tylko saldo do wydawania.
+
+**„Poleciłem 3 osoby i nic nie dostałem."**
+Nagroda przychodzi za każdego poleconego dopiero po JEGO pierwszej
+ZAKOŃCZONEJ wizycie — i tylko jeśli był NOWYM klientem (rejestrował się
+z pytaniem o imię). Statusy widać w aplikacji: Bonusy → Polecaj.
+
+**„Klient twierdzi, że punkty się nie naliczają w ogóle."**
+Kolejność sprawdzania: (1) czy program lojalnościowy jest AKTYWNY,
+(2) czy TRYB TESTOWY jest wyłączony (w trybie testowym bonusy są
+rejestrowane, ale nie zmieniają realnego salda), (3) czy wizyta ma
+status ZAKOŃCZONA, (4) historia transakcji na karcie klienta.
+
 ## 8. Panel Booksero — co ustawia salon/tenant
 
 - **Kolor akcentu aplikacji**: profil salonu (paleta 12 kolorów).
