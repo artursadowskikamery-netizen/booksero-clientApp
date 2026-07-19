@@ -17,11 +17,19 @@ export default function BottomNav({ salonId, active }: { salonId: string; active
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
   const tenantId = salonQ.data?.salon.tenantId ?? null;
 
+  // Ikona Bonusy tylko, gdy tenant włączył choć jedną funkcję bonusową.
+  // Wszystko wyłączone = funkcja "ginie" z aplikacji (decyzja właściciela).
+  // Dopóki dane salonu się nie wczytały, pokazujemy ikonę (bez migotania).
+  const feat = salonQ.data?.appFeatures;
+  const showRewards = !salonQ.data || !feat || !!(feat.loyalty || feat.referrals || feat.codesNotebook);
+
   const items: { key: Tab; icon: typeof Store; label: string; to: string }[] = [
     { key: "salon", icon: Store, label: t("tabs.salon"), to: tenantId ? `/t/${tenantId}` : `/salon/${salonId}` },
     { key: "book", icon: CalendarPlus, label: t("tabs.book"), to: `/salon/${salonId}/book` },
     { key: "visits", icon: Clock, label: t("tabs.visits"), to: `/salon/${salonId}/visits` },
-    { key: "rewards", icon: Star, label: t("tabs.rewards"), to: `/salon/${salonId}/rewards` },
+    ...(showRewards
+      ? [{ key: "rewards" as Tab, icon: Star, label: t("tabs.rewards"), to: `/salon/${salonId}/rewards` }]
+      : []),
     { key: "profile", icon: User, label: t("tabs.profile"), to: `/salon/${salonId}/profile` },
   ];
   return (
