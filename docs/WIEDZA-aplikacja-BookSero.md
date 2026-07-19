@@ -1,6 +1,7 @@
 # BookSero — aplikacja mobilna dla klientów salonów (baza wiedzy)
 
-Stan na: 19.07.2026. Dokument opisuje DZIAŁAJĄCĄ produkcyjnie wersję aplikacji.
+Stan na: 19.07.2026 (aktualizacja: Etap B — polecenia SMS).
+Dokument opisuje DZIAŁAJĄCĄ produkcyjnie wersję aplikacji.
 
 ## 1. Czym jest BookSero
 
@@ -118,9 +119,43 @@ Program pojawia się w aplikacji TYLKO, gdy tenant włączy suwak
 - Punkty naliczają się wg konfiguracji programu w panelu (pkt za złotówkę
   za usługi/produkty, bonusy za urodziny, opinię itd.).
 
-Plan kolejnych etapów (jeszcze NIE dostępne): polecenia SMS, notatnik
-kodów rabatowych, misje z voucherem, rabaty czasowe. Każda funkcja
-będzie miała własny suwak per tenant.
+Zakładka Bonusy ma pasek pod-zakładek na dole (nad menu): Punkty ·
+Nagrody · Polecaj — pokazują się tylko te moduły, które tenant włączył.
+
+## 7a. Bonusy — Polecenia SMS (Etap B)
+
+Suwak „Polecenia SMS" w panelu: Ustawienia → Aplikacja dla klientów →
+sekcja „Akcje premiowane". Działa na całą sieć (per tenant).
+
+Jak działa (pod-zakładka „Polecaj" w Bonusach):
+
+1. Zalogowany klient wpisuje numer znajomego → system wysyła SMS
+   (koszt z puli SMS tenanta, nazwa nadawcy tenanta) z imieniem
+   polecającego i linkiem do aplikacji sieci z kodem polecającego.
+2. Limity: maks. 5 poleceń miesięcznie, nie można polecić samego siebie,
+   ten sam numer tylko raz w miesiącu. Numery poleconych są w aplikacji
+   maskowane (••• •• XX).
+3. Statusy polecenia w aplikacji: „Zaproszenie wysłane" → „Znajomy
+   dołączył" → „Nagroda przyznana".
+4. Nagrody (konfigurowane w panelu, osobno dla każdej strony; punkty
+   ALBO kod rabatowy/voucher kwotowy):
+   - **polecony** dostaje bonus powitalny od razu przy rejestracji
+     z linku polecającego,
+   - **polecający** dostaje nagrodę DOPIERO po pierwszej ZAKOŃCZONEJ
+     wizycie poleconego (zabezpieczenie przed pustymi rezerwacjami).
+5. Nagroda działa tylko dla NOWEGO klienta: jeśli numer poleconego już
+   istnieje w bazie sieci, polecony loguje się do istniejącego konta,
+   a przypisanie i nagrody celowo nie zachodzą (SMS i tak wychodzi —
+   system nie ujawnia, kto jest w bazie).
+6. Ważna zasada stawek: wartości z „Akcji premiowanych" są NADRZĘDNE
+   nad domyślną stawką „Polecenie nowego klienta" w programie
+   lojalnościowym (tamta działa tylko przy wartości 0).
+7. Tryb testowy programu lojalnościowego: bonusy są rejestrowane, ale
+   NIE zmieniają realnego salda — do testów wyłączyć tryb testowy.
+
+Plan kolejnych etapów (jeszcze NIE dostępne): notatnik kodów rabatowych,
+misje z voucherem, rabaty czasowe. Każda funkcja będzie miała własny
+suwak per tenant.
 
 ## 8. Panel Booksero — co ustawia salon/tenant
 
@@ -160,3 +195,14 @@ Tak — saldo punktów i konto klienta działają na całą sieć (tenant).
 **Jak salon blokuje niechcianego użytkownika?**
 Dezaktywacja klienta w panelu — aplikacja przestaje wysyłać mu kody SMS,
 bez żadnego komunikatu dla blokowanego.
+
+**Poleciłem znajomego, ale nie dostałem nagrody.**
+Sprawdź po kolei: (1) nagroda polecającego przychodzi dopiero po
+pierwszej ZAKOŃCZONEJ wizycie poleconego, (2) polecony musiał być NOWYM
+klientem (rejestracja z pytaniem o imię) — jeśli jego numer już był
+w bazie, nagrody celowo nie ma, (3) tryb testowy programu
+lojalnościowego musi być wyłączony.
+
+**Polecony nie widzi bonusu powitalnego w aplikacji.**
+Punkty są na jego karcie w panelu od razu, ale w aplikacji saldo widzi
+dopiero po kliknięciu „Dołącz do programu" w zakładce Bonusy.
