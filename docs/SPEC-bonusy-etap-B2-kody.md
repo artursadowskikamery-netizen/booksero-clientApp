@@ -8,10 +8,23 @@
    - Odbiór/wydanie kodu NIE zmniejsza żadnych punktów.
    - Katalog nagród za punkty (Etap A, odbiór w salonie) zostaje BEZ ZMIAN
      i NIE dotyczy kodów.
-2. **Kod rabatowy = produkt typu VOUCHER.** Generowany automatycznie przez
-   system (moduł voucherów Booksero, MPV kwotowy — ta sama ścieżka co
-   nagroda za polecenie), **imienny** (przypięty do karty klienta),
-   aktywny od razu, realizowany przy rozliczeniu wizyty w panelu.
+2. **KOD RABATOWY ≠ VOUCHER KWOTOWY — rozróżnienie egzekwowane przez system:**
+   - **Kod rabatowy** jest **IMIENNY**: przypisany do konkretnego klienta
+     i może go zrealizować WYŁĄCZNIE ten klient. Przy rozliczeniu wizyty
+     system sprawdza, że klient wizyty = właściciel kodu (dopuszczalne
+     dopasowanie po zbiorze rekordów tej samej osoby w tenancie —
+     telefon/globalClientId); w przeciwnym razie ODMAWIA realizacji
+     z czytelnym komunikatem dla recepcji.
+   - **Voucher kwotowy** (kupowany/prezentowy) pozostaje **NA OKAZICIELA**
+     — jak dotychczas, bez kontroli realizującego. Niczego w nim nie
+     zmieniać.
+   - Implementacja: reużyć silnik voucherów, ale kod rabatowy oznaczyć
+     jawnie (np. kolumna `personalOnly boolean` ADD-only albo po
+     `origin`) i wpiąć walidację właściciela w ścieżkę realizacji
+     w kasie. W panelu (lista voucherów) kody rabatowe wyraźnie
+     odróżnione od voucherów na okaziciela (etykieta „imienny").
+   Kod generowany automatycznie, aktywny od razu, realizowany przy
+   rozliczeniu wizyty w panelu.
 3. **Kody wydaje system za OKREŚLONE CZYNNOŚCI/AKTYWNOŚCI w aplikacji**,
    zgodnie z ustawieniami Managera/Admina („Akcje premiowane"):
    która czynność daje kod, jaka KWOTA (zł), jaki PREFIKS kodu.
@@ -52,11 +65,13 @@ Wspólna funkcja „wydaj kod za akcję" (refaktor istniejącej
 - parametry: tenantId, salonId, clientId, kwota, źródło/akcja
   (np. `referral`, `referral_welcome`; kolejne w przyszłości), notatka,
 - używa prefiksu i ważności z §1, `origin` opisujący akcję,
-- zwraca utworzony voucher (kod).
+- tworzy kod jako **IMIENNY** (§0.2 — oznaczenie + walidacja właściciela
+  przy realizacji),
+- zwraca utworzony kod.
 
-Polecenia (Etap B) przełączyć na tę funkcję — zachowanie identyczne
-poza prefiksem/ważnością z konfiguracji. Nic innego nie zmieniać
-w mechanice poleceń.
+Polecenia (Etap B) przełączyć na tę funkcję — od tej pory nagrody-kody
+z poleceń są imienne. Wcześniej wydane (testowe) mogą zostać jak są.
+Nic innego nie zmieniać w mechanice poleceń.
 
 ## 3. „Moje kody" — endpointy klienta
 
@@ -127,8 +142,10 @@ niedostępność funkcji); reużyć istniejące, gdzie pasują.
    dodanie/oznaczenie/usunięcie działa; cudzy wpis → 404.
 4. Suwak `codesNotebook` off → 404 na §3–4; `appFeatures.codesNotebook`
    w /book odzwierciedla stan.
-5. Realizacja wygenerowanego kodu przy rozliczeniu wizyty w panelu
-   działa jak dla każdego vouchera (bez zmian w kasie).
+5. Realizacja kodu przy rozliczeniu wizyty WŁAŚCICIELA działa;
+   próba realizacji na wizycie INNEGO klienta → odmowa z komunikatem
+   (kod imienny). Zwykły voucher kwotowy (na okaziciela) działa
+   bez zmian — brak kontroli realizującego.
 6. Regresja poleceń: pełny obieg Etapu B (SMS → dołączenie → zakończona
    wizyta → nagrody) działa bez zmian.
 7. TypeScript kompiluje; `npm run db:push` wykonalny (ADD-only).
