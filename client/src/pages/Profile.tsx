@@ -21,9 +21,10 @@ export default function Profile() {
 
   const meQ = useQuery({ queryKey: ["clientMe"], queryFn: () => api.clientMe(), enabled: logged });
 
-  // Token wygasł/nieważny → wyczyść i na logowanie.
+  // Token wygasł/nieważny (401) LUB klient skasowany z bazy (404) →
+  // wyczyść sesję i na logowanie (bez martwej sesji z czerwonym błędem).
   useEffect(() => {
-    if (meQ.error instanceof ApiError && meQ.error.status === 401) {
+    if (meQ.error instanceof ApiError && (meQ.error.status === 401 || meQ.error.status === 404)) {
       clearToken();
       navigate(`/salon/${salonId}/login`);
     }
@@ -48,7 +49,8 @@ export default function Profile() {
       </header>
 
       {meQ.isLoading && <div className="p-4 text-muted">{t("common.loading")}</div>}
-      {meQ.isError && !(meQ.error instanceof ApiError && meQ.error.status === 401) && (
+      {meQ.isError &&
+        !(meQ.error instanceof ApiError && (meQ.error.status === 401 || meQ.error.status === 404)) && (
         <div className="p-4 text-sm text-red-400">{(meQ.error as Error).message}</div>
       )}
 
