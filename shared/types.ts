@@ -130,6 +130,31 @@ export interface BookingRequest {
 export interface AppFeatures {
   loyalty?: boolean;
   referrals?: boolean;
+  codesNotebook?: boolean;
+}
+
+// ── Moje kody (SPEC-bonusy-etap-B2) ──
+export interface ClientVoucherItem {
+  code: string;
+  originalValue: string;
+  remainingValue: string;
+  currency: string;
+  status: string; // active | used | expired (wg backendu)
+  expiresAt?: string | null;
+  origin?: string | null; // za co wydany (referral itd.)
+}
+
+export interface SavedCodeItem {
+  id: string;
+  code: string;
+  note?: string | null;
+  isUsed: boolean;
+  createdAt: string;
+}
+
+export interface ClientCodesState {
+  vouchers: ClientVoucherItem[];
+  notes: SavedCodeItem[];
 }
 
 // ── Polecenia SMS (SPEC-bonusy-etap-B) ──

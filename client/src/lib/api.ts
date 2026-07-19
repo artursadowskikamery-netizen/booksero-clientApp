@@ -3,6 +3,7 @@ import { getToken } from "./auth";
 import type {
   Tenant, SalonPublic, Category, Service, StaffMember, TeamMember, Review, Slot,
   BookingRequest, BookingResult, ClientMe, ClientAppointment, LoyaltyState, ReferralsState,
+  ClientCodesState,
 } from "@shared/types";
 
 export class ApiError extends Error {
@@ -103,6 +104,21 @@ export const api = {
       method: "POST",
       body: JSON.stringify({}),
     }),
+  // ── Moje kody (SPEC-bonusy-etap-B2) ──
+  clientCodes: () => req<ClientCodesState>(`/api/client/codes`),
+  addSavedCode: (code: string, note?: string) =>
+    req<{ id: string }>(`/api/client/codes`, {
+      method: "POST",
+      body: JSON.stringify({ code, ...(note ? { note } : {}) }),
+    }),
+  toggleSavedCode: (id: string) =>
+    req<{ success?: boolean }>(`/api/client/codes/${encodeURIComponent(id)}/use`, {
+      method: "PATCH",
+      body: JSON.stringify({}),
+    }),
+  deleteSavedCode: (id: string) =>
+    req<{ success?: boolean }>(`/api/client/codes/${encodeURIComponent(id)}`, { method: "DELETE" }),
+
   // ── Polecenia SMS (SPEC-bonusy-etap-B) ──
   referrals: () => req<ReferralsState>(`/api/client/referrals`),
   sendReferral: (phone: string) =>

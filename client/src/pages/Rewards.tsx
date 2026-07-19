@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Gift, Star, Send } from "lucide-react";
+import { ChevronLeft, Gift, Star, Send, Ticket, Trash2, Check, Copy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
 import BottomNav from "../components/BottomNav";
 import type { LoyaltyState, ReferralStatus } from "@shared/types";
 
-type Tab = "points" | "rewards" | "referrals";
+type Tab = "points" | "rewards" | "referrals" | "codes";
 
 // Bonusy: kontener na moduły bonusowe. Pasek pod-zakładek na dole (jak kategorie
 // w Rezerwuj) zależy od suwaków tenanta (appFeatures): loyalty → Punkty/Nagrody,
@@ -56,15 +56,16 @@ export default function Rewards() {
       if (joined) list.push({ key: "rewards", label: t("loyalty.rewards") });
     }
     if (feat.referrals) list.push({ key: "referrals", label: t("referral.tab") });
+    if (feat.codesNotebook) list.push({ key: "codes", label: t("codes.tab") });
     return list;
-  }, [feat.loyalty, feat.referrals, joined, t]);
+  }, [feat.loyalty, feat.referrals, feat.codesNotebook, joined, t]);
 
   // Aktywna zakładka zawsze wśród dostępnych.
   useEffect(() => {
     if (tabs.length && !tabs.some((x) => x.key === tab)) setTab(tabs[0].key);
   }, [tabs, tab]);
 
-  const unavailable = !!salonQ.data && !feat.loyalty && !feat.referrals;
+  const unavailable = !!salonQ.data && !feat.loyalty && !feat.referrals && !feat.codesNotebook;
 
   return (
     <div className={`max-w-md mx-auto min-h-screen p-4 ${tabs.length > 1 ? "pb-40" : "pb-24"}`}>
@@ -128,6 +129,9 @@ export default function Rewards() {
 
       {/* ── POLECAJ ── */}
       {tab === "referrals" && feat.referrals && <Referrals />}
+
+      {/* ── MOJE KODY ── */}
+      {tab === "codes" && feat.codesNotebook && <MyCodes />}
 
       {/* Pasek pod-zakładek — przyklejony na dole, nad menu dolnym */}
       {tabs.length > 1 && (
@@ -325,6 +329,146 @@ function Referrals() {
             </div>
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+// Pod-zakładka „Moje kody": vouchery/kody klienta + notatnik własnych kodów
+// (SPEC-bonusy-etap-B2). Kody klika się, żeby skopiować do schowka.
+function MyCodes() {
+  const { t, i18n } = useTranslation();
+  const qc = useQueryClient();
+  const [code, setCode] = useState("");
+  const [note, setNote] = useState("");
+  const [copiedCode, setCopiedCode] = useState("");
+  const [err, setErr] = useState("");
+
+  const q = useQuery({ queryKey: ["clientCodes"], queryFn: () => api.clientCodes(), retry: false });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["clientCodes"] });
+
+  const addM = useMutation({
+    mutationFn: () => api.addSavedCode(code.trim(), note.trim() || undefined),
+    onSuccess: () => { setCode(""); setNote(""); setErr(""); invalidate(); },
+    onError: (e) => setErr((e as Error).message),
+  });
+  const toggleM = useMutation({ mutationFn: (id: string) => api.toggleSavedCode(id), onSuccess: invalidate });
+  const delM = useMutation({ mutationFn: (id: string) => api.deleteSavedCode(id), onSuccess: invalidate });
+
+  const copy = async (c: string) => {
+    try {
+      await navigator.clipboard.writeText(c);
+      setCopiedCode(c);
+      setTimeout(() => setCopiedCode(""), 2000);
+    } catch { /* brak dostępu do schowka */ }
+  };
+
+  const fmtDate = (iso: string) =>
+    new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
+
+  const statusLabel = (s: string) =>
+    s === "used" ? t("codes.statusUsed") : s === "expired" ? t("codes.statusExpired") : t("codes.statusActive");
+
+  const d = q.data;
+  const empty = d && d.vouchers.length === 0 && d.notes.length === 0;
+
+  return (
+    <div className="mt-2">
+      {q.isLoading && <div className="p-4 text-muted">{t("common.loading")}</div>}
+      {empty && <div className="text-sm text-muted text-center py-6">{t("codes.empty")}</div>}
+
+      {/* Vouchery/kody wydane przez system */}
+      {d && d.vouchers.length > 0 && (
+        <div className="space-y-3">
+          {d.vouchers.map((v) => {
+            const active = v.status === "active";
+            return (
+              <div key={v.code} className={`rounded-2xl border p-4 ${active ? "border-brand bg-surface" : "border-line bg-surface opacity-70"}`}>
+                <div className="flex items-center gap-3">
+                  <span className={`w-10 h-10 rounded-xl grid place-items-center shrink-0 ${active ? "bg-brand text-brand-contrast" : "bg-surface-2 text-muted"}`}>
+                    <Ticket size={18} />
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <button
+                      onClick={() => copy(v.code)}
+                      className="font-mono font-bold text-sm tracking-wider flex items-center gap-1.5"
+                    >
+                      {v.code}
+                      {copiedCode === v.code ? <Check size={13} className="text-brand" /> : <Copy size={13} className="text-muted" />}
+                    </button>
+                    <div className="text-xs text-muted mt-0.5">
+                      {v.remainingValue} {v.currency}
+                      {v.expiresAt ? <> · {t("codes.validUntil", { date: fmtDate(v.expiresAt) })}</> : null}
+                    </div>
+                  </div>
+                  <span className={`text-xs font-semibold ${active ? "text-brand" : "text-muted"}`}>
+                    {statusLabel(v.status)}
+                  </span>
+                </div>
+                {copiedCode === v.code && <div className="text-xs text-brand font-semibold mt-2">{t("codes.copied")}</div>}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Notatnik własnych kodów */}
+      <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted mt-6 mb-2">{t("codes.addTitle")}</h2>
+      <div className="flex gap-2">
+        <input
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder={t("codes.codePh")}
+          maxLength={64}
+          className="flex-1 min-w-0 rounded-xl border border-line bg-surface-2 px-3 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-brand"
+        />
+        <button
+          onClick={() => addM.mutate()}
+          disabled={!code.trim() || addM.isPending}
+          className="rounded-xl bg-brand text-brand-contrast text-sm font-bold px-4 disabled:opacity-40"
+        >
+          {t("codes.add")}
+        </button>
+      </div>
+      <input
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder={t("codes.notePh")}
+        maxLength={100}
+        className="w-full mt-2 rounded-xl border border-line bg-surface-2 px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brand"
+      />
+      {err && <p className="text-xs text-red-400 mt-2">{err}</p>}
+
+      {d && d.notes.length > 0 && (
+        <>
+          <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted mt-6 mb-1">{t("codes.savedTitle")}</h2>
+          <div className="divide-y divide-line">
+            {d.notes.map((n) => (
+              <div key={n.id} className="flex items-center gap-3 py-3">
+                <button
+                  onClick={() => toggleM.mutate(n.id)}
+                  disabled={toggleM.isPending}
+                  className={`w-6 h-6 rounded-md border grid place-items-center shrink-0 ${n.isUsed ? "bg-brand border-brand text-brand-contrast" : "border-line text-transparent"}`}
+                  aria-label={t("codes.statusUsed")}
+                >
+                  <Check size={14} />
+                </button>
+                <div className="flex-1 min-w-0">
+                  <div className={`text-sm font-mono ${n.isUsed ? "line-through text-muted" : ""}`}>{n.code}</div>
+                  {n.note && <div className="text-xs text-muted truncate">{n.note}</div>}
+                </div>
+                <button
+                  onClick={() => delM.mutate(n.id)}
+                  disabled={delM.isPending}
+                  className="w-8 h-8 rounded-lg grid place-items-center text-muted"
+                  aria-label={t("codes.del")}
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

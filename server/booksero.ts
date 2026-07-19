@@ -54,4 +54,22 @@ export function bookseroPost(
   );
 }
 
+export function bookseroPatch(
+  path: string,
+  body: unknown,
+  locale?: string,
+  extraHeaders?: Record<string, string>,
+) {
+  return bookseroFetch(
+    path,
+    { method: "PATCH", body: JSON.stringify(body), headers: { "Content-Type": "application/json" } },
+    locale,
+    extraHeaders,
+  );
+}
+
+export function bookseroDelete(path: string, locale?: string, extraHeaders?: Record<string, string>) {
+  return bookseroFetch(path, { method: "DELETE" }, locale, extraHeaders);
+}
+
 export { BASE as BOOKSERO_BASE };

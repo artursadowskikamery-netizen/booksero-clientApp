@@ -1,5 +1,5 @@
 import type { Express, Request, Response } from "express";
-import { bookseroGet, bookseroPost } from "./booksero";
+import { bookseroGet, bookseroPost, bookseroPatch, bookseroDelete } from "./booksero";
 
 const enc = encodeURIComponent;
 const loc = (req: Request) => String(req.headers["x-locale"] || "pl").slice(0, 2);
@@ -73,6 +73,28 @@ export function registerRoutes(app: Express) {
   // Odwołanie wizyty istniejącym publicznym tokenem anulowania.
   app.post("/api/visit/:token/cancel", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/cancel/${enc(req.params.token)}`, req.body ?? {}, loc(req))));
+
+  // ── Moje kody (SPEC-bonusy-etap-B2) ──
+  app.get("/api/client/codes", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/client/codes`, loc(req), auth(req))));
+
+  app.post("/api/client/codes", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/codes`, req.body ?? {}, loc(req), auth(req))));
+
+  app.patch("/api/client/codes/:id/use", async (req, res) =>
+    relay(res, await bookseroPatch(
+      `/api/public/client/codes/${enc(String(req.params.id))}/use`,
+      req.body ?? {},
+      loc(req),
+      auth(req),
+    )));
+
+  app.delete("/api/client/codes/:id", async (req, res) =>
+    relay(res, await bookseroDelete(
+      `/api/public/client/codes/${enc(String(req.params.id))}`,
+      loc(req),
+      auth(req),
+    )));
 
   // ── Polecenia SMS (SPEC-bonusy-etap-B) ──
   app.get("/api/client/referrals", async (req, res) =>
