@@ -189,10 +189,39 @@ FAQ:
 - „Czy można oddać kod koledze?" → nie, kod jest imienny; do dawania
   prezentów służą vouchery kwotowe.
 
-Plan kolejnych etapów (jeszcze NIE dostępne): tryb premiowania
-Punkty/Kody z limitami wydawania (w budowie), akcje aktywnościowe,
-misje z voucherem, rabaty czasowe. Każda funkcja będzie miała własny
-suwak per tenant.
+## 7a-ter. Tryb premiowania: PUNKTY albo KODY (per tenant)
+
+W panelu (Ustawienia → Aplikacja dla klientów → Akcje premiowane)
+Manager/Admin wybiera JEDEN sposób premiowania akcji w aplikacji:
+
+1. **⭐ Punkty** — za akcje klienci dostają punkty programu
+   lojalnościowego (buduje lojalność i powroty; można premiować
+   „delikatnie", bez rozpieszczania).
+2. **🎟 Kody rabatowe** — za akcje klienci dostają imienne kody
+   z terminem ważności (namacalny rabat motywujący do SZYBKIEJ
+   rezerwacji przed wygaśnięciem kodu).
+
+Zasady mechanizmu:
+- Nigdy miks — działa albo jedno, albo drugie; tryb można zmieniać
+  w czasie (strategia marketingowa).
+- Wartości pamiętane OSOBNO per tryb (500 pkt nigdy nie stanie się
+  kwotą 500); jednostka widoczna w polach; kwoty w WALUCIE lokalizacji
+  (PLN/EUR/CZK...), nie na sztywno „zł".
+- Zmiana trybu wymaga potwierdzenia w oknie z podsumowaniem; przy
+  nieustawionych kwotach (0) okno OSTRZEGA, że nagrody nie będą
+  przyznawane. Kwota kodu > 100 wymaga dodatkowego potwierdzenia.
+- Tryb obowiązuje W CHWILI przyznania nagrody — dotyczy też nagród
+  za polecenia sprzed zmiany trybu.
+- **Limity wydawania kodów** (ukryte przed klientem, per OSOBA w całej
+  sieci): maks./tydzień, maks./miesiąc (domyślnie 2), maks./rok oraz
+  minimalny odstęp dni (domyślnie 10). Zablokowane wydanie trafia do
+  Rejestru zdarzeń (nagroda nie jest zamieniana na punkty).
+- Program lojalnościowy (punkty za wizyty, poziomy) działa niezależnie,
+  pod własnym suwakiem.
+
+Plan kolejnych etapów (jeszcze NIE dostępne): akcje aktywnościowe
+(kody za używanie aplikacji, powroty, kampanie), misje z voucherem,
+rabaty czasowe. Każda funkcja będzie miała własny suwak per tenant.
 
 ## 7b. Punkty — skąd się biorą i co jest nadrzędne (WAŻNE dla wsparcia)
 
