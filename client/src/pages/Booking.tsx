@@ -6,6 +6,7 @@ import { ChevronLeft, Users, Check, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { isLoggedIn, isLoggedInFor } from "../lib/auth";
+import { getPushState, enablePush, type PushState } from "../lib/push";
 import BottomNav from "../components/BottomNav";
 import type { BookingResult, StaffMember } from "@shared/types";
 
@@ -35,6 +36,12 @@ export default function Booking() {
   const [clientPhone, setPhone] = useState("");
   const [clientEmail, setEmail] = useState("");
   const [result, setResult] = useState<BookingResult | null>(null);
+  // Zachęta do powiadomień PO udanej rezerwacji (dobry moment UX, nie na starcie).
+  const [pushState, setPushState] = useState<PushState | "disabled" | null>(null);
+  const [pushBusy, setPushBusy] = useState(false);
+  useEffect(() => {
+    if (result) getPushState().then(setPushState).catch(() => setPushState(null));
+  }, [result]);
 
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
   const servicesQ = useQuery({ queryKey: ["services", salonId], queryFn: () => api.services(salonId), enabled: !!salonId });
@@ -127,6 +134,30 @@ export default function Booking() {
             <div className="text-sm mt-2 rounded-xl bg-surface-2 p-3">
               {t("booking.prepaymentNote", { amount: result.prepaymentAmount, currency })}
             </div>
+          )}
+          {/* Zachęta do powiadomień — tylko gdy klient jeszcze nie zdecydował */}
+          {pushState === "default" && (
+            <div className="rounded-2xl border border-line bg-surface p-4 mt-2 w-full">
+              <p className="text-sm text-muted mb-3">{t("push.bookingPrompt")}</p>
+              <button
+                className="btn-primary"
+                disabled={pushBusy}
+                onClick={async () => {
+                  setPushBusy(true);
+                  try {
+                    const r = await enablePush();
+                    setPushState(r === "ok" ? "subscribed" : r === "denied" ? "denied" : "disabled");
+                  } finally {
+                    setPushBusy(false);
+                  }
+                }}
+              >
+                {pushBusy ? t("common.loading") : t("push.enable")}
+              </button>
+            </div>
+          )}
+          {pushState === "subscribed" && (
+            <p className="text-sm text-brand font-semibold">{t("push.enabled")}</p>
           )}
           <button className="btn-primary mt-3" onClick={() => navigate(`/salon/${salonId}`)}>
             {t("booking.backToSalon")}

@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Route, Switch } from "wouter";
 import { useTranslation } from "react-i18next";
 import { queryClient } from "./lib/queryClient";
+import { isLoggedIn } from "./lib/auth";
+import { pushSupported, ensurePushSubscribed, sendInstallSignalOnce } from "./lib/push";
 import Landing from "./pages/Landing";
 import TenantSelect from "./pages/TenantSelect";
 import SalonHome from "./pages/SalonHome";
@@ -12,9 +15,23 @@ import Profile from "./pages/Profile";
 import Visits from "./pages/Visits";
 import Rewards from "./pages/Rewards";
 
+// Przy starcie (zalogowany klient): raz wyślij sygnał instalacji (standalone)
+// i po cichu odśwież subskrypcję push, jeśli zgoda już jest (upsert — idempotentne).
+function PushBootstrap() {
+  useEffect(() => {
+    if (!isLoggedIn()) return;
+    sendInstallSignalOnce();
+    if (pushSupported() && Notification.permission === "granted") {
+      ensurePushSubscribed().catch(() => {});
+    }
+  }, []);
+  return null;
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <PushBootstrap />
       <Switch>
         <Route path="/" component={Landing} />
         <Route path="/t/:tenantId" component={TenantSelect} />

@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, User, LogOut, MapPin } from "lucide-react";
+import { ChevronLeft, User, LogOut, MapPin, Bell, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
+import { getPushState, enablePush, disablePushOnLogout, type PushState } from "../lib/push";
 import BottomNav from "../components/BottomNav";
 
 // Profil zalogowanego klienta (Faza 2). Bez sesji → przekierowanie na logowanie.
@@ -30,7 +31,27 @@ export default function Profile() {
     }
   }, [meQ.error, salonId, navigate]);
 
-  const logout = () => {
+  // Powiadomienia push: stan + świadome włączanie z Profilu.
+  const [push, setPush] = useState<PushState | "disabled" | null>(null);
+  const [pushBusy, setPushBusy] = useState(false);
+  useEffect(() => {
+    getPushState().then(setPush).catch(() => setPush(null));
+  }, []);
+  const onEnablePush = async () => {
+    setPushBusy(true);
+    try {
+      const r = await enablePush();
+      if (r === "ok") setPush("subscribed");
+      else if (r === "denied") setPush("denied");
+      else setPush("disabled"); // push wyłączony na serwerze — chowamy sekcję
+    } finally {
+      setPushBusy(false);
+    }
+  };
+
+  const logout = async () => {
+    // Najpierw wyrejestruj urządzenie z push (jeszcze z tokenem), potem sesja.
+    await disablePushOnLogout();
     clearToken();
     navigate(`/salon/${salonId}`);
   };
@@ -84,6 +105,27 @@ export default function Profile() {
                 ))}
               </div>
             </>
+          )}
+
+          {/* Powiadomienia push — sekcja znika, gdy nieobsługiwane/wyłączone */}
+          {push && push !== "unsupported" && push !== "disabled" && (
+            <div className="rounded-2xl bg-surface border border-line p-4 mt-5">
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted mb-2">
+                <Bell size={13} /> {t("push.title")}
+              </div>
+              {push === "subscribed" && (
+                <div className="flex items-center gap-2 text-sm text-brand font-semibold">
+                  <Check size={16} /> {t("push.enabled")}
+                </div>
+              )}
+              {push === "default" && (
+                <button className="btn-primary" disabled={pushBusy} onClick={onEnablePush}>
+                  {pushBusy ? t("common.loading") : t("push.enable")}
+                </button>
+              )}
+              {push === "denied" && <p className="text-sm text-muted">{t("push.denied")}</p>}
+              {push === "ios-install" && <p className="text-sm text-muted">{t("push.iosHint")}</p>}
+            </div>
           )}
 
           <button

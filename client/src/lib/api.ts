@@ -104,6 +104,19 @@ export const api = {
       method: "POST",
       body: JSON.stringify({}),
     }),
+  // ── Powiadomienia push (Web Push) + sygnał instalacji ──
+  pushVapidKey: () => req<{ key: string }>(`/api/client/push/vapid-key`),
+  pushSubscribe: (body: {
+    transport: "webpush";
+    endpoint: string;
+    keys: { p256dh: string; auth: string };
+    platform: "android" | "ios" | "web";
+  }) => req<{ ok?: boolean }>(`/api/client/push/subscribe`, { method: "POST", body: JSON.stringify(body) }),
+  pushUnsubscribe: (endpoint: string) =>
+    req<{ ok?: boolean }>(`/api/client/push/unsubscribe`, { method: "POST", body: JSON.stringify({ endpoint }) }),
+  appEvent: (type: "install", platform: "android" | "ios" | "web") =>
+    req<{ ok?: boolean }>(`/api/client/app-event`, { method: "POST", body: JSON.stringify({ type, platform }) }),
+
   // ── Moje kody (SPEC-bonusy-etap-B2) ──
   clientCodes: () => req<ClientCodesState>(`/api/client/codes`),
   addSavedCode: (code: string, note?: string) =>

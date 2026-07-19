@@ -74,6 +74,19 @@ export function registerRoutes(app: Express) {
   app.post("/api/visit/:token/cancel", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/cancel/${enc(req.params.token)}`, req.body ?? {}, loc(req))));
 
+  // ── Powiadomienia push (Web Push) + sygnał instalacji ──
+  app.get("/api/client/push/vapid-key", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/client/push/vapid-key`, loc(req), auth(req))));
+
+  app.post("/api/client/push/subscribe", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/push/subscribe`, req.body ?? {}, loc(req), auth(req))));
+
+  app.post("/api/client/push/unsubscribe", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/push/unsubscribe`, req.body ?? {}, loc(req), auth(req))));
+
+  app.post("/api/client/app-event", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/app-event`, req.body ?? {}, loc(req), auth(req))));
+
   // ── Moje kody (SPEC-bonusy-etap-B2) ──
   app.get("/api/client/codes", async (req, res) =>
     relay(res, await bookseroGet(`/api/public/client/codes`, loc(req), auth(req))));
