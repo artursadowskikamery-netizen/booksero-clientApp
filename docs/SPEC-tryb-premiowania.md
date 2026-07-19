@@ -74,6 +74,34 @@ raporcie.
    potwierdzenie („Czy na pewno kod o wartości 500 zł?").
 7. **Pomoc kontekstowa**: ikona (?) przy nagłówku z pełnym, prostym
    opisem działania obu trybów.
+8. **„Po co premiować klientów?" — sekcja korzyści dla managera.**
+   Rozwijany panel (albo stały box) na górze sekcji, językiem biznesowym
+   (nie technicznym), tłumaczący CEL rozwiązania:
+   - **Punkty** budują lojalność i powroty: klient zbiera, awansuje na
+     poziomy i wraca, żeby nie „zmarnować" dorobku.
+   - **Kody rabatowe** napędzają SZYBKIE rezerwacje: kod ma termin
+     ważności (np. 21 dni), więc klient rezerwuje wizytę PRZED jego
+     wygaśnięciem — kalendarz zapełnia się teraz, nie „kiedyś".
+   - **Polecenia** to najtańszy kanał pozyskania: nowy klient przychodzi
+     z rekomendacji, a nagroda należy się dopiero po jego ODBYTEJ
+     wizycie — płacisz wyłącznie za realny efekt.
+   - **Strategia**: tryb można zmieniać w czasie — np. na co dzień
+     delikatne premiowanie punktami (bez „rozpieszczania" klientów),
+     a gdy kalendarz wymaga zapełnienia — przełączenie na kody rabatowe:
+     klient dostaje namacalny rabat z terminem, który motywuje do
+     szybkiej rezerwacji.
+   Tekst ma odpowiadać na pytanie „dlaczego warto to włączyć?" — pełne
+   tłumaczenia ×16 (§4).
+
+### 2b. Wiedza Sero
+
+Zaktualizować wiedzę asystenta (server/services/assistant.ts — sekcja
+o aplikacji klienckiej) tak, aby Sero potrafił:
+- wyjaśnić managerowi CEL premiowania w aplikacji (korzyści z §2.8),
+- doradzić wybór trybu (punkty = lojalność i powroty; kody = szybkie
+  rezerwacje przez termin ważności),
+- wytłumaczyć zasady: jeden tryb na raz, wartości osobno per tryb,
+  limity wydawania kodów jako zabezpieczenie kosztów.
 
 ## 2a. Limity wydawania kodów (per tenant, ukryte przed klientem)
 
@@ -146,6 +174,9 @@ nowych endpointów dla appki).
    wszystkich rekordach osoby (nie do obejścia innym salonem sieci).
 7. Stary zapis `settings.referrals` czytany poprawnie jako fallback
    (istniejący tenant nie traci konfiguracji po wdrożeniu).
+7a. Sekcja „Po co premiować klientów?" widoczna w panelu z treścią
+   korzyści (§2.8); Sero odpowiada sensownie na pytania „po co mi tryb
+   premiowania?" i „punkty czy kody?" (§2b).
 8. Audyt i18n: nowe klucze przetłumaczone we WSZYSTKICH 16 plikach
    locale (zero pustych/kopii polskiego w innych językach).
 9. TypeScript kompiluje; informacja czy db:push potrzebny (raczej nie).
