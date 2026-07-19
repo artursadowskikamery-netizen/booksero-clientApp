@@ -120,7 +120,9 @@ Program pojawia się w aplikacji TYLKO, gdy tenant włączy suwak
   za usługi/produkty, bonusy za urodziny, opinię itd.).
 
 Zakładka Bonusy ma pasek pod-zakładek na dole (nad menu): Punkty ·
-Nagrody · Polecaj — pokazują się tylko te moduły, które tenant włączył.
+Nagrody · Polecaj · Moje kody — pokazują się tylko te moduły, które
+tenant włączył. Gdy tenant wyłączy WSZYSTKIE funkcje bonusowe, ikona
+Bonusy znika z dolnego menu całkowicie.
 
 ## 7a. Bonusy — Polecenia SMS (Etap B)
 
@@ -153,7 +155,42 @@ Jak działa (pod-zakładka „Polecaj" w Bonusach):
 7. Tryb testowy programu lojalnościowego: bonusy są rejestrowane, ale
    NIE zmieniają realnego salda — do testów wyłączyć tryb testowy.
 
-Plan kolejnych etapów (jeszcze NIE dostępne): notatnik kodów rabatowych,
+## 7a-bis. Kody rabatowe (imienne) i „Moje kody" (Etap B2)
+
+**Najważniejsza zasada: KODY RABATOWE ≠ PUNKTY i ≠ VOUCHERY prezentowe.**
+
+1. **Kod rabatowy** to nagroda za AKCJE w aplikacji (np. polecenie),
+   generowana automatycznie przez system: format `PREFIKS-XXXXXX`
+   (prefiks, np. V25, i ważność w dniach ustawia Admin/Menedżer w
+   „Akcjach premiowanych"). Kod NIE jest kupowany za punkty i NIE
+   zmniejsza punktów — to całkowicie osobny świat.
+2. **Kod jest IMIENNY**: przypisany do konkretnego klienta. Przy
+   rozliczeniu wizyty system sprawdza, czy klient wizyty to właściciel
+   kodu — kod na cudzej wizycie zostaje ODRZUCONY (recepcja widzi
+   komunikat i etykietę „imienny" z nazwiskiem właściciela).
+3. **Kod działa TYLKO NA USŁUGI**: obniża sumę usług na rozliczeniu;
+   produkty zawsze pełnopłatne. Kod jest JEDNORAZOWY — przy realizacji
+   schodzi całe saldo; jeśli kwota kodu przewyższa sumę usług,
+   nadwyżka przepada (przykład: usługa 200 zł + produkt 100 zł,
+   kod 25 zł → do zapłaty 175 + 100).
+4. **Voucher kwotowy (prezentowy)** to INNY twór: na okaziciela, można
+   go podarować, system nie kontroluje realizującego. Zasady bez zmian.
+5. **Pod-zakładka „Moje kody"** (suwak „Notatnik kodów" per tenant):
+   klient widzi wszystkie swoje kody/vouchery (kod — kliknięcie
+   kopiuje, kwota, ważność, status: Aktywny/Wykorzystany/Wygasł) oraz
+   ma notatnik własnych kodów (dodaj z notatką, oznacz wykorzystany,
+   usuń; limit 100 wpisów).
+
+FAQ:
+- „Kod nie działa przy rozliczeniu" → najpewniej wizyta nie należy do
+  właściciela kodu (kod imienny) albo kwota przekracza sumę usług
+  (system podpowiada maksimum) albo kod wygasł.
+- „Gdzie klient znajdzie swój kod?" → aplikacja → Bonusy → Moje kody.
+- „Czy można oddać kod koledze?" → nie, kod jest imienny; do dawania
+  prezentów służą vouchery kwotowe.
+
+Plan kolejnych etapów (jeszcze NIE dostępne): tryb premiowania
+Punkty/Kody z limitami wydawania (w budowie), akcje aktywnościowe,
 misje z voucherem, rabaty czasowe. Każda funkcja będzie miała własny
 suwak per tenant.
 
