@@ -25,6 +25,12 @@
      odróżnione od voucherów na okaziciela (etykieta „imienny").
    Kod generowany automatycznie, aktywny od razu, realizowany przy
    rozliczeniu wizyty w panelu.
+   - **Kod rabatowy działa WYŁĄCZNIE NA USŁUGI**: kwota kodu pomniejsza
+     sumę usług na rozliczeniu; produktów NIE obejmuje (za produkty
+     klient płaci pełną cenę). Gdy kwota kodu przewyższa sumę usług —
+     rabat ogranicza się do sumy usług, kod jest jednorazowy, a
+     niewykorzystana nadwyżka przepada. Vouchery kwotowe na okaziciela:
+     zasady jak dotychczas (bez zmian).
 3. **Kody wydaje system za OKREŚLONE CZYNNOŚCI/AKTYWNOŚCI w aplikacji**,
    zgodnie z ustawieniami Managera/Admina („Akcje premiowane"):
    która czynność daje kod, jaka KWOTA (zł), jaki PREFIKS kodu.
@@ -146,6 +152,10 @@ niedostępność funkcji); reużyć istniejące, gdzie pasują.
    próba realizacji na wizycie INNEGO klienta → odmowa z komunikatem
    (kod imienny). Zwykły voucher kwotowy (na okaziciela) działa
    bez zmian — brak kontroli realizującego.
+5a. Kod obniża TYLKO usługi: rozliczenie usługa 200 zł + produkt 100 zł
+   z kodem 25 zł → do zapłaty 175 zł za usługę + 100 zł za produkt.
+   Kod 300 zł przy usługach za 200 zł → rabat 200 zł (do zera), produkty
+   pełnopłatne, kod zużyty (nadwyżka przepada).
 6. Regresja poleceń: pełny obieg Etapu B (SMS → dołączenie → zakończona
    wizyta → nagrody) działa bez zmian.
 7. TypeScript kompiluje; `npm run db:push` wykonalny (ADD-only).
