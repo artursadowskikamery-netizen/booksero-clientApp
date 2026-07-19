@@ -58,7 +58,7 @@ export default function Rewards() {
     d?.pendingClaims?.find((c) => c.rewardName === rewardName)?.id ?? null;
 
   return (
-    <div className="max-w-md mx-auto min-h-screen p-4 pb-24">
+    <div className={`max-w-md mx-auto min-h-screen p-4 ${d?.joined ? "pb-40" : "pb-24"}`}>
       <header className="flex items-center gap-2 py-2">
         <button
           onClick={() => navigate(`/salon/${salonId}`)}
@@ -105,24 +105,9 @@ export default function Rewards() {
         </div>
       )}
 
-      {/* Członek programu: pod-zakładki (Punkty | Nagrody) + treść modułu */}
+      {/* Członek programu: treść modułu (pod-zakładki na dole, nad menu) */}
       {d?.joined && (
         <>
-          <div className="flex gap-2 overflow-x-auto pb-1 mt-1 mb-2 scrollbar-none">
-            {([
-              { key: "points", label: t("loyalty.tabPoints") },
-              { key: "rewards", label: t("loyalty.rewards") },
-            ] as const).map((m) => (
-              <button
-                key={m.key}
-                onClick={() => setTab(m.key)}
-                className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${tab === m.key ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
-              >
-                {m.label}
-              </button>
-            ))}
-          </div>
-
           {tab === "points" && (
           <div className="rounded-2xl border border-brand bg-surface p-5 mt-2">
             <div className="text-[11px] font-bold uppercase tracking-widest text-muted">{t("loyalty.balance")}</div>
@@ -201,6 +186,26 @@ export default function Rewards() {
             </>
           )}
         </>
+      )}
+
+      {/* Pasek pod-zakładek — przyklejony na dole, nad menu dolnym (jak kategorie w Rezerwuj) */}
+      {d?.joined && (
+        <div className="fixed bottom-16 inset-x-0 z-10 bg-bg border-t border-line">
+          <div className="max-w-md mx-auto px-4 py-2.5 flex gap-2 overflow-x-auto scrollbar-none">
+            {([
+              { key: "points", label: t("loyalty.tabPoints") },
+              { key: "rewards", label: t("loyalty.rewards") },
+            ] as const).map((m) => (
+              <button
+                key={m.key}
+                onClick={() => setTab(m.key)}
+                className={`shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold ${tab === m.key ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <BottomNav salonId={salonId} active="rewards" />
