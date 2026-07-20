@@ -93,6 +93,17 @@ export async function enablePush(): Promise<"ok" | "denied" | "disabled" | "unsu
   return ensurePushSubscribed();
 }
 
+// Świadome WYŁĄCZENIE push przez klienta (suwak w Profilu) — bez wylogowania.
+// Wyrejestrowuje urządzenie w Booksero i kasuje lokalną subskrypcję.
+export async function disablePush(): Promise<void> {
+  if (!pushSupported()) return;
+  const reg = await navigator.serviceWorker.ready;
+  const sub = await reg.pushManager.getSubscription();
+  if (!sub) return;
+  await api.pushUnsubscribe(sub.endpoint).catch(() => {});
+  await sub.unsubscribe().catch(() => {});
+}
+
 // Przy wylogowaniu: wyrejestruj urządzenie na serwerze (jeszcze z tokenem!)
 // i skasuj lokalną subskrypcję.
 export async function disablePushOnLogout(): Promise<void> {

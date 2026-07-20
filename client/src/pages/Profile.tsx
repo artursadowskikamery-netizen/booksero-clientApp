@@ -5,7 +5,7 @@ import { ChevronLeft, User, LogOut, MapPin, Bell, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
-import { getPushState, enablePush, disablePushOnLogout, type PushState } from "../lib/push";
+import { getPushState, enablePush, disablePush, disablePushOnLogout, type PushState } from "../lib/push";
 import BottomNav from "../components/BottomNav";
 
 // Profil zalogowanego klienta (Faza 2). Bez sesji → przekierowanie na logowanie.
@@ -37,13 +37,18 @@ export default function Profile() {
   useEffect(() => {
     getPushState().then(setPush).catch(() => setPush(null));
   }, []);
-  const onEnablePush = async () => {
+  const onTogglePush = async () => {
     setPushBusy(true);
     try {
-      const r = await enablePush();
-      if (r === "ok") setPush("subscribed");
-      else if (r === "denied") setPush("denied");
-      else setPush("disabled"); // push wyłączony na serwerze — chowamy sekcję
+      if (push === "subscribed") {
+        await disablePush();
+        setPush("default");
+      } else {
+        const r = await enablePush();
+        if (r === "ok") setPush("subscribed");
+        else if (r === "denied") setPush("denied");
+        else setPush("disabled"); // push wyłączony na serwerze — chowamy sekcję
+      }
     } finally {
       setPushBusy(false);
     }
@@ -107,20 +112,25 @@ export default function Profile() {
             </>
           )}
 
-          {/* Powiadomienia push — sekcja znika, gdy nieobsługiwane/wyłączone */}
+          {/* Powiadomienia push — suwak on/off; sekcja znika, gdy nieobsługiwane */}
           {push && push !== "unsupported" && push !== "disabled" && (
             <div className="rounded-2xl bg-surface border border-line p-4 mt-5">
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted mb-2">
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted mb-3">
                 <Bell size={13} /> {t("push.title")}
               </div>
-              {push === "subscribed" && (
-                <div className="flex items-center gap-2 text-sm text-brand font-semibold">
-                  <Check size={16} /> {t("push.enabled")}
-                </div>
-              )}
-              {push === "default" && (
-                <button className="btn-primary" disabled={pushBusy} onClick={onEnablePush}>
-                  {pushBusy ? t("common.loading") : t("push.enable")}
+              {(push === "subscribed" || push === "default") && (
+                <button
+                  onClick={onTogglePush}
+                  disabled={pushBusy}
+                  className="w-full flex items-center justify-between disabled:opacity-60"
+                >
+                  <span className="text-sm font-semibold">
+                    {push === "subscribed" ? t("push.enabled") : t("push.enable")}
+                  </span>
+                  {/* Suwak on/off */}
+                  <span className={`w-11 h-6 rounded-full p-0.5 transition-colors ${push === "subscribed" ? "bg-brand" : "bg-surface-2 border border-line"}`}>
+                    <span className={`block w-5 h-5 rounded-full bg-white transition-transform ${push === "subscribed" ? "translate-x-5" : ""}`} />
+                  </span>
                 </button>
               )}
               {push === "denied" && <p className="text-sm text-muted">{t("push.denied")}</p>}
