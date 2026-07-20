@@ -1,6 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { bookseroGet, bookseroPost, bookseroPatch, bookseroDelete } from "./booksero";
 import { APP_VERSION } from "@shared/version";
+import { ASSET_LINKS } from "./assetlinks";
 
 const enc = encodeURIComponent;
 const loc = (req: Request) => String(req.headers["x-locale"] || "pl").slice(0, 2);
@@ -13,6 +14,11 @@ export function registerRoutes(app: Express) {
   // Wersja WDROŻONEJ aplikacji — aplikacja porównuje ją z wersją, z którą
   // się załadowała (sprawdzanie aktualizacji w Profilu).
   app.get("/api/app-version", (_req, res) => res.json({ version: APP_VERSION }));
+
+  // Digital Asset Links dla TWA (Google Play). Trasa jawna, bo express.static
+  // blokuje ścieżki z kropką (.well-known). Treść w server/assetlinks.ts.
+  app.get("/.well-known/assetlinks.json", (_req, res) =>
+    res.type("application/json").send(JSON.stringify(ASSET_LINKS)));
 
   // Slug wizytówki → { salonId }. (Numer ML nie ma dziś publicznego rozwiązania.)
   app.get("/api/resolve/:slug", async (req, res) =>
