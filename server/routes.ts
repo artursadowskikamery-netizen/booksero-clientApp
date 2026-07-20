@@ -1,5 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { bookseroGet, bookseroPost, bookseroPatch, bookseroDelete } from "./booksero";
+import { APP_VERSION } from "@shared/version";
 
 const enc = encodeURIComponent;
 const loc = (req: Request) => String(req.headers["x-locale"] || "pl").slice(0, 2);
@@ -8,6 +9,10 @@ const relay = (res: Response, r: { status: number; data: unknown }) => res.statu
 // BFF: mapuje /api/* aplikacji na publiczne /api/public/* Booksero.
 export function registerRoutes(app: Express) {
   app.get("/api/health", (_req, res) => res.json({ ok: true, service: "booksero-clientapp" }));
+
+  // Wersja WDROŻONEJ aplikacji — aplikacja porównuje ją z wersją, z którą
+  // się załadowała (sprawdzanie aktualizacji w Profilu).
+  app.get("/api/app-version", (_req, res) => res.json({ version: APP_VERSION }));
 
   // Slug wizytówki → { salonId }. (Numer ML nie ma dziś publicznego rozwiązania.)
   app.get("/api/resolve/:slug", async (req, res) =>

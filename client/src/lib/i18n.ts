@@ -34,6 +34,7 @@ const resources = {
     push: { title: "Powiadomienia", enable: "Włącz powiadomienia", enabled: "Powiadomienia włączone", denied: "Powiadomienia są zablokowane w ustawieniach przeglądarki.", iosHint: "Dodaj aplikację do ekranu głównego, aby włączyć powiadomienia.", bookingPrompt: "Włącz powiadomienia, aby dostawać przypomnienia o wizytach." },
     qr: { hint: "Nakieruj aparat na kod QR salonu.", denied: "Brak dostępu do aparatu. Zezwól na aparat w ustawieniach przeglądarki.", invalid: "To nie jest kod QR BookSero." },
     promo: { tab: "Promocje", cta: "Rezerwuj w promocji", none: "Brak aktywnych promocji w tym salonie.", allServices: "wszystkie usługi", selectedServices: "wybrane usługi", bannerTitle: "Promocyjne godziny" },
+    version: { check: "Sprawdź aktualizacje", checking: "Sprawdzanie…", upToDate: "Masz najnowszą wersję", available: "Dostępna nowa wersja", update: "Zaktualizuj" },
   }},
   en: { translation: {
     common: { book: "Book an appointment", bookCouple: "Book for two", next: "Next", back: "Back", chooseCountry: "Choose a country", chooseCity: "Choose a city", chooseSalon: "Choose a salon", login: "Log in", loading: "Loading…", services: "Services", team: "Team", reviews: "Reviews", soon: "Coming soon", language: "Language", pageNotFound: "Page not found." },
@@ -50,6 +51,7 @@ const resources = {
     push: { title: "Notifications", enable: "Enable notifications", enabled: "Notifications enabled", denied: "Notifications are blocked in your browser settings.", iosHint: "Add the app to your Home Screen to enable notifications.", bookingPrompt: "Enable notifications to get visit reminders." },
     qr: { hint: "Point the camera at the salon QR code.", denied: "No camera access. Allow the camera in your browser settings.", invalid: "This is not a BookSero QR code." },
     promo: { tab: "Deals", cta: "Book a deal", none: "No active deals at this salon.", allServices: "all services", selectedServices: "selected services", bannerTitle: "Happy hours" },
+    version: { check: "Check for updates", checking: "Checking…", upToDate: "You have the latest version", available: "A new version is available", update: "Update" },
   }},
   de: { translation: {
     common: { book: "Termin buchen", bookCouple: "Für zwei buchen", next: "Weiter", back: "Zurück", chooseCountry: "Land wählen", chooseCity: "Stadt wählen", chooseSalon: "Salon wählen", login: "Anmelden", loading: "Wird geladen…", services: "Leistungen", team: "Team", reviews: "Bewertungen", soon: "Bald verfügbar", language: "Sprache", pageNotFound: "Seite nicht gefunden." },
@@ -66,6 +68,7 @@ const resources = {
     push: { title: "Benachrichtigungen", enable: "Benachrichtigungen aktivieren", enabled: "Benachrichtigungen aktiv", denied: "Benachrichtigungen sind in den Browser-Einstellungen blockiert.", iosHint: "Füge die App zum Home-Bildschirm hinzu, um Benachrichtigungen zu aktivieren.", bookingPrompt: "Aktiviere Benachrichtigungen, um an Termine erinnert zu werden." },
     qr: { hint: "Richte die Kamera auf den QR-Code des Salons.", denied: "Kein Kamerazugriff. Erlaube die Kamera in den Browser-Einstellungen.", invalid: "Das ist kein BookSero-QR-Code." },
     promo: { tab: "Aktionen", cta: "Angebot buchen", none: "Keine aktiven Aktionen in diesem Salon.", allServices: "alle Leistungen", selectedServices: "ausgewählte Leistungen", bannerTitle: "Aktionszeiten" },
+    version: { check: "Nach Updates suchen", checking: "Wird geprüft…", upToDate: "Du hast die neueste Version", available: "Eine neue Version ist verfügbar", update: "Aktualisieren" },
   }},
   nl: { translation: {
     common: { book: "Afspraak boeken", bookCouple: "Boek voor twee", next: "Volgende", back: "Terug", chooseCountry: "Kies een land", chooseCity: "Kies een stad", chooseSalon: "Kies een salon", login: "Inloggen", loading: "Laden…", services: "Diensten", team: "Team", reviews: "Beoordelingen", soon: "Binnenkort beschikbaar", language: "Taal", pageNotFound: "Pagina niet gevonden." },
@@ -82,6 +85,7 @@ const resources = {
     push: { title: "Meldingen", enable: "Meldingen inschakelen", enabled: "Meldingen ingeschakeld", denied: "Meldingen zijn geblokkeerd in je browserinstellingen.", iosHint: "Zet de app op je beginscherm om meldingen in te schakelen.", bookingPrompt: "Schakel meldingen in om afspraakherinneringen te krijgen." },
     qr: { hint: "Richt de camera op de QR-code van de salon.", denied: "Geen cameratoegang. Sta de camera toe in je browserinstellingen.", invalid: "Dit is geen BookSero-QR-code." },
     promo: { tab: "Acties", cta: "Boek een actie", none: "Geen actieve acties in deze salon.", allServices: "alle behandelingen", selectedServices: "geselecteerde behandelingen", bannerTitle: "Actie-uren" },
+    version: { check: "Controleer op updates", checking: "Controleren…", upToDate: "Je hebt de nieuwste versie", available: "Er is een nieuwe versie beschikbaar", update: "Bijwerken" },
   }},
   cs: { translation: {
     common: { book: "Rezervovat termín", bookCouple: "Rezervovat pro dva", next: "Dále", back: "Zpět", chooseCountry: "Vyberte zemi", chooseCity: "Vyberte město", chooseSalon: "Vyberte salon", login: "Přihlásit se", loading: "Načítání…", services: "Služby", team: "Tým", reviews: "Recenze", soon: "Již brzy", language: "Jazyk", pageNotFound: "Stránka nenalezena." },
@@ -98,6 +102,7 @@ const resources = {
     push: { title: "Oznámení", enable: "Zapnout oznámení", enabled: "Oznámení zapnutá", denied: "Oznámení jsou zablokovaná v nastavení prohlížeče.", iosHint: "Přidejte aplikaci na plochu, abyste zapnuli oznámení.", bookingPrompt: "Zapněte oznámení a dostávejte připomenutí návštěv." },
     qr: { hint: "Namiřte fotoaparát na QR kód salonu.", denied: "Není přístup k fotoaparátu. Povolte jej v nastavení prohlížeče.", invalid: "Toto není QR kód BookSero." },
     promo: { tab: "Akce", cta: "Rezervovat akci", none: "Žádné aktivní akce v tomto salonu.", allServices: "všechny služby", selectedServices: "vybrané služby", bannerTitle: "Zvýhodněné hodiny" },
+    version: { check: "Zkontrolovat aktualizace", checking: "Kontrola…", upToDate: "Máš nejnovější verzi", available: "K dispozici je nová verze", update: "Aktualizovat" },
   }},
   sv: { translation: {
     common: { book: "Boka tid", bookCouple: "Boka för två", next: "Nästa", back: "Tillbaka", chooseCountry: "Välj land", chooseCity: "Välj stad", chooseSalon: "Välj salong", login: "Logga in", loading: "Laddar…", services: "Tjänster", team: "Team", reviews: "Recensioner", soon: "Kommer snart", language: "Språk", pageNotFound: "Sidan hittades inte." },
@@ -114,6 +119,7 @@ const resources = {
     push: { title: "Aviseringar", enable: "Aktivera aviseringar", enabled: "Aviseringar på", denied: "Aviseringar är blockerade i webbläsarens inställningar.", iosHint: "Lägg till appen på hemskärmen för att aktivera aviseringar.", bookingPrompt: "Aktivera aviseringar för att få påminnelser om besök." },
     qr: { hint: "Rikta kameran mot salongens QR-kod.", denied: "Ingen kameraåtkomst. Tillåt kameran i webbläsarens inställningar.", invalid: "Detta är inte en BookSero-QR-kod." },
     promo: { tab: "Erbjudanden", cta: "Boka erbjudande", none: "Inga aktiva erbjudanden i den här salongen.", allServices: "alla tjänster", selectedServices: "valda tjänster", bannerTitle: "Kampanjtider" },
+    version: { check: "Sök efter uppdateringar", checking: "Kontrollerar…", upToDate: "Du har den senaste versionen", available: "En ny version är tillgänglig", update: "Uppdatera" },
   }},
   es: { translation: {
     common: { book: "Reservar cita", bookCouple: "Reservar para dos", next: "Siguiente", back: "Atrás", chooseCountry: "Elige un país", chooseCity: "Elige una ciudad", chooseSalon: "Elige un salón", login: "Iniciar sesión", loading: "Cargando…", services: "Servicios", team: "Equipo", reviews: "Opiniones", soon: "Próximamente", language: "Idioma", pageNotFound: "Página no encontrada." },
@@ -130,6 +136,7 @@ const resources = {
     push: { title: "Notificaciones", enable: "Activar notificaciones", enabled: "Notificaciones activadas", denied: "Las notificaciones están bloqueadas en los ajustes del navegador.", iosHint: "Añade la aplicación a la pantalla de inicio para activar las notificaciones.", bookingPrompt: "Activa las notificaciones para recibir recordatorios de tus citas." },
     qr: { hint: "Apunta la cámara al código QR del salón.", denied: "Sin acceso a la cámara. Permítela en los ajustes del navegador.", invalid: "Este no es un código QR de BookSero." },
     promo: { tab: "Promociones", cta: "Reservar oferta", none: "No hay promociones activas en este salón.", allServices: "todos los servicios", selectedServices: "servicios seleccionados", bannerTitle: "Horas promocionales" },
+    version: { check: "Buscar actualizaciones", checking: "Comprobando…", upToDate: "Tienes la última versión", available: "Hay una versión nueva disponible", update: "Actualizar" },
   }},
   fr: { translation: {
     common: { book: "Prendre rendez-vous", bookCouple: "Réserver pour deux", next: "Suivant", back: "Retour", chooseCountry: "Choisissez un pays", chooseCity: "Choisissez une ville", chooseSalon: "Choisissez un salon", login: "Se connecter", loading: "Chargement…", services: "Prestations", team: "Équipe", reviews: "Avis", soon: "Bientôt disponible", language: "Langue", pageNotFound: "Page introuvable." },
@@ -146,6 +153,7 @@ const resources = {
     push: { title: "Notifications", enable: "Activer les notifications", enabled: "Notifications activées", denied: "Les notifications sont bloquées dans les réglages du navigateur.", iosHint: "Ajoutez l’application à l’écran d’accueil pour activer les notifications.", bookingPrompt: "Activez les notifications pour recevoir des rappels de rendez-vous." },
     qr: { hint: "Pointez l’appareil photo vers le QR code du salon.", denied: "Pas d’accès à la caméra. Autorisez-la dans les réglages du navigateur.", invalid: "Ce n’est pas un QR code BookSero." },
     promo: { tab: "Promos", cta: "Réserver une offre", none: "Aucune promo active dans ce salon.", allServices: "tous les soins", selectedServices: "soins sélectionnés", bannerTitle: "Heures promo" },
+    version: { check: "Rechercher des mises à jour", checking: "Vérification…", upToDate: "Tu as la dernière version", available: "Une nouvelle version est disponible", update: "Mettre à jour" },
   }},
   it: { translation: {
     common: { book: "Prenota un appuntamento", bookCouple: "Prenota per due", next: "Avanti", back: "Indietro", chooseCountry: "Scegli un paese", chooseCity: "Scegli una città", chooseSalon: "Scegli un salone", login: "Accedi", loading: "Caricamento…", services: "Servizi", team: "Team", reviews: "Recensioni", soon: "In arrivo", language: "Lingua", pageNotFound: "Pagina non trovata." },
@@ -162,6 +170,7 @@ const resources = {
     push: { title: "Notifiche", enable: "Attiva le notifiche", enabled: "Notifiche attive", denied: "Le notifiche sono bloccate nelle impostazioni del browser.", iosHint: "Aggiungi l’app alla schermata Home per attivare le notifiche.", bookingPrompt: "Attiva le notifiche per ricevere promemoria delle visite." },
     qr: { hint: "Inquadra il codice QR del salone.", denied: "Nessun accesso alla fotocamera. Consentila nelle impostazioni del browser.", invalid: "Questo non è un codice QR BookSero." },
     promo: { tab: "Promozioni", cta: "Prenota l’offerta", none: "Nessuna promozione attiva in questo salone.", allServices: "tutti i servizi", selectedServices: "servizi selezionati", bannerTitle: "Orari promo" },
+    version: { check: "Cerca aggiornamenti", checking: "Verifica…", upToDate: "Hai la versione più recente", available: "È disponibile una nuova versione", update: "Aggiorna" },
   }},
   hr: { translation: {
     common: { book: "Rezerviraj termin", bookCouple: "Rezerviraj za dvoje", next: "Dalje", back: "Natrag", chooseCountry: "Odaberi državu", chooseCity: "Odaberi grad", chooseSalon: "Odaberi salon", login: "Prijava", loading: "Učitavanje…", services: "Usluge", team: "Tim", reviews: "Recenzije", soon: "Uskoro", language: "Jezik", pageNotFound: "Stranica nije pronađena." },
@@ -178,6 +187,7 @@ const resources = {
     push: { title: "Obavijesti", enable: "Uključi obavijesti", enabled: "Obavijesti uključene", denied: "Obavijesti su blokirane u postavkama preglednika.", iosHint: "Dodaj aplikaciju na početni zaslon da uključiš obavijesti.", bookingPrompt: "Uključi obavijesti da primaš podsjetnike na termine." },
     qr: { hint: "Usmjeri kameru na QR kod salona.", denied: "Nema pristupa kameri. Dopusti kameru u postavkama preglednika.", invalid: "Ovo nije BookSero QR kod." },
     promo: { tab: "Akcije", cta: "Rezerviraj akciju", none: "Nema aktivnih akcija u ovom salonu.", allServices: "sve usluge", selectedServices: "odabrane usluge", bannerTitle: "Akcijski termini" },
+    version: { check: "Provjeri ažuriranja", checking: "Provjera…", upToDate: "Imaš najnoviju verziju", available: "Dostupna je nova verzija", update: "Ažuriraj" },
   }},
   el: { translation: {
     common: { book: "Κλείσε ραντεβού", bookCouple: "Κράτηση για δύο", next: "Επόμενο", back: "Πίσω", chooseCountry: "Επίλεξε χώρα", chooseCity: "Επίλεξε πόλη", chooseSalon: "Επίλεξε σαλόνι", login: "Σύνδεση", loading: "Φόρτωση…", services: "Υπηρεσίες", team: "Ομάδα", reviews: "Κριτικές", soon: "Έρχεται σύντομα", language: "Γλώσσα", pageNotFound: "Η σελίδα δεν βρέθηκε." },
@@ -194,6 +204,7 @@ const resources = {
     push: { title: "Ειδοποιήσεις", enable: "Ενεργοποίηση ειδοποιήσεων", enabled: "Οι ειδοποιήσεις είναι ενεργές", denied: "Οι ειδοποιήσεις είναι αποκλεισμένες στις ρυθμίσεις του προγράμματος περιήγησης.", iosHint: "Πρόσθεσε την εφαρμογή στην αρχική οθόνη για να ενεργοποιήσεις τις ειδοποιήσεις.", bookingPrompt: "Ενεργοποίησε τις ειδοποιήσεις για υπενθυμίσεις ραντεβού." },
     qr: { hint: "Στόχευσε την κάμερα στον κωδικό QR του σαλονιού.", denied: "Δεν υπάρχει πρόσβαση στην κάμερα. Επίτρεψέ την στις ρυθμίσεις του προγράμματος περιήγησης.", invalid: "Αυτός δεν είναι κωδικός QR του BookSero." },
     promo: { tab: "Προσφορές", cta: "Κράτηση προσφοράς", none: "Δεν υπάρχουν ενεργές προσφορές σε αυτό το σαλόνι.", allServices: "όλες οι υπηρεσίες", selectedServices: "επιλεγμένες υπηρεσίες", bannerTitle: "Ώρες προσφοράς" },
+    version: { check: "Έλεγχος ενημερώσεων", checking: "Έλεγχος…", upToDate: "Έχεις την πιο πρόσφατη έκδοση", available: "Διαθέσιμη νέα έκδοση", update: "Ενημέρωση" },
   }},
   tr: { translation: {
     common: { book: "Randevu al", bookCouple: "İki kişilik randevu", next: "İleri", back: "Geri", chooseCountry: "Ülke seç", chooseCity: "Şehir seç", chooseSalon: "Salon seç", login: "Giriş yap", loading: "Yükleniyor…", services: "Hizmetler", team: "Ekip", reviews: "Yorumlar", soon: "Çok yakında", language: "Dil", pageNotFound: "Sayfa bulunamadı." },
@@ -210,6 +221,7 @@ const resources = {
     push: { title: "Bildirimler", enable: "Bildirimleri aç", enabled: "Bildirimler açık", denied: "Bildirimler tarayıcı ayarlarında engelli.", iosHint: "Bildirimleri açmak için uygulamayı ana ekrana ekle.", bookingPrompt: "Randevu hatırlatmaları için bildirimleri aç." },
     qr: { hint: "Kamerayı salonun QR koduna doğrult.", denied: "Kameraya erişim yok. Tarayıcı ayarlarından kameraya izin ver.", invalid: "Bu bir BookSero QR kodu değil." },
     promo: { tab: "Kampanyalar", cta: "Kampanyayı rezerve et", none: "Bu salonda aktif kampanya yok.", allServices: "tüm hizmetler", selectedServices: "seçili hizmetler", bannerTitle: "Kampanya saatleri" },
+    version: { check: "Güncellemeleri denetle", checking: "Denetleniyor…", upToDate: "En son sürüme sahipsin", available: "Yeni sürüm mevcut", update: "Güncelle" },
   }},
   bg: { translation: {
     common: { book: "Запази час", bookCouple: "Резервация за двама", next: "Напред", back: "Назад", chooseCountry: "Избери държава", chooseCity: "Избери град", chooseSalon: "Избери салон", login: "Вход", loading: "Зареждане…", services: "Услуги", team: "Екип", reviews: "Отзиви", soon: "Очаквайте скоро", language: "Език", pageNotFound: "Страницата не е намерена." },
@@ -226,6 +238,7 @@ const resources = {
     push: { title: "Известия", enable: "Включи известията", enabled: "Известията са включени", denied: "Известията са блокирани в настройките на браузъра.", iosHint: "Добави приложението на началния екран, за да включиш известията.", bookingPrompt: "Включи известията, за да получаваш напомняния за посещения." },
     qr: { hint: "Насочи камерата към QR кода на салона.", denied: "Няма достъп до камерата. Разреши я в настройките на браузъра.", invalid: "Това не е QR код на BookSero." },
     promo: { tab: "Промоции", cta: "Резервирай промоция", none: "Няма активни промоции в този салон.", allServices: "всички услуги", selectedServices: "избрани услуги", bannerTitle: "Промо часове" },
+    version: { check: "Провери за актуализации", checking: "Проверка…", upToDate: "Имаш най-новата версия", available: "Налична е нова версия", update: "Актуализирай" },
   }},
   fi: { translation: {
     common: { book: "Varaa aika", bookCouple: "Varaa kahdelle", next: "Seuraava", back: "Takaisin", chooseCountry: "Valitse maa", chooseCity: "Valitse kaupunki", chooseSalon: "Valitse salonki", login: "Kirjaudu", loading: "Ladataan…", services: "Palvelut", team: "Tiimi", reviews: "Arvostelut", soon: "Tulossa pian", language: "Kieli", pageNotFound: "Sivua ei löytynyt." },
@@ -242,6 +255,7 @@ const resources = {
     push: { title: "Ilmoitukset", enable: "Ota ilmoitukset käyttöön", enabled: "Ilmoitukset käytössä", denied: "Ilmoitukset on estetty selaimen asetuksissa.", iosHint: "Lisää sovellus aloitusnäytölle ottaaksesi ilmoitukset käyttöön.", bookingPrompt: "Ota ilmoitukset käyttöön saadaksesi muistutuksia käynneistä." },
     qr: { hint: "Suuntaa kamera salongin QR-koodiin.", denied: "Ei pääsyä kameraan. Salli kamera selaimen asetuksissa.", invalid: "Tämä ei ole BookSero-QR-koodi." },
     promo: { tab: "Tarjoukset", cta: "Varaa tarjous", none: "Ei aktiivisia tarjouksia tässä salongissa.", allServices: "kaikki palvelut", selectedServices: "valitut palvelut", bannerTitle: "Tarjousajat" },
+    version: { check: "Tarkista päivitykset", checking: "Tarkistetaan…", upToDate: "Sinulla on uusin versio", available: "Uusi versio saatavilla", update: "Päivitä" },
   }},
   no: { translation: {
     common: { book: "Bestill time", bookCouple: "Bestill for to", next: "Neste", back: "Tilbake", chooseCountry: "Velg land", chooseCity: "Velg by", chooseSalon: "Velg salong", login: "Logg inn", loading: "Laster…", services: "Tjenester", team: "Team", reviews: "Anmeldelser", soon: "Kommer snart", language: "Språk", pageNotFound: "Fant ikke siden." },
@@ -258,6 +272,7 @@ const resources = {
     push: { title: "Varsler", enable: "Slå på varsler", enabled: "Varsler på", denied: "Varsler er blokkert i nettleserinnstillingene.", iosHint: "Legg appen til på hjemskjermen for å slå på varsler.", bookingPrompt: "Slå på varsler for å få påminnelser om timene dine." },
     qr: { hint: "Rett kameraet mot salongens QR-kode.", denied: "Ingen kameratilgang. Tillat kameraet i nettleserinnstillingene.", invalid: "Dette er ikke en BookSero-QR-kode." },
     promo: { tab: "Tilbud", cta: "Bestill tilbud", none: "Ingen aktive tilbud i denne salongen.", allServices: "alle tjenester", selectedServices: "valgte tjenester", bannerTitle: "Kampanjetider" },
+    version: { check: "Se etter oppdateringer", checking: "Sjekker…", upToDate: "Du har den nyeste versjonen", available: "En ny versjon er tilgjengelig", update: "Oppdater" },
   }},
   uk: { translation: {
     common: { book: "Записатися", bookCouple: "Бронювання для двох", next: "Далі", back: "Назад", chooseCountry: "Виберіть країну", chooseCity: "Виберіть місто", chooseSalon: "Виберіть салон", login: "Увійти", loading: "Завантаження…", services: "Послуги", team: "Команда", reviews: "Відгуки", soon: "Скоро", language: "Мова", pageNotFound: "Сторінку не знайдено." },
@@ -274,6 +289,7 @@ const resources = {
     push: { title: "Сповіщення", enable: "Увімкнути сповіщення", enabled: "Сповіщення увімкнено", denied: "Сповіщення заблоковані в налаштуваннях браузера.", iosHint: "Додай застосунок на головний екран, щоб увімкнути сповіщення.", bookingPrompt: "Увімкни сповіщення, щоб отримувати нагадування про візити." },
     qr: { hint: "Наведи камеру на QR-код салону.", denied: "Немає доступу до камери. Дозволь камеру в налаштуваннях браузера.", invalid: "Це не QR-код BookSero." },
     promo: { tab: "Акції", cta: "Забронювати акцію", none: "Немає активних акцій у цьому салоні.", allServices: "усі послуги", selectedServices: "вибрані послуги", bannerTitle: "Акційні години" },
+    version: { check: "Перевірити оновлення", checking: "Перевірка…", upToDate: "У тебе найновіша версія", available: "Доступна нова версія", update: "Оновити" },
   }},
 };
 

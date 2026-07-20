@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
 import { getPushState, enablePush, disablePush, disablePushOnLogout, type PushState } from "../lib/push";
+import { APP_VERSION, checkForUpdate, applyUpdate } from "../lib/version";
 import BottomNav from "../components/BottomNav";
 
 // Profil zalogowanego klienta (Faza 2). Bez sesji → przekierowanie na logowanie.
@@ -51,6 +52,18 @@ export default function Profile() {
       }
     } finally {
       setPushBusy(false);
+    }
+  };
+
+  // Wersja aplikacji + sprawdzanie aktualizacji.
+  const [verState, setVerState] = useState<"idle" | "checking" | "uptodate" | "available">("idle");
+  const onCheckUpdate = async () => {
+    setVerState("checking");
+    try {
+      const { hasUpdate } = await checkForUpdate();
+      setVerState(hasUpdate ? "available" : "uptodate");
+    } catch {
+      setVerState("idle");
     }
   };
 
@@ -146,6 +159,27 @@ export default function Profile() {
           </button>
         </>
       )}
+
+      {/* Wersja aplikacji + aktualizacja — dyskretnie na dole */}
+      <div className="mt-8 text-center">
+        {verState === "available" ? (
+          <button onClick={applyUpdate} className="btn-primary">
+            {t("version.update")}
+          </button>
+        ) : (
+          <button
+            onClick={onCheckUpdate}
+            disabled={verState === "checking"}
+            className="text-xs text-brand font-semibold disabled:opacity-60"
+          >
+            {verState === "checking" ? t("version.checking") : t("version.check")}
+          </button>
+        )}
+        <div className="text-[11px] text-muted mt-2">
+          {verState === "uptodate" ? `${t("version.upToDate")} · ` : verState === "available" ? `${t("version.available")} · ` : ""}
+          BookSero v{APP_VERSION}
+        </div>
+      </div>
 
       <BottomNav salonId={salonId} active="profile" />
     </div>
