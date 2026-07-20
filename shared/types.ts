@@ -105,6 +105,14 @@ export type Review = Record<string, unknown>;
 export interface Slot {
   time: string; // "HH:MM"
   available: boolean;
+  // Rabat czasowy (happy hours) — podgląd; wiążące naliczenie robi serwer
+  // przy rezerwacji (SPEC-rabaty-czasowe).
+  discount?: {
+    name: string;
+    type: "percent" | "amount";
+    value: number;
+    priceAfter: string;
+  } | null;
 }
 
 // POST appointments — body (zod onlineBookingSchema po stronie Booksero).
@@ -237,4 +245,6 @@ export interface BookingResult {
   message: string;
   prepaymentRequired: boolean;
   prepaymentAmount?: string;
+  // Naliczony rabat czasowy (SPEC-rabaty-czasowe §2.2) — cena łączna po rabacie.
+  discountApplied?: { name?: string; priceAfter?: string } | null;
 }

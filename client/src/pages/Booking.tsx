@@ -130,6 +130,12 @@ export default function Booking() {
             }).format(new Date(result.startAt))} · {t("booking.code")}{" "}
             <span className="font-mono font-bold">{result.bookingCode}</span>
           </div>
+          {result.discountApplied?.name && (
+            <div className="text-sm text-brand font-semibold">
+              {result.discountApplied.name}
+              {result.discountApplied.priceAfter ? ` · ${result.discountApplied.priceAfter} ${currency}` : ""}
+            </div>
+          )}
           {result.prepaymentRequired && (
             <div className="text-sm mt-2 rounded-xl bg-surface-2 p-3">
               {t("booking.prepaymentNote", { amount: result.prepaymentAmount, currency })}
@@ -309,9 +315,21 @@ export default function Booking() {
               <button
                 key={slot.time}
                 onClick={() => setTime(slot.time)}
-                className={`rounded-lg border px-3 py-2 text-sm font-semibold tabular-nums ${time === slot.time ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
+                className={`rounded-lg border px-3 py-2 text-sm font-semibold tabular-nums ${
+                  time === slot.time
+                    ? "bg-brand text-brand-contrast border-brand"
+                    : slot.discount
+                      ? "bg-surface border-brand"
+                      : "bg-surface border-line"
+                }`}
               >
-                {slot.time}
+                <span className="block">{slot.time}</span>
+                {/* Happy hours: cena po rabacie prosto z serwera (podgląd) */}
+                {slot.discount && (
+                  <span className={`block text-[10px] font-bold ${time === slot.time ? "opacity-90" : "text-brand"}`}>
+                    {slot.discount.priceAfter} {currency}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -329,13 +347,27 @@ export default function Booking() {
           <Field label={`${t("booking.phone")}${settings?.requirePhone ? " *" : ""}`} value={clientPhone} onChange={setPhone} type="tel" />
           {settings?.requireEmail && <Field label={`${t("booking.email")} *`} value={clientEmail} onChange={setEmail} type="email" />}
 
-          {service && (
-            <div className="rounded-xl bg-surface-2 p-3 mt-3 text-sm">
-              <Summary k={t("booking.stepService")} v={`${service.name} · ${service.durationMinutes} min`} />
-              <Summary k={t("booking.stepTime")} v={`${date} · ${time}`} />
-              <Summary k={t("booking.price")} v={`${service.price} ${currency}${couple ? ` ${t("booking.perPerson")}` : ""}`} />
-            </div>
-          )}
+          {service && (() => {
+            // Rabat czasowy wybranego slotu (podgląd — wiążąco liczy serwer).
+            const selSlot = availQ.data?.find((s) => s.time === time);
+            const disc = selSlot?.discount ?? null;
+            return (
+              <div className="rounded-xl bg-surface-2 p-3 mt-3 text-sm">
+                <Summary k={t("booking.stepService")} v={`${service.name} · ${service.durationMinutes} min`} />
+                <Summary k={t("booking.stepTime")} v={`${date} · ${time}`} />
+                {disc && (
+                  <Summary
+                    k={disc.name}
+                    v={disc.type === "percent" ? `-${disc.value}%` : `-${disc.value} ${currency}`}
+                  />
+                )}
+                <Summary
+                  k={t("booking.price")}
+                  v={`${disc ? disc.priceAfter : service.price} ${currency}${couple ? ` ${t("booking.perPerson")}` : ""}`}
+                />
+              </div>
+            );
+          })()}
 
           {bookM.isError && <div className="text-sm text-red-500 mt-2">{(bookM.error as Error).message}</div>}
           <Footer>
