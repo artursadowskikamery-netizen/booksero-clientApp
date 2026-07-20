@@ -74,6 +74,10 @@ export function registerRoutes(app: Express) {
   app.post("/api/visit/:token/cancel", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/cancel/${enc(req.params.token)}`, req.body ?? {}, loc(req))));
 
+  // Krótki link polecenia: /r/:code → { tenantId, ref } (SPEC-krotki-link-polecenia).
+  app.get("/api/r/:code", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/r/${enc(String(req.params.code))}`, loc(req))));
+
   // ── Powiadomienia push (Web Push) + sygnał instalacji ──
   app.get("/api/client/push/vapid-key", async (req, res) =>
     relay(res, await bookseroGet(`/api/public/client/push/vapid-key`, loc(req), auth(req))));

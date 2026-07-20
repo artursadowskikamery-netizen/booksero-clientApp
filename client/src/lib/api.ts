@@ -42,6 +42,9 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   resolveSlug: (slug: string) =>
     req<{ salonId: string }>(`/api/resolve/${encodeURIComponent(slug)}`),
+  // Krótki kod polecenia → sieć + kod polecającego (SPEC-krotki-link-polecenia).
+  resolveReferral: (code: string) =>
+    req<{ tenantId: string; ref: string }>(`/api/r/${encodeURIComponent(code)}`),
   tenant: (tenantId: string) =>
     req<Tenant>(`/api/tenant/${encodeURIComponent(tenantId)}`),
   salon: (salonId: string) =>

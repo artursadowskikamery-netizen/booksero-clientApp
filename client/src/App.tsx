@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Visits from "./pages/Visits";
 import Rewards from "./pages/Rewards";
+import ReferralLink from "./pages/ReferralLink";
 
 // Przy starcie (zalogowany klient): raz wyślij sygnał instalacji (standalone)
 // i po cichu odśwież subskrypcję push, jeśli zgoda już jest (upsert — idempotentne).
@@ -34,6 +35,7 @@ export default function App() {
       <PushBootstrap />
       <Switch>
         <Route path="/" component={Landing} />
+        <Route path="/r/:code" component={ReferralLink} />
         <Route path="/t/:tenantId" component={TenantSelect} />
         <Route path="/salon/:salonId/book" component={Booking} />
         <Route path="/salon/:salonId/soon" component={Soon} />
