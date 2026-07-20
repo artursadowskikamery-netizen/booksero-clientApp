@@ -4,16 +4,19 @@ import { useTranslation } from "react-i18next";
 import { QrCode, Search } from "lucide-react";
 import { api } from "../lib/api";
 import { applyAccent } from "../lib/themes";
+import { saveRef } from "../lib/referral";
 import { SUPPORTED_LANGS, LANG_LABELS } from "../lib/i18n";
+import QrScanner from "../components/QrScanner";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// Zimny start jak w prototypie: QR (wkrótce) + wpisanie slug/UUID/t:<tenantId>.
+// Zimny start: skaner QR + wpisanie slug/UUID/t:<tenantId>.
 export default function Landing() {
   const [, navigate] = useLocation();
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
+  const [scanning, setScanning] = useState(false);
   const { t, i18n } = useTranslation();
 
   // Ekran startowy = neutralna powłoka BookSero — zawsze domyślny niebieski
@@ -22,8 +25,9 @@ export default function Landing() {
     applyAccent(null);
   }, []);
 
-  async function go() {
-    const v = value.trim();
+  // Wspólna logika wejścia (pole tekstowe i skaner QR).
+  async function openInput(raw: string) {
+    const v = raw.trim();
     if (!v) return;
     setMsg("");
     if (v.toLowerCase().startsWith("t:")) {
@@ -58,6 +62,40 @@ export default function Landing() {
     }
   }
 
+  const go = () => openInput(value);
+
+  // Wynik skanu QR: linki z panelu (sieć /t/<id>, salon /salon/<id>, ?ref=);
+  // surowy UUID/slug wpada do tej samej logiki co pole tekstowe.
+  function handleQr(text: string) {
+    setScanning(false);
+    const v = text.trim();
+    try {
+      const u = new URL(v);
+      const ref = u.searchParams.get("ref");
+      if (ref) saveRef(ref.trim());
+      const mT = u.pathname.match(/\/t\/([0-9a-f-]{36})/i);
+      if (mT) {
+        navigate(`/t/${mT[1]}`);
+        return;
+      }
+      const mS = u.pathname.match(/\/salon\/([0-9a-f-]{36})/i);
+      if (mS) {
+        navigate(`/salon/${mS[1]}`);
+        return;
+      }
+      setMsg(t("qr.invalid"));
+      return;
+    } catch {
+      /* nie URL — może UUID albo slug */
+    }
+    if (UUID_RE.test(v) || /^[a-z0-9-]{2,32}$/i.test(v)) {
+      setValue(v);
+      void openInput(v);
+      return;
+    }
+    setMsg(t("qr.invalid"));
+  }
+
   return (
     <div className="max-w-md mx-auto min-h-screen p-6 flex flex-col">
       {/* Nagłówek BookSero + język */}
@@ -81,7 +119,7 @@ export default function Landing() {
       <h1 className="text-2xl font-extrabold tracking-tight mt-8">{t("landing.title")}</h1>
       <p className="text-sm text-muted mt-1 mb-5">{t("landing.scanHint")}</p>
 
-      <button className="btn-primary flex items-center justify-center gap-2" onClick={() => setMsg(t("landing.qrSoon"))}>
+      <button className="btn-primary flex items-center justify-center gap-2" onClick={() => { setMsg(""); setScanning(true); }}>
         <QrCode size={17} /> {t("landing.qr")}
       </button>
 
@@ -110,6 +148,8 @@ export default function Landing() {
       {msg && <p className="text-xs text-red-400 mt-3">{msg}</p>}
 
       <p className="mt-auto pt-6 text-[11px] text-muted text-center">{t("landing.privacyNote")}</p>
+
+      {scanning && <QrScanner onResult={handleQr} onClose={() => setScanning(false)} />}
     </div>
   );
 }
