@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
-import { Camera, Users, Bell, Sparkles } from "lucide-react";
+import { Camera, Users, Bell, Sparkles, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { applyAccent, saveAccent } from "../lib/themes";
 import { isLoggedInFor } from "../lib/auth";
 import { saveLastSalon } from "../lib/lastSalon";
+import { promoLine } from "../lib/promo";
 import BottomNav from "../components/BottomNav";
 
 // Ekran główny salonu w stylu prototypu: appbar (logo+nazwa+dzwonek), galeria
@@ -15,7 +16,7 @@ export default function SalonHome() {
   const [, params] = useRoute("/salon/:salonId");
   const salonId = params?.salonId ?? "";
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [dot, setDot] = useState(0);
   const stripRef = useRef<HTMLDivElement>(null);
 
@@ -120,6 +121,25 @@ export default function SalonHome() {
             </div>
           )}
         </>
+      )}
+
+      {/* Baner promocji czasowych — zajawka happy hours z CTA do rezerwacji */}
+      {(s.promotions?.length ?? 0) > 0 && (
+        <button
+          onClick={() => navigate(`/salon/${salonId}/book`)}
+          className="w-full text-left rounded-2xl border border-brand bg-surface p-4 mt-4 flex items-center gap-3"
+        >
+          <span className="w-10 h-10 rounded-xl bg-brand text-brand-contrast grid place-items-center shrink-0">
+            <Clock size={18} />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-[11px] font-bold uppercase tracking-widest text-muted">{t("promo.bannerTitle")}</span>
+            <span className="block text-sm font-semibold text-brand truncate">
+              {promoLine(s.promotions![0], s.salon.currency, i18n.language)}
+            </span>
+          </span>
+          <span className="text-xs font-bold text-brand shrink-0">{t("promo.cta")}</span>
+        </button>
       )}
 
       {/* CTA */}

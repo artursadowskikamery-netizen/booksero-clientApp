@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Gift, Star, Send, Ticket, Trash2, Check, Copy } from "lucide-react";
+import { ChevronLeft, Gift, Star, Send, Ticket, Trash2, Check, Copy, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useLocation as useLoc } from "wouter";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
+import { promoDiscountLabel, promoDaysLabel } from "../lib/promo";
 import BottomNav from "../components/BottomNav";
-import type { LoyaltyState, ReferralStatus } from "@shared/types";
+import type { LoyaltyState, ReferralStatus, Promotion } from "@shared/types";
 
-type Tab = "points" | "rewards" | "referrals" | "codes";
+type Tab = "points" | "rewards" | "referrals" | "codes" | "promos";
 
 // Bonusy: kontener na moduły bonusowe. Pasek pod-zakładek na dole (jak kategorie
 // w Rezerwuj) zależy od suwaków tenanta (appFeatures): loyalty → Punkty/Nagrody,
@@ -48,6 +50,7 @@ export default function Rewards() {
 
   const d = loyaltyQ.data;
   const joined = !!d?.joined;
+  const promos = salonQ.data?.promotions ?? [];
 
   const tabs = useMemo(() => {
     const list: { key: Tab; label: string }[] = [];
@@ -57,15 +60,17 @@ export default function Rewards() {
     }
     if (feat.referrals) list.push({ key: "referrals", label: t("referral.tab") });
     if (feat.codesNotebook) list.push({ key: "codes", label: t("codes.tab") });
+    if (promos.length > 0) list.push({ key: "promos", label: t("promo.tab") });
     return list;
-  }, [feat.loyalty, feat.referrals, feat.codesNotebook, joined, t]);
+  }, [feat.loyalty, feat.referrals, feat.codesNotebook, joined, promos.length, t]);
 
   // Aktywna zakładka zawsze wśród dostępnych.
   useEffect(() => {
     if (tabs.length && !tabs.some((x) => x.key === tab)) setTab(tabs[0].key);
   }, [tabs, tab]);
 
-  const unavailable = !!salonQ.data && !feat.loyalty && !feat.referrals && !feat.codesNotebook;
+  const unavailable =
+    !!salonQ.data && !feat.loyalty && !feat.referrals && !feat.codesNotebook && promos.length === 0;
 
   return (
     <div className={`max-w-md mx-auto min-h-screen p-4 ${tabs.length > 1 ? "pb-40" : "pb-24"}`}>
@@ -132,6 +137,11 @@ export default function Rewards() {
 
       {/* ── MOJE KODY ── */}
       {tab === "codes" && feat.codesNotebook && <MyCodes />}
+
+      {/* ── PROMOCJE ── */}
+      {tab === "promos" && promos.length > 0 && (
+        <PromoList promotions={promos} currency={salonQ.data?.salon.currency ?? ""} salonId={salonId} />
+      )}
 
       {/* Pasek pod-zakładek — przyklejony na dole, nad menu dolnym */}
       {tabs.length > 1 && (
@@ -249,6 +259,44 @@ function RewardsList({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+// Pod-zakładka „Promocje": lista aktywnych rabatów czasowych salonu.
+// Nazwa reguły (name) pochodzi od salonu — NIE tłumaczymy jej.
+function PromoList({ promotions, currency, salonId }: { promotions: Promotion[]; currency: string; salonId: string }) {
+  const { t, i18n } = useTranslation();
+  const [, navigate] = useLoc();
+  return (
+    <div className="space-y-3 mt-2">
+      {promotions.map((p) => (
+        <div key={p.id} className="rounded-2xl border border-brand bg-surface p-4">
+          <div className="flex items-start gap-3">
+            <span className="w-10 h-10 rounded-xl bg-brand text-brand-contrast grid place-items-center shrink-0">
+              <Clock size={18} />
+            </span>
+            <div className="flex-1 min-w-0">
+              <div className="font-bold">{p.name}</div>
+              <div className="text-2xl font-extrabold text-brand leading-tight mt-0.5">
+                {promoDiscountLabel(p, currency)}
+              </div>
+              <div className="text-sm text-ink-2 mt-1">
+                {promoDaysLabel(p.daysOfWeek, i18n.language)} · {p.timeFrom}–{p.timeTo}
+              </div>
+              <div className="text-xs text-muted mt-0.5">
+                {p.allServices ? t("promo.allServices") : t("promo.selectedServices")}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate(`/salon/${salonId}/book`)}
+            className="btn-primary mt-3"
+          >
+            {t("promo.cta")}
+          </button>
+        </div>
+      ))}
     </div>
   );
 }

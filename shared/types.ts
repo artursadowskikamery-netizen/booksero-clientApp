@@ -56,6 +56,21 @@ export interface SalonPublic {
   // Suwaki funkcji aplikacji per tenant (SPEC-bonusy). Pojawiają się po
   // wdrożeniu backendu; brak = traktujemy jak wyłączone.
   appFeatures?: AppFeatures;
+  // Aktywne promocje czasowe salonu (do banera + sekcji Promocje).
+  promotions?: Promotion[];
+}
+
+// Rabat czasowy salonu do WYŚWIETLENIA (SPEC-promocje-publiczne).
+export interface Promotion {
+  id: string;
+  name: string;
+  daysOfWeek: number[]; // 1=pon..7=nd
+  timeFrom: string; // "HH:MM"
+  timeTo: string;
+  discountType: "percent" | "amount";
+  discountValue: number;
+  allServices: boolean;
+  serviceIds: string[] | null;
 }
 
 export interface BookingSettings {
@@ -139,6 +154,7 @@ export interface AppFeatures {
   loyalty?: boolean;
   referrals?: boolean;
   codesNotebook?: boolean;
+  timeDiscounts?: boolean;
 }
 
 // ── Moje kody (SPEC-bonusy-etap-B2) ──

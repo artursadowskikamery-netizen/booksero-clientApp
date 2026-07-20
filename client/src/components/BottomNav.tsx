@@ -21,7 +21,9 @@ export default function BottomNav({ salonId, active }: { salonId: string; active
   // Wszystko wyłączone = funkcja "ginie" z aplikacji (decyzja właściciela).
   // Dopóki dane salonu się nie wczytały, pokazujemy ikonę (bez migotania).
   const feat = salonQ.data?.appFeatures;
-  const showRewards = !salonQ.data || !feat || !!(feat.loyalty || feat.referrals || feat.codesNotebook);
+  const hasPromos = (salonQ.data?.promotions?.length ?? 0) > 0;
+  const showRewards =
+    !salonQ.data || !feat || !!(feat.loyalty || feat.referrals || feat.codesNotebook) || hasPromos;
 
   const items: { key: Tab; icon: typeof Store; label: string; to: string }[] = [
     { key: "salon", icon: Store, label: t("tabs.salon"), to: tenantId ? `/t/${tenantId}` : `/salon/${salonId}` },
