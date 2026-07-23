@@ -9,6 +9,25 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.1] — 2026-07-23 — Telefony E.164 i wygodniejsze logowanie
+
+### Formularze telefonu (SPEC-telefony-e164)
+- Wszystkie pola numeru (logowanie, rezerwacja, polecenia) mają wybór kraju
+  (flaga + prefiks) i wysyłają zawsze pełny numer międzynarodowy E.164 —
+  silnik libphonenumber-js, wspólny moduł `shared/phone.ts` z Booksero.
+- Domyślny kraj z lokalizacji salonu (`salon.country`), fallback PL.
+- Przycisk zablokowany do czasu poprawnego numeru + komunikat walidacji
+  we wszystkich 16 językach; obsłużony błąd `invalid_phone` z rezerwacji.
+
+### Logowanie
+- Auto-uzupełnianie kodu z SMS: WebOTP na Androidzie (kod wskakuje sam
+  i od razu loguje), natywna podpowiedź one-time-code na iOS; nasłuch
+  uzbraja się przy każdym wysłaniu kodu („Wyślij ponownie" też działa).
+- Blokada „zbyt wiele prób" pokazuje żywy licznik MM:SS do odblokowania
+  (backend zwraca retryAfter w odpowiedzi 429).
+
+---
+
 ## [1.0.0] — 2026-07-20 — Pierwsza wersja produkcyjna
 
 Pierwsze pełne, produkcyjne wydanie aplikacji klienckiej BookSero
