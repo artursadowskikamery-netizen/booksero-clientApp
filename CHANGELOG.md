@@ -9,6 +9,14 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.8] — 2026-07-23 — Krótki adres salonu w aplikacji
+
+- `app.booksero.com/<slug>` prowadzi wprost do salonu — ten sam krótki adres,
+  który salon ma na wizytówce (np. /svp). Podstawa pod QR i przycisk
+  „Otwórz aplikację" na wizytówce i widgecie.
+
+---
+
 ## [1.0.7] — 2026-07-23 — Sprzątanie po diagnozie auto-kodu
 
 - Usunięta tymczasowa linijka diagnostyczna z okna logowania.
