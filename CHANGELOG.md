@@ -14,6 +14,9 @@ Data w formacie RRRR-MM-DD.
 - Aplikacja sama sprawdza nową wersję przy każdym uruchomieniu i w tle
   czyści cache + przeładowuje (bez logowania i bez klikania w Profilu).
   Bezpiecznik: jedna próba na wersję — brak pętli przeładowań.
+- Pole kodu SMS dostaje fokus automatycznie (systemowe autouzupełnianie
+  podstawia kod tylko do aktywnego pola), a komplet 6 cyfr — wpisany lub
+  podstawiony — loguje od razu, bez klikania „Zaloguj".
 
 ---
 

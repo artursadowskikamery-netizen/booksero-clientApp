@@ -160,12 +160,22 @@ export default function Login() {
         {stage === "code" && (
           <>
             <label className="text-[11px] font-bold text-ink-2">{t("auth.code")}</label>
+            {/* autoFocus: systemowe autouzupełnianie SMS (Android/iOS) podstawia
+                kod tylko do AKTYWNEGO pola — bez fokusu zgoda użytkownika
+                „wypełnij kod" nie ma gdzie trafić. */}
             <input
               inputMode="numeric"
               autoComplete="one-time-code"
+              autoFocus
               maxLength={6}
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "");
+                setCode(v);
+                // Komplet 6 cyfr (wpisane ręcznie LUB podstawione przez system)
+                // → zatwierdzamy od razu, bez klikania.
+                if (v.length === 6 && !busy) verify(false, v);
+              }}
               className="w-full mt-1.5 mb-4 rounded-xl border border-line bg-surface-2 px-4 py-3 text-xl font-mono tracking-[0.4em] text-center outline-none focus:ring-2 focus:ring-brand"
             />
             <button className="btn-primary" disabled={code.length < 4 || busy} onClick={() => verify(false)}>
