@@ -27,6 +27,8 @@ export default function Login() {
   const [err, setErr] = useState("");
   // Rośnie przy każdym wysłaniu kodu — uzbraja nasłuch WebOTP na NOWY SMS.
   const [codeNonce, setCodeNonce] = useState(0);
+  // Sekundy do odblokowania po „Zbyt wiele prób" — żywy licznik MM:SS.
+  const [cooldown, setCooldown] = useState(0);
 
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
   const tenantId = salonQ.data?.salon.tenantId ?? null;
@@ -63,8 +65,17 @@ export default function Login() {
     return () => ac.abort();
   }, [stage, codeNonce]);
 
+  // Odliczanie czasu blokady co sekundę.
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const id = setInterval(() => setCooldown((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(id);
+  }, [cooldown > 0]);
+
+  const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
   async function sendCode() {
-    if (!tenantId) return;
+    if (!tenantId || cooldown > 0) return;
     setErr(""); setBusy(true);
     try {
       await api.requestLoginCode(tenantId, phone.trim(), salonId);
@@ -72,7 +83,9 @@ export default function Login() {
       setCode("");
       setCodeNonce((n) => n + 1); // uzbrój nasłuch WebOTP na ten nowy SMS
     } catch (e) {
-      setErr((e as Error).message);
+      // 429 z licznikiem → pokaż odliczanie zamiast surowego komunikatu.
+      if (e instanceof ApiError && e.status === 429 && e.retryAfter) setCooldown(e.retryAfter);
+      else setErr((e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -139,8 +152,8 @@ export default function Login() {
         </div>
 
         {stage === "phone" && (
-          <button className="btn-primary" disabled={!phoneValid || !tenantId || busy} onClick={sendCode}>
-            {busy ? t("common.loading") : t("auth.sendCode")}
+          <button className="btn-primary" disabled={!phoneValid || !tenantId || busy || cooldown > 0} onClick={sendCode}>
+            {cooldown > 0 ? t("auth.retryIn", { time: mmss(cooldown) }) : busy ? t("common.loading") : t("auth.sendCode")}
           </button>
         )}
 
@@ -158,8 +171,8 @@ export default function Login() {
             <button className="btn-primary" disabled={code.length < 4 || busy} onClick={() => verify(false)}>
               {busy ? t("common.loading") : t("auth.verify")}
             </button>
-            <button className="w-full text-sm text-brand font-semibold py-3" disabled={busy} onClick={sendCode}>
-              {t("auth.resend")}
+            <button className="w-full text-sm text-brand font-semibold py-3 disabled:opacity-50" disabled={busy || cooldown > 0} onClick={sendCode}>
+              {cooldown > 0 ? t("auth.retryIn", { time: mmss(cooldown) }) : t("auth.resend")}
             </button>
           </>
         )}

@@ -7,7 +7,8 @@ import type {
 } from "@shared/types";
 
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  // retryAfter: sekundy do odblokowania (limit prób) — do licznika w logowaniu.
+  constructor(public status: number, message: string, public retryAfter?: number) {
     super(message);
     this.name = "ApiError";
   }
@@ -27,13 +28,15 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     let message = `HTTP ${res.status}`;
+    let retryAfter: number | undefined;
     try {
       const j = await res.json();
       message = (j && (j.message as string)) || message;
+      if (j && typeof j.retryAfter === "number") retryAfter = j.retryAfter;
     } catch {
       /* body nie-JSON */
     }
-    throw new ApiError(res.status, message);
+    throw new ApiError(res.status, message, retryAfter);
   }
   return (await res.json()) as T;
 }
