@@ -25,6 +25,8 @@ export default function Login() {
   const [stage, setStage] = useState<"phone" | "code" | "name">("phone");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  // Rośnie przy każdym wysłaniu kodu — uzbraja nasłuch WebOTP na NOWY SMS.
+  const [codeNonce, setCodeNonce] = useState(0);
 
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
   const tenantId = salonQ.data?.salon.tenantId ?? null;
@@ -38,6 +40,8 @@ export default function Login() {
   // autocomplete="one-time-code" (podpowiedź nad klawiaturą). Android Chrome:
   // WebOTP odczytuje kod bez dotykania — działa, gdy SMS zawiera linię
   // "@app.booksero.com #<kod>" (dodane w treści SMS-a po stronie backendu).
+  // Uzbrajamy się PRZY KAŻDYM wysłaniu kodu (codeNonce) — inaczej po ponownym
+  // "Wyślij ponownie" nasłuch by się nie włączył i złapałby stary kod.
   useEffect(() => {
     if (stage !== "code") return;
     if (typeof window === "undefined" || !("OTPCredential" in window)) return;
@@ -46,11 +50,18 @@ export default function Login() {
       .get({ otp: { transport: ["sms"] }, signal: ac.signal } as CredentialRequestOptions)
       .then((cred) => {
         const otp = (cred as unknown as { code?: string } | null)?.code;
-        if (otp) setCode(otp.replace(/\D/g, "").slice(0, 6));
+        const clean = otp ? otp.replace(/\D/g, "").slice(0, 6) : "";
+        if (clean.length === 6) {
+          setCode(clean);
+          // Kod z WebOTP jest pewny → zatwierdzamy od razu (bez ręcznego klikania).
+          verify(false, clean);
+        } else if (clean) {
+          setCode(clean);
+        }
       })
       .catch(() => {}); // przerwane/niewspierane — cicho, użytkownik wpisze ręcznie
     return () => ac.abort();
-  }, [stage]);
+  }, [stage, codeNonce]);
 
   async function sendCode() {
     if (!tenantId) return;
@@ -58,6 +69,8 @@ export default function Login() {
     try {
       await api.requestLoginCode(tenantId, phone.trim(), salonId);
       setStage("code");
+      setCode("");
+      setCodeNonce((n) => n + 1); // uzbrój nasłuch WebOTP na ten nowy SMS
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -65,8 +78,10 @@ export default function Login() {
     }
   }
 
-  async function verify(withName: boolean) {
+  async function verify(withName: boolean, codeOverride?: string) {
     if (!tenantId) return;
+    const theCode = (codeOverride ?? code).trim();
+    if (theCode.length < 4) return;
     setErr(""); setBusy(true);
     try {
       // Kod polecającego przekazujemy tylko przy rejestracji (withName) — backend
@@ -74,7 +89,7 @@ export default function Login() {
       const { token } = await api.verifyLoginCode(
         tenantId,
         phone.trim(),
-        code.trim(),
+        theCode,
         salonId,
         withName ? { firstName: firstName.trim(), lastName: lastName.trim() || undefined } : undefined,
         withName ? loadRef() : undefined,
