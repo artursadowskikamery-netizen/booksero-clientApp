@@ -17,6 +17,9 @@ Data w formacie RRRR-MM-DD.
 - Pole kodu SMS dostaje fokus automatycznie (systemowe autouzupełnianie
   podstawia kod tylko do aktywnego pola), a komplet 6 cyfr — wpisany lub
   podstawiony — loguje od razu, bez klikania „Zaloguj".
+- Powiadomienia pamiętają wolę klienta: po wylogowaniu i ponownym
+  zalogowaniu suwak wraca na „włączone" bez ponownych pytań (wylogowanie
+  nadal wyrejestrowuje urządzenie — prywatność bez zmian).
 
 ---
 

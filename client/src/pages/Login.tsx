@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { setToken, isLoggedInFor } from "../lib/auth";
 import { loadRef, clearRef } from "../lib/referral";
+import { resubscribePushIfWanted } from "../lib/push";
 import { PhoneInput } from "../components/PhoneInput";
 
 // Logowanie klienta: telefon → kod SMS → sesja (SPEC-logowanie-klienta).
@@ -109,6 +110,8 @@ export default function Login() {
       );
       if (withName) clearRef();
       setToken(token, tenantId);
+      // Klient chciał powiadomienia przed wylogowaniem → przywróć je po cichu.
+      resubscribePushIfWanted();
       navigate(`/salon/${salonId}`);
     } catch (e) {
       // 422 = kod poprawny, ale numer jest nowy — potrzebne imię (auto-rejestracja).

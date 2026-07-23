@@ -85,23 +85,44 @@ export async function ensurePushSubscribed(): Promise<"ok" | "disabled" | "unsup
   return "ok";
 }
 
+// Wola klienta co do powiadomień („on"/„off") — trzymana lokalnie, PRZEŻYWA
+// wylogowanie. Dzięki temu po ponownym zalogowaniu włączamy push z powrotem
+// (wylogowanie wyrejestrowuje urządzenie tylko ze względów prywatności).
+const PUSH_PREF_KEY = "booksero_push_pref";
+
 // Świadome włączenie przez klienta (klik w przycisk) — prośba o zgodę + subskrypcja.
 export async function enablePush(): Promise<"ok" | "denied" | "disabled" | "unsupported"> {
   if (!pushSupported()) return "unsupported";
   const perm = await Notification.requestPermission();
   if (perm !== "granted") return "denied";
-  return ensurePushSubscribed();
+  const r = await ensurePushSubscribed();
+  if (r === "ok") localStorage.setItem(PUSH_PREF_KEY, "on");
+  return r;
 }
 
 // Świadome WYŁĄCZENIE push przez klienta (suwak w Profilu) — bez wylogowania.
 // Wyrejestrowuje urządzenie w Booksero i kasuje lokalną subskrypcję.
 export async function disablePush(): Promise<void> {
+  localStorage.setItem(PUSH_PREF_KEY, "off");
   if (!pushSupported()) return;
   const reg = await navigator.serviceWorker.ready;
   const sub = await reg.pushManager.getSubscription();
   if (!sub) return;
   await api.pushUnsubscribe(sub.endpoint).catch(() => {});
   await sub.unsubscribe().catch(() => {});
+}
+
+// Po zalogowaniu: jeśli klient wcześniej chciał powiadomienia i zgoda
+// przeglądarki nadal jest, przywróć subskrypcję po cichu (bez pytań).
+export async function resubscribePushIfWanted(): Promise<void> {
+  try {
+    if (localStorage.getItem(PUSH_PREF_KEY) !== "on") return;
+    if (!pushSupported()) return;
+    if (Notification.permission !== "granted") return;
+    await ensurePushSubscribed();
+  } catch {
+    /* nie blokujemy logowania — spróbujemy przy kolejnym */
+  }
 }
 
 // Przy wylogowaniu: wyrejestruj urządzenie na serwerze (jeszcze z tokenem!)
