@@ -85,43 +85,61 @@ export async function ensurePushSubscribed(): Promise<"ok" | "disabled" | "unsup
   return "ok";
 }
 
-// Wola klienta co do powiadomień („on"/„off") — trzymana lokalnie, PRZEŻYWA
-// wylogowanie. Dzięki temu po ponownym zalogowaniu włączamy push z powrotem
-// (wylogowanie wyrejestrowuje urządzenie tylko ze względów prywatności).
-const PUSH_PREF_KEY = "booksero_push_pref";
-
 // Świadome włączenie przez klienta (klik w przycisk) — prośba o zgodę + subskrypcja.
+// Subscribe ustawia po stronie backendu preferencję KONTA na „włączone".
+// Odmowa zgody systemowej: zapisujemy intencję konta (/enable) — inne
+// urządzenia klienta i tak mają się dorejestrować (R2 SPEC per-konto).
 export async function enablePush(): Promise<"ok" | "denied" | "disabled" | "unsupported"> {
   if (!pushSupported()) return "unsupported";
   const perm = await Notification.requestPermission();
-  if (perm !== "granted") return "denied";
-  const r = await ensurePushSubscribed();
-  if (r === "ok") localStorage.setItem(PUSH_PREF_KEY, "on");
-  return r;
+  if (perm !== "granted") {
+    await api.pushEnable().catch(() => {});
+    return "denied";
+  }
+  return ensurePushSubscribed();
 }
 
-// Świadome WYŁĄCZENIE push przez klienta (suwak w Profilu) — bez wylogowania.
-// Wyrejestrowuje urządzenie w Booksero i kasuje lokalną subskrypcję.
+// Świadome WYŁĄCZENIE przez klienta (suwak w Profilu) — wyłącza CAŁE KONTO:
+// backend gasi wszystkie odbiorniki i blokuje wysyłkę; lokalnie kasujemy
+// subskrypcję tego urządzenia (R3).
 export async function disablePush(): Promise<void> {
-  localStorage.setItem(PUSH_PREF_KEY, "off");
+  await api.pushDisable().catch(() => {});
   if (!pushSupported()) return;
-  const reg = await navigator.serviceWorker.ready;
-  const sub = await reg.pushManager.getSubscription();
-  if (!sub) return;
-  await api.pushUnsubscribe(sub.endpoint).catch(() => {});
-  await sub.unsubscribe().catch(() => {});
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    await sub?.unsubscribe();
+  } catch {
+    /* lokalna subskrypcja i tak jest już nieważna po stronie serwera */
+  }
 }
 
-// Po zalogowaniu: jeśli klient wcześniej chciał powiadomienia i zgoda
-// przeglądarki nadal jest, przywróć subskrypcję po cichu (bez pytań).
-export async function resubscribePushIfWanted(): Promise<void> {
+// Czy TO urządzenie ma aktywną lokalną subskrypcję.
+export async function deviceSubscribed(): Promise<boolean> {
+  if (!pushSupported() || Notification.permission !== "granted") return false;
   try {
-    if (localStorage.getItem(PUSH_PREF_KEY) !== "on") return;
-    if (!pushSupported()) return;
-    if (Notification.permission !== "granted") return;
-    await ensurePushSubscribed();
+    const reg = await navigator.serviceWorker.ready;
+    return !!(await reg.pushManager.getSubscription());
   } catch {
-    /* nie blokujemy logowania — spróbujemy przy kolejnym */
+    return false;
+  }
+}
+
+// R4: po zalogowaniu/starcie — konto ma „włączone", a to urządzenie jeszcze
+// nie odbiera. Zgoda systemowa już jest → dorejestruj po cichu ("joined");
+// zgody brak → sygnał dla UI, żeby pokazać baner ("needs-permission").
+export async function autoRejoinPush(): Promise<"joined" | "needs-permission" | "idle"> {
+  try {
+    if (!pushSupported()) return "idle";
+    const st = await api.pushStatus();
+    if (!st.enabled) return "idle";
+    if (Notification.permission === "granted") {
+      if (!(await deviceSubscribed())) await ensurePushSubscribed();
+      return "joined";
+    }
+    return Notification.permission === "default" ? "needs-permission" : "idle";
+  } catch {
+    return "idle"; // brak sieci/starego backendu — nie przeszkadzamy
   }
 }
 

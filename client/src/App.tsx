@@ -4,7 +4,7 @@ import { Route, Switch } from "wouter";
 import { useTranslation } from "react-i18next";
 import { queryClient } from "./lib/queryClient";
 import { isLoggedIn } from "./lib/auth";
-import { pushSupported, ensurePushSubscribed, sendInstallSignalOnce } from "./lib/push";
+import { autoRejoinPush, sendInstallSignalOnce } from "./lib/push";
 import Landing from "./pages/Landing";
 import TenantSelect from "./pages/TenantSelect";
 import SalonHome from "./pages/SalonHome";
@@ -16,16 +16,16 @@ import Visits from "./pages/Visits";
 import Rewards from "./pages/Rewards";
 import ReferralLink from "./pages/ReferralLink";
 import SlugRedirect from "./pages/SlugRedirect";
+import InstallBanner from "./components/InstallBanner";
 
 // Przy starcie (zalogowany klient): raz wyślij sygnał instalacji (standalone)
-// i po cichu odśwież subskrypcję push, jeśli zgoda już jest (upsert — idempotentne).
+// i dorejestruj to urządzenie, jeśli KONTO ma powiadomienia włączone (R4) —
+// autoRejoinPush sam sprawdza status konta, zgodę i lokalną subskrypcję.
 function PushBootstrap() {
   useEffect(() => {
     if (!isLoggedIn()) return;
     sendInstallSignalOnce();
-    if (pushSupported() && Notification.permission === "granted") {
-      ensurePushSubscribed().catch(() => {});
-    }
+    autoRejoinPush();
   }, []);
   return null;
 }
@@ -34,6 +34,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <PushBootstrap />
+      <InstallBanner />
       <Switch>
         <Route path="/" component={Landing} />
         <Route path="/r/:code" component={ReferralLink} />

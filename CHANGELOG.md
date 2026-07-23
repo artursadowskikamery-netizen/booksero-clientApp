@@ -9,6 +9,25 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.10] — 2026-07-23 — Powiadomienia per KONTO + baner instalacji
+
+### Powiadomienia wspólne dla wszystkich urządzeń klienta
+- Suwak w Profilu pokazuje stan KONTA z serwera (nie lokalny stan jednej
+  przeglądarki): włącz na telefonie → Chrome pokaże „włączone" i odwrotnie.
+- Wyłączenie gasi WSZYSTKIE urządzenia naraz (backend blokuje też wysyłkę).
+- Po zalogowaniu/starcie: konto „włączone" + zgoda systemowa → urządzenie
+  dorejestrowuje się samo; bez zgody → przycisk „Włącz powiadomienia na tym
+  urządzeniu" w Profilu (16 języków).
+
+### Instalacja aplikacji (PWA)
+- W trybie przeglądarki po zalogowaniu pojawia się zamykalny baner
+  „Zainstaluj aplikację BookSero": Android — systemowy prompt instalacji,
+  iPhone — instrukcja Udostępnij → Do ekranu początkowego (16 języków).
+- „X" chowa baner na 14 dni; po instalacji i w trybie standalone baner
+  nie występuje; nie pokazuje się na ekranach logowania i rezerwacji.
+
+---
+
 ## [1.0.9] — 2026-07-23 — Skaner rozumie linki ze slugiem
 
 - Skaner QR w aplikacji odczytuje teraz także linki z krótkim adresem

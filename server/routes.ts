@@ -93,6 +93,17 @@ export function registerRoutes(app: Express) {
   app.get("/api/client/push/vapid-key", async (req, res) =>
     relay(res, await bookseroGet(`/api/public/client/push/vapid-key`, loc(req), auth(req))));
 
+  // Stan KONTA (wspólny dla wszystkich urządzeń) + intencja włącz/wyłącz
+  // (powiadomienia per konto; /disable gasi wszystkie odbiorniki naraz).
+  app.get("/api/client/push/status", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/client/push/status`, loc(req), auth(req))));
+
+  app.post("/api/client/push/enable", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/push/enable`, req.body ?? {}, loc(req), auth(req))));
+
+  app.post("/api/client/push/disable", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/push/disable`, req.body ?? {}, loc(req), auth(req))));
+
   app.post("/api/client/push/subscribe", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client/push/subscribe`, req.body ?? {}, loc(req), auth(req))));
 

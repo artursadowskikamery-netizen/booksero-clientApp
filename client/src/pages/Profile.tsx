@@ -5,7 +5,7 @@ import { ChevronLeft, User, LogOut, MapPin, Bell, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
-import { getPushState, enablePush, disablePush, disablePushOnLogout, type PushState } from "../lib/push";
+import { getPushState, enablePush, disablePush, disablePushOnLogout, deviceSubscribed, type PushState } from "../lib/push";
 import { APP_VERSION, checkForUpdate, applyUpdate } from "../lib/version";
 import BottomNav from "../components/BottomNav";
 
@@ -32,25 +32,47 @@ export default function Profile() {
     }
   }, [meQ.error, salonId, navigate]);
 
-  // Powiadomienia push: stan + świadome włączanie z Profilu.
-  const [push, setPush] = useState<PushState | "disabled" | null>(null);
+  // Powiadomienia: ŹRÓDŁEM PRAWDY jest stan KONTA z serwera (R1) — wspólny
+  // dla wszystkich urządzeń klienta. Stan lokalny (zgoda/subskrypcja tego
+  // urządzenia) służy tylko podpowiedziom „włącz na tym urządzeniu".
+  const [acct, setAcct] = useState<{ enabled: boolean; devices: number } | null>(null);
+  const [env, setEnv] = useState<PushState | null>(null);
+  const [thisDev, setThisDev] = useState(false);
   const [pushBusy, setPushBusy] = useState(false);
+  const [pushHidden, setPushHidden] = useState(false);
+  const refreshPush = async () => {
+    try {
+      const [st, e, d] = await Promise.all([api.pushStatus(), getPushState(), deviceSubscribed()]);
+      setAcct(st);
+      setEnv(e);
+      setThisDev(d);
+    } catch {
+      setPushHidden(true); // brak endpointu/sesji — sekcję chowamy
+    }
+  };
   useEffect(() => {
-    getPushState().then(setPush).catch(() => setPush(null));
-  }, []);
+    if (logged) refreshPush();
+  }, [logged]);
+  // Suwak konta: wyłączenie gasi WSZYSTKIE urządzenia (R3); włączenie prosi
+  // o zgodę i rejestruje to urządzenie (R2). Po wszystkim stan z serwera.
   const onTogglePush = async () => {
+    if (!acct) return;
     setPushBusy(true);
     try {
-      if (push === "subscribed") {
-        await disablePush();
-        setPush("default");
-      } else {
-        const r = await enablePush();
-        if (r === "ok") setPush("subscribed");
-        else if (r === "denied") setPush("denied");
-        else setPush("disabled"); // push wyłączony na serwerze — chowamy sekcję
-      }
+      if (acct.enabled) await disablePush();
+      else await enablePush();
     } finally {
+      await refreshPush();
+      setPushBusy(false);
+    }
+  };
+  // Konto „włączone", ale TO urządzenie jeszcze nie odbiera (R4-baner).
+  const onEnableThisDevice = async () => {
+    setPushBusy(true);
+    try {
+      await enablePush();
+    } finally {
+      await refreshPush();
       setPushBusy(false);
     }
   };
@@ -125,29 +147,41 @@ export default function Profile() {
             </>
           )}
 
-          {/* Powiadomienia push — suwak on/off; sekcja znika, gdy nieobsługiwane */}
-          {push && push !== "unsupported" && push !== "disabled" && (
+          {/* Powiadomienia — suwak pokazuje stan KONTA (wspólny dla urządzeń). */}
+          {acct && !pushHidden && (
             <div className="rounded-2xl bg-surface border border-line p-4 mt-5">
               <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted mb-3">
                 <Bell size={13} /> {t("push.title")}
               </div>
-              {(push === "subscribed" || push === "default") && (
+              <button
+                onClick={onTogglePush}
+                disabled={pushBusy}
+                className="w-full flex items-center justify-between disabled:opacity-60"
+              >
+                <span className="text-sm font-semibold">
+                  {acct.enabled ? t("push.enabled") : t("push.enable")}
+                </span>
+                {/* Suwak on/off — stan konta */}
+                <span className={`w-11 h-6 rounded-full p-0.5 transition-colors ${acct.enabled ? "bg-brand" : "bg-surface-2 border border-line"}`}>
+                  <span className={`block w-5 h-5 rounded-full bg-white transition-transform ${acct.enabled ? "translate-x-5" : ""}`} />
+                </span>
+              </button>
+              {/* Konto włączone, ale to urządzenie jeszcze nie odbiera (R4) */}
+              {acct.enabled && !thisDev && env === "default" && (
                 <button
-                  onClick={onTogglePush}
+                  onClick={onEnableThisDevice}
                   disabled={pushBusy}
-                  className="w-full flex items-center justify-between disabled:opacity-60"
+                  className="w-full mt-3 rounded-xl bg-surface-2 text-brand text-sm font-bold py-2.5 disabled:opacity-60"
                 >
-                  <span className="text-sm font-semibold">
-                    {push === "subscribed" ? t("push.enabled") : t("push.enable")}
-                  </span>
-                  {/* Suwak on/off */}
-                  <span className={`w-11 h-6 rounded-full p-0.5 transition-colors ${push === "subscribed" ? "bg-brand" : "bg-surface-2 border border-line"}`}>
-                    <span className={`block w-5 h-5 rounded-full bg-white transition-transform ${push === "subscribed" ? "translate-x-5" : ""}`} />
-                  </span>
+                  {t("push.thisDevice")}
                 </button>
               )}
-              {push === "denied" && <p className="text-sm text-muted">{t("push.denied")}</p>}
-              {push === "ios-install" && <p className="text-sm text-muted">{t("push.iosHint")}</p>}
+              {acct.enabled && !thisDev && env === "denied" && (
+                <p className="text-sm text-muted mt-3">{t("push.denied")}</p>
+              )}
+              {acct.enabled && !thisDev && env === "ios-install" && (
+                <p className="text-sm text-muted mt-3">{t("push.iosHint")}</p>
+              )}
             </div>
           )}
 

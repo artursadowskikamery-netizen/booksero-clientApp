@@ -112,6 +112,11 @@ export const api = {
     }),
   // ── Powiadomienia push (Web Push) + sygnał instalacji ──
   pushVapidKey: () => req<{ key: string }>(`/api/client/push/vapid-key`),
+  // Stan KONTA (nie urządzenia!) — źródło prawdy dla przełącznika w Profilu.
+  pushStatus: () => req<{ enabled: boolean; devices: number }>(`/api/client/push/status`),
+  pushEnable: () => req<{ ok?: boolean; enabled: boolean }>(`/api/client/push/enable`, { method: "POST" }),
+  pushDisable: () =>
+    req<{ ok?: boolean; enabled: boolean; invalidated?: number }>(`/api/client/push/disable`, { method: "POST" }),
   pushSubscribe: (body: {
     transport: "webpush";
     endpoint: string;

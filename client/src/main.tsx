@@ -34,3 +34,16 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch(() => {});
   });
 }
+
+// Instalacja PWA: beforeinstallprompt strzela raz, często ZANIM React
+// wystartuje — łapiemy tu i odkładamy dla banera (InstallBanner).
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  (window as unknown as { __bipEvent?: Event | null }).__bipEvent = e;
+  window.dispatchEvent(new Event("bip-ready"));
+});
+window.addEventListener("appinstalled", () => {
+  localStorage.setItem("booksero_installed", "1");
+  (window as unknown as { __bipEvent?: Event | null }).__bipEvent = null;
+  window.dispatchEvent(new Event("bip-ready"));
+});
