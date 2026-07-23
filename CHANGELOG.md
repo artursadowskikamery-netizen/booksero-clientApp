@@ -9,6 +9,15 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.9] — 2026-07-23 — Skaner rozumie linki ze slugiem
+
+- Skaner QR w aplikacji odczytuje teraz także linki z krótkim adresem
+  (app.booksero.com/<slug>, panel.booksero.com/<slug>) oraz linki poleceń
+  /r/<kod>. Jeden QR na wizytówce działa więc i aparatem telefonu
+  (klient bez aplikacji), i skanerem w aplikacji (klient z aplikacją).
+
+---
+
 ## [1.0.8] — 2026-07-23 — Krótki adres salonu w aplikacji
 
 - `app.booksero.com/<slug>` prowadzi wprost do salonu — ten sam krótki adres,

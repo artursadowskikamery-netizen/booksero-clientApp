@@ -84,6 +84,18 @@ export default function Landing() {
         navigate(`/salon/${mS[1]}`);
         return;
       }
+      const mR = u.pathname.match(/^\/r\/([A-Za-z0-9]+)$/);
+      if (mR) {
+        navigate(`/r/${mR[1]}`);
+        return;
+      }
+      // Link ze slugiem (app.booksero.com/<slug> lub panel.booksero.com/<slug>)
+      // — ten sam QR z wizytówki działa w aparacie telefonu I w tym skanerze.
+      const seg = u.pathname.split("/").filter(Boolean);
+      if (seg.length === 1 && /^[a-z0-9-]{3,60}$/i.test(seg[0])) {
+        void openInput(seg[0]);
+        return;
+      }
       setMsg(t("qr.invalid"));
       return;
     } catch {
