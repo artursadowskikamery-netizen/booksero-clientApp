@@ -178,6 +178,9 @@ export default function Login() {
                 kod tylko do AKTYWNEGO pola — bez fokusu zgoda użytkownika
                 „wypełnij kod" nie ma gdzie trafić. */}
             <input
+              type="text"
+              name="one-time-code"
+              id="one-time-code"
               inputMode="numeric"
               autoComplete="one-time-code"
               autoFocus
