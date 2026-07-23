@@ -20,7 +20,7 @@ export const LANG_LABELS: Record<Lang, string> = {
 // Komunikaty serwera Booksero (Zakres A) tłumaczone osobno (TLUMACZENIA-BRIEF).
 const resources = {
   pl: { translation: {
-    common: { book: "Rezerwuj wizytę", bookCouple: "Rezerwuj dla pary — 2 osoby", next: "Dalej", back: "Wstecz", chooseCountry: "Wybierz kraj", chooseCity: "Wybierz miasto", chooseSalon: "Wybierz salon", login: "Zaloguj", loading: "Ładowanie…", services: "Usługi", team: "Zespół", reviews: "Opinie", soon: "Dostępne wkrótce", language: "Język", pageNotFound: "Nie znaleziono strony." },
+    common: { phoneCountry: "Kraj numeru", invalidPhone: "Podaj prawidłowy numer telefonu", book: "Rezerwuj wizytę", bookCouple: "Rezerwuj dla pary — 2 osoby", next: "Dalej", back: "Wstecz", chooseCountry: "Wybierz kraj", chooseCity: "Wybierz miasto", chooseSalon: "Wybierz salon", login: "Zaloguj", loading: "Ładowanie…", services: "Usługi", team: "Zespół", reviews: "Opinie", soon: "Dostępne wkrótce", language: "Język", pageNotFound: "Nie znaleziono strony." },
     tabs: { salon: "Salon", book: "Rezerwuj", visits: "Wizyty", rewards: "Bonusy", profile: "Profil" },
     welcome: { title: "Witamy Cię w BookSero", subtitle: "Rezerwuj wizyty w swoim ulubionym miejscu — szybko i bez dzwonienia.", start: "Zaczynajmy" },
     salon: { selfcare: "Zadbaj o siebie", subtitle: "Wolne terminy już w tym tygodniu", allServices: "Zobacz wszystkie usługi ({{count}})" },
@@ -37,7 +37,7 @@ const resources = {
     version: { check: "Sprawdź aktualizacje", checking: "Sprawdzanie…", upToDate: "Masz najnowszą wersję", available: "Dostępna nowa wersja", update: "Zaktualizuj" },
   }},
   en: { translation: {
-    common: { book: "Book an appointment", bookCouple: "Book for two", next: "Next", back: "Back", chooseCountry: "Choose a country", chooseCity: "Choose a city", chooseSalon: "Choose a salon", login: "Log in", loading: "Loading…", services: "Services", team: "Team", reviews: "Reviews", soon: "Coming soon", language: "Language", pageNotFound: "Page not found." },
+    common: { phoneCountry: "Number country", invalidPhone: "Enter a valid phone number", book: "Book an appointment", bookCouple: "Book for two", next: "Next", back: "Back", chooseCountry: "Choose a country", chooseCity: "Choose a city", chooseSalon: "Choose a salon", login: "Log in", loading: "Loading…", services: "Services", team: "Team", reviews: "Reviews", soon: "Coming soon", language: "Language", pageNotFound: "Page not found." },
     tabs: { salon: "Salon", book: "Book", visits: "Visits", rewards: "Rewards", profile: "Profile" },
     welcome: { title: "Welcome to BookSero", subtitle: "Book appointments at your favourite place — fast, no phone calls.", start: "Get started" },
     salon: { selfcare: "Take care of yourself", subtitle: "Free slots this week", allServices: "See all services ({{count}})" },
@@ -54,7 +54,7 @@ const resources = {
     version: { check: "Check for updates", checking: "Checking…", upToDate: "You have the latest version", available: "A new version is available", update: "Update" },
   }},
   de: { translation: {
-    common: { book: "Termin buchen", bookCouple: "Für zwei buchen", next: "Weiter", back: "Zurück", chooseCountry: "Land wählen", chooseCity: "Stadt wählen", chooseSalon: "Salon wählen", login: "Anmelden", loading: "Wird geladen…", services: "Leistungen", team: "Team", reviews: "Bewertungen", soon: "Bald verfügbar", language: "Sprache", pageNotFound: "Seite nicht gefunden." },
+    common: { phoneCountry: "Land der Nummer", invalidPhone: "Bitte eine gültige Telefonnummer eingeben", book: "Termin buchen", bookCouple: "Für zwei buchen", next: "Weiter", back: "Zurück", chooseCountry: "Land wählen", chooseCity: "Stadt wählen", chooseSalon: "Salon wählen", login: "Anmelden", loading: "Wird geladen…", services: "Leistungen", team: "Team", reviews: "Bewertungen", soon: "Bald verfügbar", language: "Sprache", pageNotFound: "Seite nicht gefunden." },
     tabs: { salon: "Salon", book: "Buchen", visits: "Termine", rewards: "Boni", profile: "Profil" },
     welcome: { title: "Willkommen bei BookSero", subtitle: "Buche Termine bei deinem Lieblingsort — schnell und ohne Anruf.", start: "Los geht's" },
     salon: { selfcare: "Tu dir etwas Gutes", subtitle: "Freie Termine diese Woche", allServices: "Alle Dienstleistungen ansehen ({{count}})" },
@@ -71,7 +71,7 @@ const resources = {
     version: { check: "Nach Updates suchen", checking: "Wird geprüft…", upToDate: "Du hast die neueste Version", available: "Eine neue Version ist verfügbar", update: "Aktualisieren" },
   }},
   nl: { translation: {
-    common: { book: "Afspraak boeken", bookCouple: "Boek voor twee", next: "Volgende", back: "Terug", chooseCountry: "Kies een land", chooseCity: "Kies een stad", chooseSalon: "Kies een salon", login: "Inloggen", loading: "Laden…", services: "Diensten", team: "Team", reviews: "Beoordelingen", soon: "Binnenkort beschikbaar", language: "Taal", pageNotFound: "Pagina niet gevonden." },
+    common: { phoneCountry: "Land van nummer", invalidPhone: "Voer een geldig telefoonnummer in", book: "Afspraak boeken", bookCouple: "Boek voor twee", next: "Volgende", back: "Terug", chooseCountry: "Kies een land", chooseCity: "Kies een stad", chooseSalon: "Kies een salon", login: "Inloggen", loading: "Laden…", services: "Diensten", team: "Team", reviews: "Beoordelingen", soon: "Binnenkort beschikbaar", language: "Taal", pageNotFound: "Pagina niet gevonden." },
     tabs: { salon: "Salon", book: "Boeken", visits: "Afspraken", rewards: "Bonussen", profile: "Profiel" },
     welcome: { title: "Welkom bij BookSero", subtitle: "Boek afspraken op je favoriete plek — snel en zonder te bellen.", start: "Aan de slag" },
     salon: { selfcare: "Zorg goed voor jezelf", subtitle: "Vrije plekken deze week", allServices: "Alle behandelingen bekijken ({{count}})" },
@@ -88,7 +88,7 @@ const resources = {
     version: { check: "Controleer op updates", checking: "Controleren…", upToDate: "Je hebt de nieuwste versie", available: "Er is een nieuwe versie beschikbaar", update: "Bijwerken" },
   }},
   cs: { translation: {
-    common: { book: "Rezervovat termín", bookCouple: "Rezervovat pro dva", next: "Dále", back: "Zpět", chooseCountry: "Vyberte zemi", chooseCity: "Vyberte město", chooseSalon: "Vyberte salon", login: "Přihlásit se", loading: "Načítání…", services: "Služby", team: "Tým", reviews: "Recenze", soon: "Již brzy", language: "Jazyk", pageNotFound: "Stránka nenalezena." },
+    common: { phoneCountry: "Země čísla", invalidPhone: "Zadejte platné telefonní číslo", book: "Rezervovat termín", bookCouple: "Rezervovat pro dva", next: "Dále", back: "Zpět", chooseCountry: "Vyberte zemi", chooseCity: "Vyberte město", chooseSalon: "Vyberte salon", login: "Přihlásit se", loading: "Načítání…", services: "Služby", team: "Tým", reviews: "Recenze", soon: "Již brzy", language: "Jazyk", pageNotFound: "Stránka nenalezena." },
     tabs: { salon: "Salon", book: "Rezervovat", visits: "Návštěvy", rewards: "Bonusy", profile: "Profil" },
     welcome: { title: "Vítejte v BookSero", subtitle: "Rezervujte si termíny ve svém oblíbeném místě — rychle a bez telefonování.", start: "Začít" },
     salon: { selfcare: "Dopřejte si péči", subtitle: "Volné termíny už tento týden", allServices: "Zobrazit všechny služby ({{count}})" },
@@ -105,7 +105,7 @@ const resources = {
     version: { check: "Zkontrolovat aktualizace", checking: "Kontrola…", upToDate: "Máš nejnovější verzi", available: "K dispozici je nová verze", update: "Aktualizovat" },
   }},
   sv: { translation: {
-    common: { book: "Boka tid", bookCouple: "Boka för två", next: "Nästa", back: "Tillbaka", chooseCountry: "Välj land", chooseCity: "Välj stad", chooseSalon: "Välj salong", login: "Logga in", loading: "Laddar…", services: "Tjänster", team: "Team", reviews: "Recensioner", soon: "Kommer snart", language: "Språk", pageNotFound: "Sidan hittades inte." },
+    common: { phoneCountry: "Nummerland", invalidPhone: "Ange ett giltigt telefonnummer", book: "Boka tid", bookCouple: "Boka för två", next: "Nästa", back: "Tillbaka", chooseCountry: "Välj land", chooseCity: "Välj stad", chooseSalon: "Välj salong", login: "Logga in", loading: "Laddar…", services: "Tjänster", team: "Team", reviews: "Recensioner", soon: "Kommer snart", language: "Språk", pageNotFound: "Sidan hittades inte." },
     tabs: { salon: "Salong", book: "Boka", visits: "Besök", rewards: "Bonusar", profile: "Profil" },
     welcome: { title: "Välkommen till BookSero", subtitle: "Boka tider på ditt favoritställe — snabbt och utan att ringa.", start: "Kom igång" },
     salon: { selfcare: "Unna dig lite omtanke", subtitle: "Lediga tider redan denna vecka", allServices: "Visa alla tjänster ({{count}})" },
@@ -122,7 +122,7 @@ const resources = {
     version: { check: "Sök efter uppdateringar", checking: "Kontrollerar…", upToDate: "Du har den senaste versionen", available: "En ny version är tillgänglig", update: "Uppdatera" },
   }},
   es: { translation: {
-    common: { book: "Reservar cita", bookCouple: "Reservar para dos", next: "Siguiente", back: "Atrás", chooseCountry: "Elige un país", chooseCity: "Elige una ciudad", chooseSalon: "Elige un salón", login: "Iniciar sesión", loading: "Cargando…", services: "Servicios", team: "Equipo", reviews: "Opiniones", soon: "Próximamente", language: "Idioma", pageNotFound: "Página no encontrada." },
+    common: { phoneCountry: "País del número", invalidPhone: "Introduce un número de teléfono válido", book: "Reservar cita", bookCouple: "Reservar para dos", next: "Siguiente", back: "Atrás", chooseCountry: "Elige un país", chooseCity: "Elige una ciudad", chooseSalon: "Elige un salón", login: "Iniciar sesión", loading: "Cargando…", services: "Servicios", team: "Equipo", reviews: "Opiniones", soon: "Próximamente", language: "Idioma", pageNotFound: "Página no encontrada." },
     tabs: { salon: "Salón", book: "Reservar", visits: "Visitas", rewards: "Bonos", profile: "Perfil" },
     welcome: { title: "Bienvenido a BookSero", subtitle: "Reserva citas en tu lugar favorito — rápido y sin llamadas.", start: "Empezar" },
     salon: { selfcare: "Cuídate", subtitle: "Huecos libres esta semana", allServices: "Ver todos los servicios ({{count}})" },
@@ -139,7 +139,7 @@ const resources = {
     version: { check: "Buscar actualizaciones", checking: "Comprobando…", upToDate: "Tienes la última versión", available: "Hay una versión nueva disponible", update: "Actualizar" },
   }},
   fr: { translation: {
-    common: { book: "Prendre rendez-vous", bookCouple: "Réserver pour deux", next: "Suivant", back: "Retour", chooseCountry: "Choisissez un pays", chooseCity: "Choisissez une ville", chooseSalon: "Choisissez un salon", login: "Se connecter", loading: "Chargement…", services: "Prestations", team: "Équipe", reviews: "Avis", soon: "Bientôt disponible", language: "Langue", pageNotFound: "Page introuvable." },
+    common: { phoneCountry: "Pays du numéro", invalidPhone: "Saisissez un numéro de téléphone valide", book: "Prendre rendez-vous", bookCouple: "Réserver pour deux", next: "Suivant", back: "Retour", chooseCountry: "Choisissez un pays", chooseCity: "Choisissez une ville", chooseSalon: "Choisissez un salon", login: "Se connecter", loading: "Chargement…", services: "Prestations", team: "Équipe", reviews: "Avis", soon: "Bientôt disponible", language: "Langue", pageNotFound: "Page introuvable." },
     tabs: { salon: "Salon", book: "Réserver", visits: "Visites", rewards: "Bonus", profile: "Profil" },
     welcome: { title: "Bienvenue sur BookSero", subtitle: "Réservez dans votre lieu préféré — rapidement et sans appeler.", start: "Commencer" },
     salon: { selfcare: "Prenez soin de vous", subtitle: "Des créneaux libres cette semaine", allServices: "Voir tous les soins ({{count}})" },
@@ -156,7 +156,7 @@ const resources = {
     version: { check: "Rechercher des mises à jour", checking: "Vérification…", upToDate: "Tu as la dernière version", available: "Une nouvelle version est disponible", update: "Mettre à jour" },
   }},
   it: { translation: {
-    common: { book: "Prenota un appuntamento", bookCouple: "Prenota per due", next: "Avanti", back: "Indietro", chooseCountry: "Scegli un paese", chooseCity: "Scegli una città", chooseSalon: "Scegli un salone", login: "Accedi", loading: "Caricamento…", services: "Servizi", team: "Team", reviews: "Recensioni", soon: "In arrivo", language: "Lingua", pageNotFound: "Pagina non trovata." },
+    common: { phoneCountry: "Paese del numero", invalidPhone: "Inserisci un numero di telefono valido", book: "Prenota un appuntamento", bookCouple: "Prenota per due", next: "Avanti", back: "Indietro", chooseCountry: "Scegli un paese", chooseCity: "Scegli una città", chooseSalon: "Scegli un salone", login: "Accedi", loading: "Caricamento…", services: "Servizi", team: "Team", reviews: "Recensioni", soon: "In arrivo", language: "Lingua", pageNotFound: "Pagina non trovata." },
     tabs: { salon: "Salone", book: "Prenota", visits: "Visite", rewards: "Bonus", profile: "Profilo" },
     welcome: { title: "Benvenuto su BookSero", subtitle: "Prenota nel tuo posto preferito — veloce e senza chiamate.", start: "Inizia" },
     salon: { selfcare: "Prenditi cura di te", subtitle: "Orari liberi questa settimana", allServices: "Vedi tutti i servizi ({{count}})" },
@@ -173,7 +173,7 @@ const resources = {
     version: { check: "Cerca aggiornamenti", checking: "Verifica…", upToDate: "Hai la versione più recente", available: "È disponibile una nuova versione", update: "Aggiorna" },
   }},
   hr: { translation: {
-    common: { book: "Rezerviraj termin", bookCouple: "Rezerviraj za dvoje", next: "Dalje", back: "Natrag", chooseCountry: "Odaberi državu", chooseCity: "Odaberi grad", chooseSalon: "Odaberi salon", login: "Prijava", loading: "Učitavanje…", services: "Usluge", team: "Tim", reviews: "Recenzije", soon: "Uskoro", language: "Jezik", pageNotFound: "Stranica nije pronađena." },
+    common: { phoneCountry: "Zemlja broja", invalidPhone: "Unesite ispravan broj telefona", book: "Rezerviraj termin", bookCouple: "Rezerviraj za dvoje", next: "Dalje", back: "Natrag", chooseCountry: "Odaberi državu", chooseCity: "Odaberi grad", chooseSalon: "Odaberi salon", login: "Prijava", loading: "Učitavanje…", services: "Usluge", team: "Tim", reviews: "Recenzije", soon: "Uskoro", language: "Jezik", pageNotFound: "Stranica nije pronađena." },
     tabs: { salon: "Salon", book: "Rezerviraj", visits: "Posjete", rewards: "Bonusi", profile: "Profil" },
     welcome: { title: "Dobrodošli u BookSero", subtitle: "Rezervirajte termine na omiljenom mjestu — brzo i bez poziva.", start: "Započni" },
     salon: { selfcare: "Pobrini se za sebe", subtitle: "Slobodni termini već ovaj tjedan", allServices: "Prikaži sve usluge ({{count}})" },
@@ -190,7 +190,7 @@ const resources = {
     version: { check: "Provjeri ažuriranja", checking: "Provjera…", upToDate: "Imaš najnoviju verziju", available: "Dostupna je nova verzija", update: "Ažuriraj" },
   }},
   el: { translation: {
-    common: { book: "Κλείσε ραντεβού", bookCouple: "Κράτηση για δύο", next: "Επόμενο", back: "Πίσω", chooseCountry: "Επίλεξε χώρα", chooseCity: "Επίλεξε πόλη", chooseSalon: "Επίλεξε σαλόνι", login: "Σύνδεση", loading: "Φόρτωση…", services: "Υπηρεσίες", team: "Ομάδα", reviews: "Κριτικές", soon: "Έρχεται σύντομα", language: "Γλώσσα", pageNotFound: "Η σελίδα δεν βρέθηκε." },
+    common: { phoneCountry: "Χώρα αριθμού", invalidPhone: "Εισαγάγετε έγκυρο αριθμό τηλεφώνου", book: "Κλείσε ραντεβού", bookCouple: "Κράτηση για δύο", next: "Επόμενο", back: "Πίσω", chooseCountry: "Επίλεξε χώρα", chooseCity: "Επίλεξε πόλη", chooseSalon: "Επίλεξε σαλόνι", login: "Σύνδεση", loading: "Φόρτωση…", services: "Υπηρεσίες", team: "Ομάδα", reviews: "Κριτικές", soon: "Έρχεται σύντομα", language: "Γλώσσα", pageNotFound: "Η σελίδα δεν βρέθηκε." },
     tabs: { salon: "Σαλόνι", book: "Κράτηση", visits: "Επισκέψεις", rewards: "Μπόνους", profile: "Προφίλ" },
     welcome: { title: "Καλώς ήρθες στο BookSero", subtitle: "Κλείσε ραντεβού στο αγαπημένο σου μέρος — γρήγορα και χωρίς τηλέφωνο.", start: "Ξεκίνα" },
     salon: { selfcare: "Φρόντισε τον εαυτό σου", subtitle: "Ελεύθερες ώρες αυτή την εβδομάδα", allServices: "Δες όλες τις υπηρεσίες ({{count}})" },
@@ -207,7 +207,7 @@ const resources = {
     version: { check: "Έλεγχος ενημερώσεων", checking: "Έλεγχος…", upToDate: "Έχεις την πιο πρόσφατη έκδοση", available: "Διαθέσιμη νέα έκδοση", update: "Ενημέρωση" },
   }},
   tr: { translation: {
-    common: { book: "Randevu al", bookCouple: "İki kişilik randevu", next: "İleri", back: "Geri", chooseCountry: "Ülke seç", chooseCity: "Şehir seç", chooseSalon: "Salon seç", login: "Giriş yap", loading: "Yükleniyor…", services: "Hizmetler", team: "Ekip", reviews: "Yorumlar", soon: "Çok yakında", language: "Dil", pageNotFound: "Sayfa bulunamadı." },
+    common: { phoneCountry: "Numara ülkesi", invalidPhone: "Geçerli bir telefon numarası girin", book: "Randevu al", bookCouple: "İki kişilik randevu", next: "İleri", back: "Geri", chooseCountry: "Ülke seç", chooseCity: "Şehir seç", chooseSalon: "Salon seç", login: "Giriş yap", loading: "Yükleniyor…", services: "Hizmetler", team: "Ekip", reviews: "Yorumlar", soon: "Çok yakında", language: "Dil", pageNotFound: "Sayfa bulunamadı." },
     tabs: { salon: "Salon", book: "Randevu", visits: "Ziyaretler", rewards: "Bonuslar", profile: "Profil" },
     welcome: { title: "BookSero'ya hoş geldin", subtitle: "Favori mekanında randevu al — hızlı ve telefonsuz.", start: "Başla" },
     salon: { selfcare: "Kendine iyi bak", subtitle: "Bu hafta boş saatler var", allServices: "Tüm hizmetleri gör ({{count}})" },
@@ -224,7 +224,7 @@ const resources = {
     version: { check: "Güncellemeleri denetle", checking: "Denetleniyor…", upToDate: "En son sürüme sahipsin", available: "Yeni sürüm mevcut", update: "Güncelle" },
   }},
   bg: { translation: {
-    common: { book: "Запази час", bookCouple: "Резервация за двама", next: "Напред", back: "Назад", chooseCountry: "Избери държава", chooseCity: "Избери град", chooseSalon: "Избери салон", login: "Вход", loading: "Зареждане…", services: "Услуги", team: "Екип", reviews: "Отзиви", soon: "Очаквайте скоро", language: "Език", pageNotFound: "Страницата не е намерена." },
+    common: { phoneCountry: "Държава на номера", invalidPhone: "Въведете валиден телефонен номер", book: "Запази час", bookCouple: "Резервация за двама", next: "Напред", back: "Назад", chooseCountry: "Избери държава", chooseCity: "Избери град", chooseSalon: "Избери салон", login: "Вход", loading: "Зареждане…", services: "Услуги", team: "Екип", reviews: "Отзиви", soon: "Очаквайте скоро", language: "Език", pageNotFound: "Страницата не е намерена." },
     tabs: { salon: "Салон", book: "Резервирай", visits: "Посещения", rewards: "Бонуси", profile: "Профил" },
     welcome: { title: "Добре дошли в BookSero", subtitle: "Запазвай часове в любимото си място — бързо и без обаждания.", start: "Започни" },
     salon: { selfcare: "Погрижи се за себе си", subtitle: "Свободни часове още тази седмица", allServices: "Виж всички услуги ({{count}})" },
@@ -241,7 +241,7 @@ const resources = {
     version: { check: "Провери за актуализации", checking: "Проверка…", upToDate: "Имаш най-новата версия", available: "Налична е нова версия", update: "Актуализирай" },
   }},
   fi: { translation: {
-    common: { book: "Varaa aika", bookCouple: "Varaa kahdelle", next: "Seuraava", back: "Takaisin", chooseCountry: "Valitse maa", chooseCity: "Valitse kaupunki", chooseSalon: "Valitse salonki", login: "Kirjaudu", loading: "Ladataan…", services: "Palvelut", team: "Tiimi", reviews: "Arvostelut", soon: "Tulossa pian", language: "Kieli", pageNotFound: "Sivua ei löytynyt." },
+    common: { phoneCountry: "Numeron maa", invalidPhone: "Anna kelvollinen puhelinnumero", book: "Varaa aika", bookCouple: "Varaa kahdelle", next: "Seuraava", back: "Takaisin", chooseCountry: "Valitse maa", chooseCity: "Valitse kaupunki", chooseSalon: "Valitse salonki", login: "Kirjaudu", loading: "Ladataan…", services: "Palvelut", team: "Tiimi", reviews: "Arvostelut", soon: "Tulossa pian", language: "Kieli", pageNotFound: "Sivua ei löytynyt." },
     tabs: { salon: "Salonki", book: "Varaa", visits: "Käynnit", rewards: "Bonukset", profile: "Profiili" },
     welcome: { title: "Tervetuloa BookSeroon", subtitle: "Varaa aikoja suosikkipaikassasi — nopeasti ja ilman puheluita.", start: "Aloita" },
     salon: { selfcare: "Pidä huolta itsestäsi", subtitle: "Vapaita aikoja jo tällä viikolla", allServices: "Näytä kaikki palvelut ({{count}})" },
@@ -258,7 +258,7 @@ const resources = {
     version: { check: "Tarkista päivitykset", checking: "Tarkistetaan…", upToDate: "Sinulla on uusin versio", available: "Uusi versio saatavilla", update: "Päivitä" },
   }},
   no: { translation: {
-    common: { book: "Bestill time", bookCouple: "Bestill for to", next: "Neste", back: "Tilbake", chooseCountry: "Velg land", chooseCity: "Velg by", chooseSalon: "Velg salong", login: "Logg inn", loading: "Laster…", services: "Tjenester", team: "Team", reviews: "Anmeldelser", soon: "Kommer snart", language: "Språk", pageNotFound: "Fant ikke siden." },
+    common: { phoneCountry: "Nummerland", invalidPhone: "Skriv inn et gyldig telefonnummer", book: "Bestill time", bookCouple: "Bestill for to", next: "Neste", back: "Tilbake", chooseCountry: "Velg land", chooseCity: "Velg by", chooseSalon: "Velg salong", login: "Logg inn", loading: "Laster…", services: "Tjenester", team: "Team", reviews: "Anmeldelser", soon: "Kommer snart", language: "Språk", pageNotFound: "Fant ikke siden." },
     tabs: { salon: "Salong", book: "Bestill", visits: "Besøk", rewards: "Bonuser", profile: "Profil" },
     welcome: { title: "Velkommen til BookSero", subtitle: "Bestill timer på ditt favorittsted — raskt og uten å ringe.", start: "Kom i gang" },
     salon: { selfcare: "Ta vare på deg selv", subtitle: "Ledige timer denne uken", allServices: "Se alle tjenester ({{count}})" },
@@ -275,7 +275,7 @@ const resources = {
     version: { check: "Se etter oppdateringer", checking: "Sjekker…", upToDate: "Du har den nyeste versjonen", available: "En ny versjon er tilgjengelig", update: "Oppdater" },
   }},
   uk: { translation: {
-    common: { book: "Записатися", bookCouple: "Бронювання для двох", next: "Далі", back: "Назад", chooseCountry: "Виберіть країну", chooseCity: "Виберіть місто", chooseSalon: "Виберіть салон", login: "Увійти", loading: "Завантаження…", services: "Послуги", team: "Команда", reviews: "Відгуки", soon: "Скоро", language: "Мова", pageNotFound: "Сторінку не знайдено." },
+    common: { phoneCountry: "Країна номера", invalidPhone: "Введіть дійсний номер телефону", book: "Записатися", bookCouple: "Бронювання для двох", next: "Далі", back: "Назад", chooseCountry: "Виберіть країну", chooseCity: "Виберіть місто", chooseSalon: "Виберіть салон", login: "Увійти", loading: "Завантаження…", services: "Послуги", team: "Команда", reviews: "Відгуки", soon: "Скоро", language: "Мова", pageNotFound: "Сторінку не знайдено." },
     tabs: { salon: "Салон", book: "Бронювати", visits: "Візити", rewards: "Бонуси", profile: "Профіль" },
     welcome: { title: "Ласкаво просимо до BookSero", subtitle: "Бронюйте візити в улюбленому місці — швидко та без дзвінків.", start: "Почати" },
     salon: { selfcare: "Подбай про себе", subtitle: "Вільні години вже цього тижня", allServices: "Переглянути всі послуги ({{count}})" },

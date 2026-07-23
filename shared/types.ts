@@ -37,6 +37,9 @@ export interface SalonPublic {
     openingHours?: unknown;
     logo?: string | null;
     currency: string; // waluta salonu (ceny usług ją dziedziczą)
+    // Kraj lokalizacji (ISO 3166-1 alpha-2) — domyślny kraj pola telefonu
+    // (SPEC-telefony-e164). Brak → PhoneInput używa PL.
+    country?: string | null;
     // Tenant salonu — potrzebny do logowania klienta w kontekście sieci
     // (SPEC-logowanie-klienta; pojawi się po wdrożeniu w Booksero).
     tenantId?: string | null;

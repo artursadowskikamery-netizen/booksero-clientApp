@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { setToken, isLoggedInFor } from "../lib/auth";
 import { loadRef, clearRef } from "../lib/referral";
+import { PhoneInput } from "../components/PhoneInput";
 
 // Logowanie klienta: telefon → kod SMS → sesja (SPEC-logowanie-klienta).
 // Nowy numer: po poprawnym kodzie backend prosi o imię (422) i tworzy konto
@@ -17,6 +18,7 @@ export default function Login() {
   const { t } = useTranslation();
 
   const [phone, setPhone] = useState("");
+  const [phoneValid, setPhoneValid] = useState(false);
   const [code, setCode] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -93,17 +95,18 @@ export default function Login() {
         )}
 
         <label className="text-[11px] font-bold text-ink-2">{t("auth.phone")}</label>
-        <input
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="+48 601 234 567"
-          disabled={stage !== "phone"}
-          className="w-full mt-1.5 mb-4 rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm font-mono outline-none focus:ring-2 focus:ring-brand disabled:opacity-60"
-        />
+        <div className="mt-1.5 mb-4">
+          <PhoneInput
+            value={phone}
+            onChange={setPhone}
+            onValidChange={setPhoneValid}
+            defaultCountry={salonQ.data?.salon.country}
+            disabled={stage !== "phone"}
+          />
+        </div>
 
         {stage === "phone" && (
-          <button className="btn-primary" disabled={!phone.trim() || !tenantId || busy} onClick={sendCode}>
+          <button className="btn-primary" disabled={!phoneValid || !tenantId || busy} onClick={sendCode}>
             {busy ? t("common.loading") : t("auth.sendCode")}
           </button>
         )}

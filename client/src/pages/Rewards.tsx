@@ -8,6 +8,7 @@ import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
 import { promoDiscountLabel, promoDaysLabel } from "../lib/promo";
 import BottomNav from "../components/BottomNav";
+import { PhoneInput } from "../components/PhoneInput";
 import type { LoyaltyState, ReferralStatus, Promotion } from "@shared/types";
 
 type Tab = "points" | "rewards" | "referrals" | "codes" | "promos";
@@ -133,7 +134,7 @@ export default function Rewards() {
       )}
 
       {/* ── POLECAJ ── */}
-      {tab === "referrals" && feat.referrals && <Referrals />}
+      {tab === "referrals" && feat.referrals && <Referrals defaultCountry={salonQ.data?.salon.country} />}
 
       {/* ── MOJE KODY ── */}
       {tab === "codes" && feat.codesNotebook && <MyCodes />}
@@ -302,10 +303,11 @@ function PromoList({ promotions, currency, salonId }: { promotions: Promotion[];
 }
 
 // Pod-zakładka „Polecaj": formularz + statusy poleceń.
-function Referrals() {
+function Referrals({ defaultCountry }: { defaultCountry?: string | null }) {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const [phone, setPhone] = useState("");
+  const [phoneValid, setPhoneValid] = useState(false);
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
 
@@ -336,16 +338,17 @@ function Referrals() {
         <div className="font-bold text-lg">{t("referral.title")}</div>
         <p className="text-sm text-muted mt-1 mb-3">{t("referral.desc")}</p>
         <label className="text-[11px] font-bold text-ink-2">{t("referral.phone")}</label>
-        <input
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="+48 601 234 567"
-          className="w-full mt-1.5 mb-3 rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm font-mono outline-none focus:ring-2 focus:ring-brand"
-        />
+        <div className="mt-1.5 mb-3">
+          <PhoneInput
+            value={phone}
+            onChange={setPhone}
+            onValidChange={setPhoneValid}
+            defaultCountry={defaultCountry}
+          />
+        </div>
         <button
           className="btn-primary flex items-center justify-center gap-2"
-          disabled={!phone.trim() || sendM.isPending}
+          disabled={!phoneValid || sendM.isPending}
           onClick={() => sendM.mutate()}
         >
           <Send size={16} /> {sendM.isPending ? t("common.loading") : t("referral.send")}

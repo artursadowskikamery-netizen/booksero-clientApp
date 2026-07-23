@@ -8,6 +8,7 @@ import { api } from "../lib/api";
 import { isLoggedIn, isLoggedInFor } from "../lib/auth";
 import { getPushState, enablePush, type PushState } from "../lib/push";
 import BottomNav from "../components/BottomNav";
+import { PhoneInput } from "../components/PhoneInput";
 import type { BookingResult, StaffMember } from "@shared/types";
 
 type Step = "service" | "staff" | "time" | "details";
@@ -34,6 +35,7 @@ export default function Booking() {
   const [clientName, setName] = useState("");
   const [secondClientName, setName2] = useState("");
   const [clientPhone, setPhone] = useState("");
+  const [phoneValid, setPhoneValid] = useState(false);
   const [clientEmail, setEmail] = useState("");
   const [result, setResult] = useState<BookingResult | null>(null);
   // Zachęta do powiadomień PO udanej rezerwacji (dobry moment UX, nie na starcie).
@@ -344,7 +346,19 @@ export default function Booking() {
         <>
           <Field label={t("booking.name")} value={clientName} onChange={setName} />
           {couple && <Field label={t("booking.name2")} value={secondClientName} onChange={setName2} />}
-          <Field label={`${t("booking.phone")}${settings?.requirePhone ? " *" : ""}`} value={clientPhone} onChange={setPhone} type="tel" />
+          <label className="block mb-2">
+            <span className="text-[11px] font-bold text-ink-2">
+              {`${t("booking.phone")}${settings?.requirePhone ? " *" : ""}`}
+            </span>
+            <div className="mt-1">
+              <PhoneInput
+                value={clientPhone}
+                onChange={setPhone}
+                onValidChange={setPhoneValid}
+                defaultCountry={salon?.salon.country}
+              />
+            </div>
+          </label>
           {settings?.requireEmail && <Field label={`${t("booking.email")} *`} value={clientEmail} onChange={setEmail} type="email" />}
 
           {service && (() => {
@@ -376,7 +390,8 @@ export default function Booking() {
             disabled={
               !clientName ||
               (couple && !secondClientName) ||
-              (settings?.requirePhone && !clientPhone) ||
+              (settings?.requirePhone && !phoneValid) ||
+              (!!clientPhone && !phoneValid) ||
               (settings?.requireEmail && !clientEmail) ||
               bookM.isPending
             }
