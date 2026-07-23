@@ -30,8 +30,6 @@ export default function Login() {
   const [codeNonce, setCodeNonce] = useState(0);
   // Sekundy do odblokowania po „Zbyt wiele prób" — żywy licznik MM:SS.
   const [cooldown, setCooldown] = useState(0);
-  // TYMCZASOWA diagnostyka auto-kodu (usuniemy po namierzeniu problemu Honor).
-  const [dbg, setDbg] = useState<string[]>([]);
 
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
   const tenantId = salonQ.data?.salon.tenantId ?? null;
@@ -49,18 +47,13 @@ export default function Login() {
   // "Wyślij ponownie" nasłuch by się nie włączył i złapałby stary kod.
   useEffect(() => {
     if (stage !== "code") return;
-    if (typeof window === "undefined" || !("OTPCredential" in window)) {
-      setDbg((d) => [...d, "brak-webotp"]);
-      return;
-    }
+    if (typeof window === "undefined" || !("OTPCredential" in window)) return;
     const ac = new AbortController();
-    setDbg((d) => [...d, "nasłuch-start"]);
     navigator.credentials
       .get({ otp: { transport: ["sms"] }, signal: ac.signal } as CredentialRequestOptions)
       .then((cred) => {
         const otp = (cred as unknown as { code?: string } | null)?.code;
         const clean = otp ? otp.replace(/\D/g, "").slice(0, 6) : "";
-        setDbg((d) => [...d, `odebrano:${clean ? clean.length + "cyfr" : "pusto"}`]);
         if (clean.length === 6) {
           setCode(clean);
           // Kod z WebOTP jest pewny → zatwierdzamy od razu (bez ręcznego klikania).
@@ -69,11 +62,7 @@ export default function Login() {
           setCode(clean);
         }
       })
-      .catch((e) => {
-        // Diagnostyka: nazwa błędu mówi, CZEMU kod nie dotarł (AbortError = nasze
-        // przezbrojenie; NotAllowedError/InvalidStateError = blokada środowiska).
-        setDbg((d) => [...d, `błąd:${(e as Error)?.name || "?"}`]);
-      });
+      .catch(() => {}); // przerwane/niewspierane — cicho, użytkownik wpisze ręcznie
     return () => ac.abort();
   }, [stage, codeNonce]);
 
@@ -248,9 +237,6 @@ export default function Login() {
         )}
 
         {err && <p className="text-xs text-red-400 mt-3">{err}</p>}
-        {stage === "code" && dbg.length > 0 && (
-          <p className="text-[10px] text-muted mt-2 break-all">diag: {dbg.join(" → ")}</p>
-        )}
 
         <p className="text-[11px] text-muted text-center mt-6">{t("auth.legal")}</p>
       </div>

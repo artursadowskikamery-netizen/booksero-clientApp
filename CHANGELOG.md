@@ -9,6 +9,16 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.7] — 2026-07-23 — Sprzątanie po diagnozie auto-kodu
+
+- Usunięta tymczasowa linijka diagnostyczna z okna logowania.
+- Rozwiązanie zagadki auto-kodu na Androidzie: instalacje ikony sprzed
+  dodania ikon PNG (przed 1.0.0/Google Play) były skrótami bez dostępu
+  do kodów SMS — wystarczy odinstalować i zainstalować ikonę ponownie
+  z Chrome. Nowe instalacje działają od razu.
+
+---
+
 ## [1.0.4] — 2026-07-23 — Przycisk „Wklej kod" przy logowaniu
 
 - Część telefonów (m.in. Honor/Huawei) po zgodzie „użyj kodu z SMS" wkłada
