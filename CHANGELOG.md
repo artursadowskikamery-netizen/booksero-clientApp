@@ -9,6 +9,14 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.4] — 2026-07-23 — Przycisk „Wklej kod" przy logowaniu
+
+- Część telefonów (m.in. Honor/Huawei) po zgodzie „użyj kodu z SMS" wkłada
+  kod do schowka zamiast do pola. Nowy przycisk „Wklej kod" (16 języków)
+  wyciąga 6 cyfr ze schowka, wstawia i loguje jednym dotknięciem.
+
+---
+
 ## [1.0.3] — 2026-07-23 — Wersja widoczna bez logowania
 
 - Numer wersji (BookSero vX.Y.Z) pokazany na ekranie startowym pod skanerem

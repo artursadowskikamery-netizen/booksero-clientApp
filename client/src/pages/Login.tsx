@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ClipboardPaste } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { setToken, isLoggedInFor } from "../lib/auth";
@@ -181,6 +181,26 @@ export default function Login() {
               }}
               className="w-full mt-1.5 mb-4 rounded-xl border border-line bg-surface-2 px-4 py-3 text-xl font-mono tracking-[0.4em] text-center outline-none focus:ring-2 focus:ring-brand"
             />
+            {/* Honor/Huawei i część nakładek po zgodzie „użyj kodu" wrzuca kod
+                do SCHOWKA zamiast do pola — dajemy wklejenie jednym dotknięciem. */}
+            <button
+              className="w-full text-sm text-brand font-semibold py-2 mb-2 flex items-center justify-center gap-2"
+              disabled={busy}
+              onClick={async () => {
+                try {
+                  const txt = await navigator.clipboard.readText();
+                  const found = (txt.match(/\d{6}/) || [])[0];
+                  if (found) {
+                    setCode(found);
+                    verify(false, found);
+                  }
+                } catch {
+                  /* brak zgody na schowek — pole i tak ma fokus, można wkleić ręcznie */
+                }
+              }}
+            >
+              <ClipboardPaste size={15} /> {t("auth.paste")}
+            </button>
             <button className="btn-primary" disabled={code.length < 4 || busy} onClick={() => verify(false)}>
               {busy ? t("common.loading") : t("auth.verify")}
             </button>
