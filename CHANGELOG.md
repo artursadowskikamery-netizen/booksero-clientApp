@@ -9,6 +9,13 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.3] — 2026-07-23 — Wersja widoczna bez logowania
+
+- Numer wersji (BookSero vX.Y.Z) pokazany na ekranie startowym pod skanerem
+  QR — sprawdzenie „czy mam świeżą aplikację" nie wymaga już zalogowania.
+
+---
+
 ## [1.0.2] — 2026-07-23 — Auto-aktualizacja przy starcie
 
 - Aplikacja sama sprawdza nową wersję przy każdym uruchomieniu i w tle

@@ -6,6 +6,7 @@ import { api } from "../lib/api";
 import { applyAccent } from "../lib/themes";
 import { saveRef } from "../lib/referral";
 import { SUPPORTED_LANGS, LANG_LABELS } from "../lib/i18n";
+import { APP_VERSION } from "../lib/version";
 import QrScanner from "../components/QrScanner";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -147,7 +148,12 @@ export default function Landing() {
 
       {msg && <p className="text-xs text-red-400 mt-3">{msg}</p>}
 
-      <p className="mt-auto pt-6 text-[11px] text-muted text-center">{t("landing.privacyNote")}</p>
+      {/* Wersja widoczna BEZ logowania — diagnostyka „czy telefon ma świeżą
+          aplikację" nie może wymagać zalogowania. */}
+      <p className="mt-auto pt-6 text-[11px] text-muted text-center">
+        {t("landing.privacyNote")}
+        <span className="block mt-1 opacity-70">BookSero v{APP_VERSION}</span>
+      </p>
 
       {scanning && <QrScanner onResult={handleQr} onClose={() => setScanning(false)} />}
     </div>
