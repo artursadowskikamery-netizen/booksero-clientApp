@@ -9,6 +9,14 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.2] — 2026-07-23 — Auto-aktualizacja przy starcie
+
+- Aplikacja sama sprawdza nową wersję przy każdym uruchomieniu i w tle
+  czyści cache + przeładowuje (bez logowania i bez klikania w Profilu).
+  Bezpiecznik: jedna próba na wersję — brak pętli przeładowań.
+
+---
+
 ## [1.0.1] — 2026-07-23 — Telefony E.164 i wygodniejsze logowanie
 
 ### Formularze telefonu (SPEC-telefony-e164)
