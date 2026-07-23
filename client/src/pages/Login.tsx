@@ -34,6 +34,24 @@ export default function Login() {
     if (salonQ.data && tenantId && isLoggedInFor(tenantId)) navigate(`/salon/${salonId}`);
   }, [salonQ.data, tenantId, salonId, navigate]);
 
+  // Auto-uzupełnienie kodu z SMS-a. iOS uzupełnia natywnie przez pole
+  // autocomplete="one-time-code" (podpowiedź nad klawiaturą). Android Chrome:
+  // WebOTP odczytuje kod bez dotykania — działa, gdy SMS zawiera linię
+  // "@app.booksero.com #<kod>" (dodane w treści SMS-a po stronie backendu).
+  useEffect(() => {
+    if (stage !== "code") return;
+    if (typeof window === "undefined" || !("OTPCredential" in window)) return;
+    const ac = new AbortController();
+    navigator.credentials
+      .get({ otp: { transport: ["sms"] }, signal: ac.signal } as CredentialRequestOptions)
+      .then((cred) => {
+        const otp = (cred as unknown as { code?: string } | null)?.code;
+        if (otp) setCode(otp.replace(/\D/g, "").slice(0, 6));
+      })
+      .catch(() => {}); // przerwane/niewspierane — cicho, użytkownik wpisze ręcznie
+    return () => ac.abort();
+  }, [stage]);
+
   async function sendCode() {
     if (!tenantId) return;
     setErr(""); setBusy(true);
