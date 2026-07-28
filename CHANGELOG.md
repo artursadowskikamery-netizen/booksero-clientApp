@@ -9,6 +9,13 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.16] — 2026-07-28 — Klik w powiadomienie trafia do skrzynki salonu
+
+- Powiadomienie bez odnośnika po kliknięciu przenosi do SKRZYNKI ostatnio
+  odwiedzanego salonu (trasa /push-open), a nie na ekran „znajdź salon".
+
+---
+
 ## [1.0.15] — 2026-07-28 — Powiadomienia jak w VIVIMassage
 
 - Powiadomienie wisi na ekranie do kliknięcia (requireInteraction),

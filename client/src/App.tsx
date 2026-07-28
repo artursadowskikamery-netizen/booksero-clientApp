@@ -16,6 +16,7 @@ import Visits from "./pages/Visits";
 import Rewards from "./pages/Rewards";
 import ReferralLink from "./pages/ReferralLink";
 import Notifications from "./pages/Notifications";
+import PushOpen from "./pages/PushOpen";
 import SlugRedirect from "./pages/SlugRedirect";
 import InstallBanner from "./components/InstallBanner";
 
@@ -59,6 +60,7 @@ export default function App() {
         <Route path="/salon/:salonId/visits" component={Visits} />
         <Route path="/salon/:salonId/rewards" component={Rewards} />
         <Route path="/salon/:salonId/notifications" component={Notifications} />
+        <Route path="/push-open" component={PushOpen} />
         <Route path="/salon/:salonId" component={SalonHome} />
         {/* Krótki adres salonu (ten sam slug co wizytówka) — MUSI być tuż przed
             NotFound, żeby nie przechwycił tras /r /t /salon powyżej. */}

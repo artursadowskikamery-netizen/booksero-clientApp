@@ -21,7 +21,9 @@ self.addEventListener("push", (event) => {
       body: data.body || "",
       icon: "/icon-192.png",
       badge: "/icon-192.png",
-      data: { url: data.url || "/" },
+      // Bez odnośnika w wiadomości → /push-open: aplikacja przeniesie do
+      // skrzynki ostatniego salonu (nie na ekran „znajdź salon").
+      data: { url: data.url || "/push-open" },
       // Dźwiękiem rządzi SYSTEM (kanał powiadomień telefonu) — strony nie mogą
       // podkładać własnych dźwięków. My prosimy o wibrację i jawnie NIE-ciche.
       silent: false,
@@ -53,7 +55,7 @@ self.addEventListener("push", (event) => {
 // albo otwórz nowe okno.
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || "/";
+  const url = (event.notification.data && event.notification.data.url) || "/push-open";
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
       for (const c of list) {
