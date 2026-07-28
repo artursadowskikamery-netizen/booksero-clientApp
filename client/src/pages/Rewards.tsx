@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation as useLoc } from "wouter";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
+import { disablePushOnLogout } from "../lib/push";
 import { promoDiscountLabel, promoDaysLabel } from "../lib/promo";
 import BottomNav from "../components/BottomNav";
 import { PhoneInput } from "../components/PhoneInput";
@@ -40,6 +41,7 @@ export default function Rewards() {
   useEffect(() => {
     if (loyaltyQ.error instanceof ApiError && loyaltyQ.error.status === 401) {
       clearToken();
+      void disablePushOnLogout(); // urządzenie nie może dostawać pushy poprzedniego konta
       navigate(`/salon/${salonId}/login`);
     }
   }, [loyaltyQ.error, salonId, navigate]);

@@ -14,6 +14,15 @@ const ACCOUNT_KEYS = ["clientMe", "me", "clientAppointments", "loyalty", "referr
 
 function forgetAccountData() {
   for (const k of ACCOUNT_KEYS) queryClient.removeQueries({ queryKey: [k] });
+  // Plakietka na IKONIE aplikacji to też dana konta — musi zgasnąć razem
+  // z resztą, inaczej po wylogowaniu na ikonie zostaje licznik poprzedniej
+  // osoby. Wywołanie wprost (bez importu z ./push), żeby nie domykać cyklu
+  // auth → push → api → auth.
+  try {
+    void (navigator as Navigator & { clearAppBadge?: () => Promise<void> }).clearAppBadge?.();
+  } catch {
+    /* brak wsparcia — trudno */
+  }
 }
 
 export function getToken(): string | null {

@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, CheckCheck, BellOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
-import { setAppBadgeCount } from "../lib/push";
+import { setAppBadgeCount, disablePushOnLogout } from "../lib/push";
 import { isLoggedIn, clearToken } from "../lib/auth";
 import BottomNav from "../components/BottomNav";
 import type { ClientNotification } from "@shared/types";
@@ -40,6 +40,7 @@ export default function Notifications() {
     } catch (e) {
       if (e instanceof ApiError && e.status === 401) {
         clearToken();
+        void disablePushOnLogout(); // urządzenie nie może dostawać pushy poprzedniego konta
         navigate(`/salon/${salonId}/login`);
         return;
       }

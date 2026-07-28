@@ -33,6 +33,9 @@ export default function SalonHome() {
     // Kolor nakładamy zawsze — także na ekranie logowania, żeby klient od razu
     // widział barwy salonu, do którego wchodzi.
     applyAccent(accent);
+    // Odpowiedź 200 bez pola salon jest możliwa (BFF podstawia komunikat błędu
+    // zachowując status 200) — bez tego strażnika leci wyjątek i biały ekran.
+    if (!salonQ.data.salon) return;
     // Reszta to ZAPIS trwały na urządzeniu — tylko dla salonu, do którego klient
     // faktycznie ma wstęp. Salon bez sieci (tenantId) nie ma bramki logowania,
     // więc jest dostępny dla każdego i też się zapisuje.
@@ -49,7 +52,7 @@ export default function SalonHome() {
   }, [salonQ.data, accent, salonId]);
 
   // Salon tylko dla zalogowanych: bez sesji SMS w tej sieci → ekran logowania.
-  const tenantId = salonQ.data?.salon.tenantId ?? null;
+  const tenantId = salonQ.data?.salon?.tenantId ?? null;
 
   // Plakietka na dzwonku: licznik nieprzeczytanych ze skrzynki powiadomień.
   // 404 (backend bez skrzynki) → cicho 0. Odświeżamy co minutę i po powrocie
@@ -71,19 +74,24 @@ export default function SalonHome() {
   useEffect(() => {
     if (unreadQ.data) void setAppBadgeCount(unread);
   }, [unreadQ.data, unread]);
-  const gated = !!salonQ.data && !!tenantId && !isLoggedInFor(tenantId);
-  useEffect(() => {
-    if (gated) navigate(`/salon/${salonId}/login`);
-  }, [gated, salonId, navigate]);
-
-  // Salon zniknął z Booksero (404) — kasujemy martwy wpis z „Ostatnio
-  // odwiedzane". TYLKO 404: przy braku sieci historia musi przetrwać, bo salon
-  // nadal istnieje. Nie przekierowujemy po cichu — klient ma wiedzieć, czemu
-  // jego salon zniknął z listy.
-  const dead = salonQ.error instanceof ApiError && salonQ.error.status === 404;
+  // Salon zniknął z Booksero — kasujemy martwy wpis z „Ostatnio odwiedzane".
+  // Warunki są WĄSKIE celowo: (a) tylko 404 — przy braku sieci salon nadal
+  // istnieje; (b) tylko gdy NIE MA danych — nieudane odświeżenie ekranu, który
+  // działa, zostawia dane w pamięci i nie może kasować żywego salonu z listy
+  // (chwilowe 404 z wdrożenia backendu wyczyściłoby klientowi całą historię).
+  // Nie przekierowujemy po cichu — klient ma wiedzieć, czemu salon zniknął.
+  const dead = salonQ.error instanceof ApiError && salonQ.error.status === 404 && !salonQ.data;
   useEffect(() => {
     if (dead) removeRecentSalon(salonId);
   }, [dead, salonId]);
+
+  // !dead: bez tego martwy salon wpadałby w bramkę logowania (dane potrafią
+  // przeżyć błąd w pamięci) i klient dostawałby formularz nieistniejącego salonu
+  // zamiast komunikatu „salon niedostępny".
+  const gated = !dead && !!salonQ.data && !!tenantId && !isLoggedInFor(tenantId);
+  useEffect(() => {
+    if (gated) navigate(`/salon/${salonId}/login`);
+  }, [gated, salonId, navigate]);
 
   if (gated) return null;
   if (dead)
@@ -95,14 +103,19 @@ export default function SalonHome() {
         </button>
       </div>
     );
-  // KOLEJNOŚĆ MA ZNACZENIE: błąd sprawdzamy PRZED brakiem danych — przy błędzie
-  // danych też nie ma, więc odwrotna kolejność zostawiałaby wieczne „Ładowanie".
+  // Błąd pokazujemy TYLKO gdy nie ma danych. Nieudane odświeżenie w tle
+  // (tunel, winda) zostawia w pamięci ostatnie dobre dane — działający ekran
+  // salonu nie może wtedy zamienić się w czerwony komunikat. Ten sam strażnik
+  // łapie odpowiedź 200 o niepoprawnym kształcie (bez pola salon), która nigdy
+  // nie stanie się „pending", więc inaczej wisiałoby wieczne „Ładowanie".
   // Droga powrotu obowiązkowa: w zainstalowanej aplikacji nie ma paska
   // przeglądarki ani przycisku wstecz.
-  if (salonQ.isError)
+  if ((salonQ.isError && !salonQ.data) || (!!salonQ.data && !salonQ.data.salon))
     return (
       <div className="p-6 text-sm">
-        <p className="text-red-500">{(salonQ.error as Error).message}</p>
+        <p className="text-red-500">
+          {salonQ.error ? (salonQ.error as Error).message : t("common.salonGone")}
+        </p>
         <button onClick={() => navigate("/")} className="btn-primary mt-4">{t("common.back")}</button>
       </div>
     );

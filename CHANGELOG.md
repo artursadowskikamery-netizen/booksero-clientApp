@@ -9,6 +9,25 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.19] — 2026-07-28 — Poprawki z trzeciej rundy przeglądu
+
+- Powiadomienia poprzedniego konta nie trafiają już na telefon następnej
+  osoby: wygaśnięcie sesji (401) w Wizytach, Bonusach, Skrzynce i Profilu
+  wyrejestrowuje urządzenie z powiadomień — dotąd robiło to wyłącznie
+  świadome „Wyloguj".
+- Chwilowa awaria sieci nie niszczy działającego ekranu salonu ani nie
+  kasuje żywego salonu z „Ostatnio odwiedzanych": błąd i stan „salon
+  niedostępny" liczą się TYLKO przy braku danych (react-query zostawia
+  ostatnie dobre dane po nieudanym odświeżeniu).
+- Salon usunięty pokazuje komunikat zamiast wpadać w ekran logowania
+  nieistniejącego salonu.
+- Plakietka na ikonie aplikacji gaśnie przy wylogowaniu (zostawał licznik
+  poprzedniego konta).
+- Odpowiedź serwera o niepoprawnym kształcie kończy się ekranem z drogą
+  powrotu zamiast wyjątkiem (biały ekran).
+
+---
+
 ## [1.0.18] — 2026-07-28 — Ostatnio odwiedzane salony na ekranie startowym
 
 - Po pierwszym wejściu (QR lub kod) salon trafia do historii na ekranie

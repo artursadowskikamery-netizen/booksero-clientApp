@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
 import type { ClientAppointment } from "@shared/types";
+import { disablePushOnLogout } from "../lib/push";
 import BottomNav from "../components/BottomNav";
 
 // Moje wizyty (Faza 2): nadchodzące + historia, odwołanie istniejącym
@@ -35,6 +36,7 @@ export default function Visits() {
   useEffect(() => {
     if (q.error instanceof ApiError && q.error.status === 401) {
       clearToken();
+      void disablePushOnLogout(); // urządzenie nie może dostawać pushy poprzedniego konta
       navigate(`/salon/${salonId}/login`);
     }
   }, [q.error, salonId, navigate]);

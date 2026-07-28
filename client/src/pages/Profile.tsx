@@ -28,6 +28,7 @@ export default function Profile() {
   useEffect(() => {
     if (meQ.error instanceof ApiError && (meQ.error.status === 401 || meQ.error.status === 404)) {
       clearToken();
+      void disablePushOnLogout(); // urządzenie nie może dostawać pushy poprzedniego konta
       navigate(`/salon/${salonId}/login`);
     }
   }, [meQ.error, salonId, navigate]);
