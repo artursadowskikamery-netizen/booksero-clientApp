@@ -19,21 +19,33 @@ async function bookseroFetch(
   locale?: string,
   extraHeaders?: Record<string, string>,
 ): Promise<UpstreamResult> {
-  let res: Response;
-  try {
-    res = await fetch(`${BASE}${path}`, {
-      ...init,
-      headers: {
-        Accept: "application/json",
-        ...(locale ? { "X-Locale": locale } : {}),
-        ...(extraHeaders || {}),
-        ...(init.headers || {}),
-      },
-    });
-  } catch (e) {
-    // Diagnostyka "fetch failed": JEDNA czytelna linia w logach z pełnym adresem
-    // celu (widać od razu zły BOOKSERO_API_BASE); trasa oddaje czysty 502.
-    console.error(`[booksero] fetch failed → ${BASE}${path}: ${(e as Error).message}`);
+  let res: Response | null = null;
+  // Czkawka DNS na Replicie (EAI_AGAIN) bywa chwilowa — 3 próby z odstępem
+  // zanim oddamy błąd. Widziane na produkcji 2026-07-28 (logi getaddrinfo).
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      res = await fetch(`${BASE}${path}`, {
+        ...init,
+        headers: {
+          Accept: "application/json",
+          ...(locale ? { "X-Locale": locale } : {}),
+          ...(extraHeaders || {}),
+          ...(init.headers || {}),
+        },
+      });
+      break;
+    } catch (e) {
+      // Diagnostyka "fetch failed": JEDNA czytelna linia w logach z pełnym
+      // adresem celu (widać od razu zły BOOKSERO_API_BASE) + numer próby.
+      const cause = (e as { cause?: { code?: string } }).cause?.code || (e as Error).message;
+      console.error(`[booksero] fetch failed (próba ${attempt}/3) → ${BASE}${path}: ${cause}`);
+      if (attempt === 3) {
+        return { status: 502, ok: false, data: { message: "Brak połączenia z Booksero. Spróbuj za chwilę." } };
+      }
+      await new Promise((r) => setTimeout(r, attempt * 400));
+    }
+  }
+  if (!res) {
     return { status: 502, ok: false, data: { message: "Brak połączenia z Booksero. Spróbuj za chwilę." } };
   }
   const text = await res.text();
