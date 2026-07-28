@@ -125,16 +125,18 @@ export async function deviceSubscribed(): Promise<boolean> {
   }
 }
 
-// R4: po zalogowaniu/starcie — konto ma „włączone", a to urządzenie jeszcze
-// nie odbiera. Zgoda systemowa już jest → dorejestruj po cichu ("joined");
-// zgody brak → sygnał dla UI, żeby pokazać baner ("needs-permission").
+// R4: po zalogowaniu/starcie — konto ma „włączone" i jest zgoda systemowa →
+// ZAWSZE odśwież rejestrację urządzenia na serwerze (upsert po endpointcie).
+// Celowo bez sprawdzania lokalnej subskrypcji: telefon potrafi trzymać żywą
+// subskrypcję lokalnie, gdy serwer already skasował rejestracje (np. po
+// wyłączeniu konta) — lokalna prawda ≠ serwerowa, rozstrzyga serwer.
 export async function autoRejoinPush(): Promise<"joined" | "needs-permission" | "idle"> {
   try {
     if (!pushSupported()) return "idle";
     const st = await api.pushStatus();
     if (!st.enabled) return "idle";
     if (Notification.permission === "granted") {
-      if (!(await deviceSubscribed())) await ensurePushSubscribed();
+      await ensurePushSubscribed();
       return "joined";
     }
     return Notification.permission === "default" ? "needs-permission" : "idle";

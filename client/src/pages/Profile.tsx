@@ -166,6 +166,10 @@ export default function Profile() {
                   <span className={`block w-5 h-5 rounded-full bg-white transition-transform ${acct.enabled ? "translate-x-5" : ""}`} />
                 </span>
               </button>
+              {/* Liczba urządzeń wg SERWERA — rozstrzyga spory „a u mnie włączone" */}
+              {acct.enabled && (
+                <p className="text-[11px] text-muted mt-2">{t("push.devicesCount", { count: acct.devices })}</p>
+              )}
               {/* Konto włączone, ale to urządzenie jeszcze nie odbiera (R4) */}
               {acct.enabled && !thisDev && env === "default" && (
                 <button

@@ -9,6 +9,17 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.13] — 2026-07-28 — Urządzenie zawsze odświeża rejestrację push
+
+- Po starcie aplikacji (konto „włączone" + zgoda systemowa) urządzenie
+  ZAWSZE ponawia rejestrację na serwerze — telefon potrafił trzymać żywą
+  subskrypcję lokalnie, gdy serwer already skasował rejestracje
+  (wyłączenie konta), i pushe cicho przepadały.
+- Profil pokazuje liczbę urządzeń odbierających wg serwera —
+  koniec zgadywania, co serwer widzi.
+
+---
+
 ## [1.0.12] — 2026-07-28 — Pulsująca chmurka + plakietka na ikonie
 
 - Chmurka z liczbą nieprzeczytanych na dzwonku pulsuje, dopóki wiadomości
