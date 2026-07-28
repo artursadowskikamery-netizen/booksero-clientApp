@@ -55,7 +55,10 @@ self.addEventListener("push", (event) => {
 // albo otwórz nowe okno.
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || "/push-open";
+  // Cel liczony w chwili KLIKNIĘCIA (nie pokazania): puste i "/" kierujemy do
+  // /push-open — obejmuje też stare dymki pokazane przez poprzednią wersję.
+  let url = (event.notification.data && event.notification.data.url) || "";
+  if (!url || url === "/") url = "/push-open";
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
       for (const c of list) {
