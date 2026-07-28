@@ -267,3 +267,17 @@ export interface BookingResult {
   // Naliczony rabat czasowy (SPEC-rabaty-czasowe §2.2) — cena łączna po rabacie.
   discountApplied?: { name?: string; priceAfter?: string } | null;
 }
+
+// ── Skrzynka powiadomień klienta (SPEC-skrzynka-powiadomien) ──
+// title/body przychodzą z backendu JUŻ przetłumaczone (X-Locale) i oczyszczone
+// z HTML; salon_message jest dosłowny w języku autora (celowo bez tłumaczenia).
+export interface ClientNotification {
+  id: string;
+  kind: string; // rozszerzalny — nieznany typ pokazujemy neutralnie
+  title: string;
+  body: string;
+  url?: string | null; // ścieżka w aplikacji, https zewnętrzny albo null
+  salonId?: string | null;
+  createdAt: string; // ISO — kursor stronicowania (param before)
+  readAt?: string | null;
+}

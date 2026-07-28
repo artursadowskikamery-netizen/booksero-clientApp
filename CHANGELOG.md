@@ -9,6 +9,19 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.11] — 2026-07-28 — Skrzynka powiadomień (dzwonek)
+
+- Dzwonek na ekranie salonu to teraz skrzynka wiadomości klienta:
+  chmurka z liczbą nieprzeczytanych, lista powiadomień (potwierdzenia,
+  przypomnienia, nagrody, wiadomości od salonu), „Oznacz wszystkie",
+  doładowywanie starszych, klik prowadzi do właściwego ekranu.
+- Skrzynka działa niezależnie od push — klient z wyłączonymi
+  powiadomieniami widzi wiadomości po wejściu do aplikacji.
+- Teksty ×16; przy backendzie bez skrzynki (404) aplikacja pokazuje
+  pustą listę bez błędu.
+
+---
+
 ## [1.0.10] — 2026-07-23 — Powiadomienia per KONTO + baner instalacji
 
 ### Powiadomienia wspólne dla wszystkich urządzeń klienta

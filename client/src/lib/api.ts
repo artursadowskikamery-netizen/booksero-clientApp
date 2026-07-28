@@ -3,7 +3,7 @@ import { getToken } from "./auth";
 import type {
   Tenant, SalonPublic, Category, Service, StaffMember, TeamMember, Review, Slot,
   BookingRequest, BookingResult, ClientMe, ClientAppointment, LoyaltyState, ReferralsState,
-  ClientCodesState,
+  ClientCodesState, ClientNotification,
 } from "@shared/types";
 
 export class ApiError extends Error {
@@ -112,6 +112,18 @@ export const api = {
     }),
   // ── Powiadomienia push (Web Push) + sygnał instalacji ──
   pushVapidKey: () => req<{ key: string }>(`/api/client/push/vapid-key`),
+  // ── Skrzynka powiadomień (SPEC-skrzynka-powiadomien) ──
+  notifications: (limit = 30, before?: string) =>
+    req<{ items: ClientNotification[] }>(
+      `/api/client/notifications?limit=${limit}${before ? `&before=${encodeURIComponent(before)}` : ""}`,
+    ),
+  notificationsUnreadCount: () => req<{ count: number }>(`/api/client/notifications/unread-count`),
+  notificationsRead: (body: { ids?: string[]; all?: boolean }) =>
+    req<{ ok: boolean; updated: number; count: number }>(`/api/client/notifications/read`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
   // Stan KONTA (nie urządzenia!) — źródło prawdy dla przełącznika w Profilu.
   pushStatus: () => req<{ enabled: boolean; devices: number }>(`/api/client/push/status`),
   pushEnable: () => req<{ ok?: boolean; enabled: boolean }>(`/api/client/push/enable`, { method: "POST" }),

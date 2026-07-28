@@ -36,6 +36,19 @@ export default function SalonHome() {
 
   // Salon tylko dla zalogowanych: bez sesji SMS w tej sieci → ekran logowania.
   const tenantId = salonQ.data?.salon.tenantId ?? null;
+
+  // Plakietka na dzwonku: licznik nieprzeczytanych ze skrzynki powiadomień.
+  // 404 (backend bez skrzynki) → cicho 0. Odświeżamy co minutę i po powrocie
+  // ze skrzynki (ekran skrzynki nadpisuje cache po operacji read).
+  const loggedHere = !!tenantId && isLoggedInFor(tenantId);
+  const unreadQ = useQuery({
+    queryKey: ["notifUnread"],
+    queryFn: () => api.notificationsUnreadCount(),
+    enabled: loggedHere,
+    retry: false,
+    refetchInterval: 60_000,
+  });
+  const unread = unreadQ.data?.count ?? 0;
   const gated = !!salonQ.data && !!tenantId && !isLoggedInFor(tenantId);
   useEffect(() => {
     if (gated) navigate(`/salon/${salonId}/login`);
@@ -77,12 +90,18 @@ export default function SalonHome() {
             {[s.salon.city, s.salon.address].filter(Boolean).join(" · ")}
           </div>
         </div>
+        {/* Dzwonek = skrzynka powiadomień; chmurka z liczbą nieprzeczytanych. */}
         <button
-          onClick={() => navigate(`/salon/${salonId}/soon`)}
-          className="ml-auto w-9 h-9 rounded-xl border border-line grid place-items-center text-ink-2"
-          aria-label={t("tabs.profile")}
+          onClick={() => navigate(`/salon/${salonId}/notifications`)}
+          className="ml-auto relative w-9 h-9 rounded-xl border border-line grid place-items-center text-ink-2"
+          aria-label={t("notif.title")}
         >
           <Bell size={17} />
+          {unread > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-brand text-brand-contrast text-[10px] font-bold grid place-items-center">
+              {unread > 99 ? "99+" : unread}
+            </span>
+          )}
         </button>
       </header>
 

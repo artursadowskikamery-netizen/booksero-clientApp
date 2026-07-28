@@ -113,6 +113,18 @@ export function registerRoutes(app: Express) {
   app.post("/api/client/app-event", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client/app-event`, req.body ?? {}, loc(req), auth(req))));
 
+  // ── Skrzynka powiadomień klienta (SPEC-skrzynka-powiadomien) ──
+  app.get("/api/client/notifications", async (req, res) => {
+    const q = new URLSearchParams(req.query as Record<string, string>).toString();
+    relay(res, await bookseroGet(`/api/public/client/notifications${q ? `?${q}` : ""}`, loc(req), auth(req)));
+  });
+
+  app.get("/api/client/notifications/unread-count", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/client/notifications/unread-count`, loc(req), auth(req))));
+
+  app.post("/api/client/notifications/read", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/notifications/read`, req.body ?? {}, loc(req), auth(req))));
+
   // ── Moje kody (SPEC-bonusy-etap-B2) ──
   app.get("/api/client/codes", async (req, res) =>
     relay(res, await bookseroGet(`/api/public/client/codes`, loc(req), auth(req))));
