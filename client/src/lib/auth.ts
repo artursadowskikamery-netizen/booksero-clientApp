@@ -1,8 +1,20 @@
 // Sesja klienta (Bearer token z Booksero po weryfikacji kodu SMS).
 // Token jest per-tenant — zapamiętujemy też tenantId, żeby wiedzieć,
 // czy sesja pasuje do aktualnie oglądanego salonu.
+import { queryClient } from "./queryClient";
+
 const KEY = "booksero_client_token";
 const TENANT_KEY = "booksero_client_tenant";
+
+// Dane należące do KONTA — te muszą zniknąć przy zmianie tożsamości. Publiczne
+// dane salonu (salon/services/team/categories/staff/avail/tenant) zostają:
+// są niezależne od tego, kto patrzy, a ich skasowanie zmuszałoby aplikację do
+// pobrania wszystkiego od nowa (migotanie po zalogowaniu, ślepy zaułek offline).
+const ACCOUNT_KEYS = ["clientMe", "me", "clientAppointments", "loyalty", "referrals", "clientCodes", "notifUnread"];
+
+function forgetAccountData() {
+  for (const k of ACCOUNT_KEYS) queryClient.removeQueries({ queryKey: [k] });
+}
 
 export function getToken(): string | null {
   try {
@@ -13,11 +25,17 @@ export function getToken(): string | null {
 }
 
 export function setToken(token: string, tenantId?: string | null) {
+  const prev = getToken();
   try {
     localStorage.setItem(KEY, token);
     if (tenantId) localStorage.setItem(TENANT_KEY, tenantId);
     else localStorage.removeItem(TENANT_KEY);
   } catch { /* brak localStorage */ }
+  // Zmiana tożsamości (inny klient LUB przeskok do innej sieci) — pamięć
+  // podręczna trzyma dane POPRZEDNIEGO konta (wizyty, punkty, powiadomienia).
+  // Warunek prev && …: pierwsze logowanie nie ma czego czyścić, a zapytania
+  // konta i tak nie mogły się wykonać bez tokenu.
+  if (prev && prev !== token) forgetAccountData();
 }
 
 export function getAuthTenant(): string | null {
@@ -33,6 +51,8 @@ export function clearToken() {
     localStorage.removeItem(KEY);
     localStorage.removeItem(TENANT_KEY);
   } catch { /* brak localStorage */ }
+  // Wylogowanie musi zabrać ze sobą dane konta z pamięci podręcznej.
+  forgetAccountData();
 }
 
 export function isLoggedIn(): boolean {

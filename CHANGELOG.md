@@ -9,6 +9,27 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.18] — 2026-07-28 — Ostatnio odwiedzane salony na ekranie startowym
+
+- Po pierwszym wejściu (QR lub kod) salon trafia do historii na ekranie
+  startowym — powrót jednym dotknięciem, bez ponownego skanowania.
+- Do 5 salonów, najnowszy na górze, z logo, nazwą i miastem; klient bywa
+  w kilku sieciach naraz, więc lista obsługuje wiele firm.
+- Przy każdej pozycji „X" do usunięcia z historii. Teksty ×16.
+- Zapis lokalny na urządzeniu, bez danych osobowych; wejście do salonu
+  nadal wymaga zalogowania kodem SMS.
+
+---
+
+## [1.0.17] — 2026-07-28 — Cel kliknięcia liczony w chwili kliknięcia
+
+- Powiadomienia pokazane przez starszą wersję miały wdrukowany cel „/";
+  teraz puste i „/" są przekierowywane na /push-open (skrzynka salonu).
+- (Backend, osobno: wiadomość od salonu bez odnośnika celuje wprost
+  w skrzynkę tego salonu — właściwa przyczyna błędnego przekierowania.)
+
+---
+
 ## [1.0.16] — 2026-07-28 — Klik w powiadomienie trafia do skrzynki salonu
 
 - Powiadomienie bez odnośnika po kliknięciu przenosi do SKRZYNKI ostatnio

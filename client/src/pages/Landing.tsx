@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { QrCode, Search } from "lucide-react";
+import { QrCode, Search, X } from "lucide-react";
 import { api } from "../lib/api";
 import { applyAccent } from "../lib/themes";
 import { saveRef } from "../lib/referral";
 import { SUPPORTED_LANGS, LANG_LABELS } from "../lib/i18n";
 import { APP_VERSION } from "../lib/version";
+import { loadRecentSalons, removeRecentSalon, type RecentSalon } from "../lib/recentSalons";
 import QrScanner from "../components/QrScanner";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -18,6 +19,7 @@ export default function Landing() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const [scanning, setScanning] = useState(false);
+  const [recent, setRecent] = useState<RecentSalon[]>(() => loadRecentSalons());
   const { t, i18n } = useTranslation();
 
   // Ekran startowy = neutralna powłoka BookSero — zawsze domyślny niebieski
@@ -135,6 +137,49 @@ export default function Landing() {
       <button className="btn-primary flex items-center justify-center gap-2" onClick={() => { setMsg(""); setScanning(true); }}>
         <QrCode size={17} /> {t("landing.qr")}
       </button>
+
+      {/* Ostatnio odwiedzane salony — powrót jednym dotknięciem. Pojawia się
+          dopiero po pierwszym wejściu (QR lub kod), bo dopiero wtedy aplikacja
+          wie, o który salon chodzi. Klient bywa w kilku sieciach — stąd lista. */}
+      {recent.length > 0 && (
+        <div className="mt-5">
+          <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted mb-2">
+            {t("landing.recent")}
+          </h2>
+          <div className="rounded-2xl border border-line bg-surface divide-y divide-line overflow-hidden">
+            {recent.map((s) => (
+              <div key={s.id} className="flex items-center">
+                <button
+                  onClick={() => navigate(`/salon/${s.id}`)}
+                  className="flex-1 min-w-0 flex items-center gap-3 p-3 text-left"
+                >
+                  {s.logo ? (
+                    <img src={s.logo} alt="" className="w-9 h-9 rounded-xl object-cover shrink-0" />
+                  ) : (
+                    <span className="w-9 h-9 rounded-xl bg-brand text-brand-contrast grid place-items-center font-extrabold shrink-0">
+                      {/* Array.from, nie charAt — nazwa może zaczynać się od
+                          znaku spoza podstawowego zakresu (emoji), którego
+                          charAt rozcina na pół. */}
+                      {Array.from(s.name.trim())[0]?.toUpperCase() || "S"}
+                    </span>
+                  )}
+                  <span className="min-w-0">
+                    <span className="block text-sm font-bold truncate">{s.name}</span>
+                    {s.city && <span className="block text-xs text-muted truncate">{s.city}</span>}
+                  </span>
+                </button>
+                <button
+                  onClick={() => { removeRecentSalon(s.id); setRecent(loadRecentSalons()); }}
+                  className="p-3 text-muted shrink-0"
+                  aria-label={t("landing.recentRemove", { name: s.name })}
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center gap-3 my-5">
         <span className="flex-1 h-px bg-line" />

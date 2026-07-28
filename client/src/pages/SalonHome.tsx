@@ -3,11 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { Camera, Users, Bell, Sparkles, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { api } from "../lib/api";
+import { api, ApiError } from "../lib/api";
 import { applyAccent, saveAccent } from "../lib/themes";
 import { isLoggedInFor } from "../lib/auth";
 import { setAppBadgeCount } from "../lib/push";
 import { saveLastSalon } from "../lib/lastSalon";
+import { saveRecentSalon, removeRecentSalon } from "../lib/recentSalons";
 import { promoLine } from "../lib/promo";
 import BottomNav from "../components/BottomNav";
 
@@ -28,11 +29,23 @@ export default function SalonHome() {
   // Szata: zawsze ciemna; kolor akcentu (guziki) per salon z profilu Booksero.
   const accent = salonQ.data?.profile?.appAccent ?? null;
   useEffect(() => {
-    if (salonQ.data) {
-      applyAccent(accent);
-      saveAccent(accent);
-      saveLastSalon(salonId);
-    }
+    if (!salonQ.data) return;
+    // Kolor nakładamy zawsze — także na ekranie logowania, żeby klient od razu
+    // widział barwy salonu, do którego wchodzi.
+    applyAccent(accent);
+    // Reszta to ZAPIS trwały na urządzeniu — tylko dla salonu, do którego klient
+    // faktycznie ma wstęp. Salon bez sieci (tenantId) nie ma bramki logowania,
+    // więc jest dostępny dla każdego i też się zapisuje.
+    const tid = salonQ.data.salon.tenantId ?? null;
+    if (tid && !isLoggedInFor(tid)) return;
+    saveAccent(accent);
+    saveLastSalon(salonId);
+    saveRecentSalon({
+      id: salonId,
+      name: salonQ.data.salon.name,
+      city: salonQ.data.salon.city,
+      logo: salonQ.data.salon.logo,
+    });
   }, [salonQ.data, accent, salonId]);
 
   // Salon tylko dla zalogowanych: bez sesji SMS w tej sieci → ekran logowania.
@@ -63,12 +76,42 @@ export default function SalonHome() {
     if (gated) navigate(`/salon/${salonId}/login`);
   }, [gated, salonId, navigate]);
 
-  if (gated) return null;
-  if (salonQ.isLoading) return <div className="p-6 text-muted">{t("common.loading")}</div>;
-  if (salonQ.isError)
-    return <div className="p-6 text-red-500 text-sm">{(salonQ.error as Error).message}</div>;
+  // Salon zniknął z Booksero (404) — kasujemy martwy wpis z „Ostatnio
+  // odwiedzane". TYLKO 404: przy braku sieci historia musi przetrwać, bo salon
+  // nadal istnieje. Nie przekierowujemy po cichu — klient ma wiedzieć, czemu
+  // jego salon zniknął z listy.
+  const dead = salonQ.error instanceof ApiError && salonQ.error.status === 404;
+  useEffect(() => {
+    if (dead) removeRecentSalon(salonId);
+  }, [dead, salonId]);
 
-  const s = salonQ.data!;
+  if (gated) return null;
+  if (dead)
+    return (
+      <div className="p-6 text-sm">
+        <p className="text-muted">{t("common.salonGone")}</p>
+        <button onClick={() => navigate("/", { replace: true })} className="btn-primary mt-4">
+          {t("common.back")}
+        </button>
+      </div>
+    );
+  // KOLEJNOŚĆ MA ZNACZENIE: błąd sprawdzamy PRZED brakiem danych — przy błędzie
+  // danych też nie ma, więc odwrotna kolejność zostawiałaby wieczne „Ładowanie".
+  // Droga powrotu obowiązkowa: w zainstalowanej aplikacji nie ma paska
+  // przeglądarki ani przycisku wstecz.
+  if (salonQ.isError)
+    return (
+      <div className="p-6 text-sm">
+        <p className="text-red-500">{(salonQ.error as Error).message}</p>
+        <button onClick={() => navigate("/")} className="btn-primary mt-4">{t("common.back")}</button>
+      </div>
+    );
+  // isPending, nie isLoading: przy braku sieci zapytanie jest „wstrzymane",
+  // isLoading jest wtedy false i kod leciał dalej na puste dane (biały ekran).
+  if (salonQ.isPending || !salonQ.data)
+    return <div className="p-6 text-muted">{t("common.loading")}</div>;
+
+  const s = salonQ.data;
   const gallery = [s.profile?.coverImage, ...(s.profile?.gallery ?? [])].filter(Boolean) as string[];
   const shown = gallery.slice(0, 5);
 
