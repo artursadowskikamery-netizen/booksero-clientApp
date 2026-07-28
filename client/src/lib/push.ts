@@ -158,6 +158,23 @@ export async function disablePushOnLogout(): Promise<void> {
   }
 }
 
+// Plakietka na IKONIE aplikacji (Badging API) — liczba nieprzeczytanych na
+// kafelku na ekranie telefonu. Wspierane: iOS 16.4+ (zainstalowana PWA),
+// Chrome desktop; na Androidzie kropkę na ikonie daje samo powiadomienie
+// systemowe (launcher), a to wywołanie jest bezpiecznie ignorowane.
+export async function setAppBadgeCount(count: number): Promise<void> {
+  try {
+    const n = navigator as Navigator & {
+      setAppBadge?: (c?: number) => Promise<void>;
+      clearAppBadge?: () => Promise<void>;
+    };
+    if (count > 0) await n.setAppBadge?.(count);
+    else await n.clearAppBadge?.();
+  } catch {
+    /* brak wsparcia — trudno */
+  }
+}
+
 // Sygnał instalacji: raz, przy pierwszym uruchomieniu w trybie standalone
 // (kafelek „Zainstalowało aplikację" w panelu). Endpoint idempotentny.
 const INSTALL_KEY = "booksero_install_sent";

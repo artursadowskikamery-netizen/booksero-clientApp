@@ -9,6 +9,18 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.12] — 2026-07-28 — Pulsująca chmurka + plakietka na ikonie
+
+- Chmurka z liczbą nieprzeczytanych na dzwonku pulsuje, dopóki wiadomości
+  nie zostaną odczytane.
+- Liczba nieprzeczytanych trafia też na IKONĘ aplikacji na telefonie
+  (Badging API — iOS 16.4+ i pulpity; na Androidzie kropkę przy ikonie
+  daje samo powiadomienie systemowe). Push przy zamkniętej aplikacji
+  również zapala plakietkę.
+- Powiadomienia push: wibracja, jawnie nie-ciche, ikona PNG.
+
+---
+
 ## [1.0.11] — 2026-07-28 — Skrzynka powiadomień (dzwonek)
 
 - Dzwonek na ekranie salonu to teraz skrzynka wiadomości klienta:

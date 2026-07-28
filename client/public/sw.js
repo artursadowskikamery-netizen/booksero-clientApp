@@ -28,6 +28,12 @@ self.addEventListener("push", (event) => {
       vibrate: [200, 100, 200],
     }),
   );
+  // Plakietka na ikonie aplikacji (gdzie system wspiera Badging API) — push
+  // przy zamkniętej aplikacji też ją zapala; dokładną liczbę ustawi aplikacja
+  // przy otwarciu (unread-count).
+  if (self.navigator && "setAppBadge" in self.navigator) {
+    event.waitUntil(self.navigator.setAppBadge().catch(() => {}));
+  }
 });
 
 // Klik w powiadomienie: sfokusuj otwartą aplikację (i przejdź pod url)

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { applyAccent, saveAccent } from "../lib/themes";
 import { isLoggedInFor } from "../lib/auth";
+import { setAppBadgeCount } from "../lib/push";
 import { saveLastSalon } from "../lib/lastSalon";
 import { promoLine } from "../lib/promo";
 import BottomNav from "../components/BottomNav";
@@ -49,6 +50,10 @@ export default function SalonHome() {
     refetchInterval: 60_000,
   });
   const unread = unreadQ.data?.count ?? 0;
+  // Liczba nieprzeczytanych także na IKONIE aplikacji (tam, gdzie system wspiera).
+  useEffect(() => {
+    if (unreadQ.data) void setAppBadgeCount(unread);
+  }, [unreadQ.data, unread]);
   const gated = !!salonQ.data && !!tenantId && !isLoggedInFor(tenantId);
   useEffect(() => {
     if (gated) navigate(`/salon/${salonId}/login`);
@@ -98,7 +103,7 @@ export default function SalonHome() {
         >
           <Bell size={17} />
           {unread > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-brand text-brand-contrast text-[10px] font-bold grid place-items-center">
+            <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-brand text-brand-contrast text-[10px] font-bold grid place-items-center animate-pulse">
               {unread > 99 ? "99+" : unread}
             </span>
           )}
