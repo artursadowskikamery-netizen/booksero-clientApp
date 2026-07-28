@@ -48,6 +48,10 @@ export default function SalonHome() {
     enabled: loggedHere,
     retry: false,
     refetchInterval: 60_000,
+    // Powrót do aplikacji (z tła/innej karty) = natychmiastowe odświeżenie
+    // chmurki — bez czekania na interwał i bez ciągnięcia w dół.
+    staleTime: 0,
+    refetchOnWindowFocus: "always",
   });
   const unread = unreadQ.data?.count ?? 0;
   // Liczba nieprzeczytanych także na IKONIE aplikacji (tam, gdzie system wspiera).

@@ -28,6 +28,18 @@ function PushBootstrap() {
     sendInstallSignalOnce();
     autoRejoinPush();
   }, []);
+  // Push przy OTWARTEJ aplikacji: service worker daje znać (postMessage)
+  // i chmurka na dzwonku odświeża się natychmiast.
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+    const onMsg = (e: MessageEvent) => {
+      if ((e.data as { type?: string } | null)?.type === "booksero-push") {
+        queryClient.invalidateQueries({ queryKey: ["notifUnread"] });
+      }
+    };
+    navigator.serviceWorker.addEventListener("message", onMsg);
+    return () => navigator.serviceWorker.removeEventListener("message", onMsg);
+  }, []);
   return null;
 }
 

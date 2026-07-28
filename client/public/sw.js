@@ -34,6 +34,13 @@ self.addEventListener("push", (event) => {
   if (self.navigator && "setAppBadge" in self.navigator) {
     event.waitUntil(self.navigator.setAppBadge().catch(() => {}));
   }
+  // Otwarta aplikacja: daj jej znać, że coś przyszło — chmurka na dzwonku
+  // odświeży się od razu, bez czekania na interwał.
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      for (const c of list) c.postMessage({ type: "booksero-push" });
+    }),
+  );
 });
 
 // Klik w powiadomienie: sfokusuj otwartą aplikację (i przejdź pod url)

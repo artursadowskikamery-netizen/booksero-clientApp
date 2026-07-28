@@ -9,6 +9,15 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.14] — 2026-07-28 — Chmurka odświeża się sama
+
+- Powrót do aplikacji (z tła/innej karty) natychmiast odświeża licznik
+  nieprzeczytanych — koniec z ciągnięciem w dół.
+- Push przy otwartej aplikacji: service worker daje znać aplikacji
+  i chmurka na dzwonku aktualizuje się od razu.
+
+---
+
 ## [1.0.13] — 2026-07-28 — Urządzenie zawsze odświeża rejestrację push
 
 - Po starcie aplikacji (konto „włączone" + zgoda systemowa) urządzenie
