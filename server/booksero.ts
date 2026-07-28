@@ -1,6 +1,15 @@
 // Serwerowy klient publicznego API Booksero. Bazowy URL z env (Replit) — sekret
 // BOOKSERO_API_BASE nadpisuje domyślny. Domyślny wskazuje panel (ten sam serwer
 // obsługuje /api/public/*). Potwierdzenie: <base>/api/public/plans zwraca JSON.
+//
+// UWAGA OPERACYJNA (2026-07-28): na produkcji sekret celowo wskazuje
+// https://knowledge-booksero.replit.app zamiast panel.booksero.com — kontener
+// deploymentu Replita miewa trwałe EAI_AGAIN dla własnych domen niestandardowych
+// (żądania w ogóle nie wychodziły). Adres *.replit.app jest ZWIĄZANY z konkretnym
+// wdrożeniem: przeniesienie/odtworzenie projektu backendu = nowy adres = aplikacja
+// traci połączenie. Objaw: w aplikacji „Brak połączenia z Booksero", w logach
+// [booksero] fetch failed. Naprawa: zaktualizować sekret BOOKSERO_API_BASE
+// (jeden wpis, bez wdrożenia kodu) i Republish.
 const BASE = process.env.BOOKSERO_API_BASE || "https://panel.booksero.com";
 // Jedna linia przy starcie: jaki adres API obowiązuje i skąd pochodzi.
 console.log(
