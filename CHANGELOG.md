@@ -9,6 +9,16 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.15] — 2026-07-28 — Powiadomienia jak w VIVIMassage
+
+- Powiadomienie wisi na ekranie do kliknięcia (requireInteraction),
+  kolejne alarmuje na nowo (tag + renotify), przycisk „Otwórz BookSero".
+  Wzorzec sprawdzony w aplikacji VIVIMassage na tym samym telefonie.
+- (Backend, wdrażany osobno: pushe z priorytetem wysokim — budzą uśpiony
+  telefon zamiast czekać na odblokowanie ekranu.)
+
+---
+
 ## [1.0.14] — 2026-07-28 — Chmurka odświeża się sama
 
 - Powrót do aplikacji (z tła/innej karty) natychmiast odświeża licznik

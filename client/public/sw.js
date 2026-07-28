@@ -26,6 +26,12 @@ self.addEventListener("push", (event) => {
       // podkładać własnych dźwięków. My prosimy o wibrację i jawnie NIE-ciche.
       silent: false,
       vibrate: [200, 100, 200],
+      // Wzorzec sprawdzony w VIVIMassage: powiadomienie wisi do kliknięcia,
+      // a kolejne (ten sam tag) podmienia dymek i alarmuje NA NOWO (renotify).
+      requireInteraction: true,
+      tag: data.tag || "booksero-msg",
+      renotify: true,
+      actions: [{ action: "open", title: "📱 BookSero" }],
     }),
   );
   // Plakietka na ikonie aplikacji (gdzie system wspiera Badging API) — push
