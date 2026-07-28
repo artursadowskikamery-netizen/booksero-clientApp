@@ -2,6 +2,10 @@
 // BOOKSERO_API_BASE nadpisuje domyślny. Domyślny wskazuje panel (ten sam serwer
 // obsługuje /api/public/*). Potwierdzenie: <base>/api/public/plans zwraca JSON.
 const BASE = process.env.BOOKSERO_API_BASE || "https://panel.booksero.com";
+// Jedna linia przy starcie: jaki adres API obowiązuje i skąd pochodzi.
+console.log(
+  `[booksero] API base: ${BASE} ${process.env.BOOKSERO_API_BASE ? "(z sekretu BOOKSERO_API_BASE)" : "(domyślny)"}`,
+);
 
 export interface UpstreamResult {
   status: number;
@@ -15,15 +19,23 @@ async function bookseroFetch(
   locale?: string,
   extraHeaders?: Record<string, string>,
 ): Promise<UpstreamResult> {
-  const res = await fetch(`${BASE}${path}`, {
-    ...init,
-    headers: {
-      Accept: "application/json",
-      ...(locale ? { "X-Locale": locale } : {}),
-      ...(extraHeaders || {}),
-      ...(init.headers || {}),
-    },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      ...init,
+      headers: {
+        Accept: "application/json",
+        ...(locale ? { "X-Locale": locale } : {}),
+        ...(extraHeaders || {}),
+        ...(init.headers || {}),
+      },
+    });
+  } catch (e) {
+    // Diagnostyka "fetch failed": JEDNA czytelna linia w logach z pełnym adresem
+    // celu (widać od razu zły BOOKSERO_API_BASE); trasa oddaje czysty 502.
+    console.error(`[booksero] fetch failed → ${BASE}${path}: ${(e as Error).message}`);
+    return { status: 502, ok: false, data: { message: "Brak połączenia z Booksero. Spróbuj za chwilę." } };
+  }
   const text = await res.text();
   let data: unknown = null;
   if (text) {
