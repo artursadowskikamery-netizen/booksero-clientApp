@@ -9,6 +9,22 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.20] — 2026-07-28 — Godziny wizyt w strefie czasowej lokalizacji
+
+- Lista „Moje wizyty" pokazywała godzinę wg zegara TELEFONU: wizyta o 11:00
+  w Londynie oglądana z Polski wyświetlała się jako 12:00 (e-mail, SMS
+  i skrzynka pokazywały poprawnie). Teraz godzina i data liczą się w strefie
+  lokalizacji z nowego pola `salonTimezone` (per wizyta — klient może mieć
+  wizyty w kilku krajach); brak wartości → Europe/Warsaw.
+- Dotyczy też DATY: wizyta o 00:15 potrafiła trafić na zły dzień.
+- Czas letni/zimowy obsługuje Intl — żadnych ręcznych przesunięć godzin.
+- Nieznana nazwa strefy nie wywala ekranu wizyt (bezpieczny fallback).
+- Ekran potwierdzenia rezerwacji pokazuje termin WYBRANY przez klienta
+  (już w czasie lokalizacji) zamiast przeliczać go zegarem telefonu.
+- Skrzynka powiadomień bez zmian — treść składa serwer z gotową godziną.
+
+---
+
 ## [1.0.19] — 2026-07-28 — Poprawki z trzeciej rundy przeglądu
 
 - Powiadomienia poprzedniego konta nie trafiają już na telefon następnej

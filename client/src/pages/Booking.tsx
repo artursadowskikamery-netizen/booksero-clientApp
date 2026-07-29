@@ -9,6 +9,7 @@ import { isLoggedIn, isLoggedInFor } from "../lib/auth";
 import { getPushState, enablePush, type PushState } from "../lib/push";
 import BottomNav from "../components/BottomNav";
 import { PhoneInput } from "../components/PhoneInput";
+import { formatPickedSlot } from "../lib/datetime";
 import type { BookingResult, StaffMember } from "@shared/types";
 
 type Step = "service" | "staff" | "time" | "details";
@@ -127,9 +128,10 @@ export default function Booking() {
           <div className="font-bold text-lg">{result.message}</div>
           <div className="text-sm text-muted">{result.service} · {result.staffName}</div>
           <div className="text-sm">
-            {new Intl.DateTimeFormat(i18n.language, {
-              day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
-            }).format(new Date(result.startAt))} · {t("booking.code")}{" "}
+            {/* Termin wybrany przez klienta — już w czasie lokalizacji. Nie
+                formatujemy result.startAt zegarem telefonu, bo dla salonu
+                w innej strefie pokazałby przesuniętą godzinę. */}
+            {formatPickedSlot(date, time, i18n.language)} · {t("booking.code")}{" "}
             <span className="font-mono font-bold">{result.bookingCode}</span>
           </div>
           {result.discountApplied?.name && (

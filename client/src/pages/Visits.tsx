@@ -7,6 +7,7 @@ import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
 import type { ClientAppointment } from "@shared/types";
 import { disablePushOnLogout } from "../lib/push";
+import { formatVisitDateTime } from "../lib/datetime";
 import BottomNav from "../components/BottomNav";
 
 // Moje wizyty (Faza 2): nadchodzące + historia, odwołanie istniejącym
@@ -53,10 +54,10 @@ export default function Visits() {
     onError: (e) => setInfo((e as Error).message),
   });
 
-  const fmt = (iso: string) =>
-    new Intl.DateTimeFormat(i18n.language, {
-      weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
-    }).format(new Date(iso));
+  // Godzina W STREFIE LOKALIZACJI — nie wg zegara telefonu. Strefę niesie każda
+  // wizyta osobno (klient może mieć wizyty w kilku krajach).
+  const fmt = (a: ClientAppointment) =>
+    formatVisitDateTime(a.startAt, a.salonTimezone, i18n.language);
 
   const now = Date.now();
   const all = q.data ?? [];
@@ -95,7 +96,7 @@ export default function Visits() {
           {upcoming.length === 0 && <div className="text-sm text-muted mb-2">{t("visits.none")}</div>}
           {upcoming.map((a) => (
             <div key={a.id} className="rounded-2xl border border-brand bg-surface p-4 mb-3">
-              <div className="text-xs text-muted mb-1">{fmt(a.startAt)}</div>
+              <div className="text-xs text-muted mb-1">{fmt(a)}</div>
               <div className="font-bold">{a.serviceName}</div>
               <div className="text-sm text-muted flex items-center gap-1.5 mt-0.5">
                 <MapPin size={13} /> {a.salonName} · {a.staffName}
@@ -124,7 +125,7 @@ export default function Visits() {
                 </span>
                 <span className="flex-1 min-w-0">
                   <span className="block text-sm font-medium truncate">{a.serviceName}</span>
-                  <span className="block text-xs text-muted">{fmt(a.startAt)} · {a.staffName}</span>
+                  <span className="block text-xs text-muted">{fmt(a)} · {a.staffName}</span>
                 </span>
               </div>
             ))}
@@ -144,7 +145,7 @@ export default function Visits() {
           >
             <div className="font-bold text-lg">{t("visits.cancelConfirm")}</div>
             <div className="text-sm text-muted mt-2">
-              {fmt(confirmFor.startAt)} · {confirmFor.serviceName}
+              {fmt(confirmFor)} · {confirmFor.serviceName}
             </div>
             <div className="flex gap-2 mt-5">
               <button

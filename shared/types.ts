@@ -247,6 +247,10 @@ export interface ClientAppointment {
   staffName: string;
   salonId: string;
   salonName: string;
+  // Strefa czasowa LOKALIZACJI (IANA, np. "Europe/London") — godzinę wizyty
+  // formatujemy w niej, nie wg zegara telefonu. Per wizyta, bo jeden klient
+  // może mieć wizyty w kilku krajach. Brak → Europe/Warsaw.
+  salonTimezone?: string | null;
   cancellationToken?: string | null; // tylko przyszłe booked/confirmed
   // Czy zalogowany klient może odwołać tę wizytę (SPEC-rezerwacja-zalogowanego §4)
   // — działa też dla wizyt założonych w panelu (bez tokenu anulowania).
