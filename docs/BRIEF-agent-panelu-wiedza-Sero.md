@@ -16,20 +16,21 @@ zamieniała brak wartości na `null` i **kasowała okładkę**. Pozostałe pola
 Drizzle pomija `undefined` — problem dotyczył WYŁĄCZNIE `coverImage`,
 który był jawnie konwertowany na `null`.
 
-**Dowód z produkcji:** salon VIVIMassage Żory
-(`2c4a824a-3c65-436d-b6ed-1fd13c0d1379`) ma dziś `profile.coverImage: null`
-przy 9 zdjęciach w galerii — okładka zniknęła w trakcie testów kolorów.
+**Skala — SPRAWDZONE, brak ofiar u pierwszego tenanta.** Właściciel
+zweryfikował wizytówki: żadnej okładki nie brakuje. Salon Żory ma
+`coverImage: null`, ale to pole nigdy nie było tam ustawiane (galeria to
+osobny zbiór), więc `NULL` nie dowodzi skasowania. Traktuj to jako błąd
+załatany PRZED wyrządzeniem szkody, nie jako incydent utraty danych.
 
-**Do zrobienia po Twojej stronie:**
-1. Ustalić SKALĘ: ilu tenantów/lokalizacji ma `coverImage IS NULL` przy
-   niepustej `gallery` — to kandydaci na ofiary tego błędu.
-2. Zdecydować i wykonać odtworzenie danych, jeśli jest z czego (kopia
-   zapasowa bazy / historia). Jeśli nie ma — poinformować właściciela,
-   że okładki trzeba wgrać ponownie w edytorze wizytówki.
-3. Bezpiecznik na przyszłość: rozważyć, czy `upsertSalonProfile` nie
-   powinna przyjmować wyłącznie pól jawnie przekazanych (wzorzec
-   „patch", nie „replace") — dziś każdy nowy wywołujący z częściowymi
-   danymi ryzykuje to samo.
+**Do zrobienia po Twojej stronie (niski priorytet):**
+1. Dla pewności ustalić, czy u innych tenantów nie ma lokalizacji, które
+   MIAŁY okładkę i straciły ją po zmianie koloru aplikacji (jeśli macie
+   historię zmian profilu — samo `coverImage IS NULL` niczego nie dowodzi).
+2. Bezpiecznik na przyszłość — to jest właściwa wartość tego punktu:
+   rozważyć, czy `upsertSalonProfile` nie powinna przyjmować wyłącznie
+   pól jawnie przekazanych (wzorzec „patch", nie „replace"). Dziś każdy
+   nowy wywołujący z częściowymi danymi ryzykuje to samo, a wykryliśmy
+   to przypadkiem.
 
 ---
 
