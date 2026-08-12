@@ -255,6 +255,14 @@ export interface ClientAppointment {
   // formatujemy w niej, nie wg zegara telefonu. Per wizyta, bo jeden klient
   // może mieć wizyty w kilku krajach. Brak → Europe/Warsaw.
   salonTimezone?: string | null;
+  // Wizyta dla DWÓCH osób. Pola opcjonalne: dopóki backend ich nie wysyła,
+  // lista wygląda jak dotąd (bez oznaczenia pary).
+  partySize?: number;
+  // Dane TEJ DRUGIEJ osoby — z punktu widzenia oglądającego. Rezerwujący widzi
+  // tu osobę towarzyszącą, a osoba towarzysząca widzi rezerwującego.
+  companionName?: string | null;
+  companionServiceName?: string | null;
+  companionStaffName?: string | null;
   cancellationToken?: string | null; // tylko przyszłe booked/confirmed
   // Czy zalogowany klient może odwołać tę wizytę (SPEC-rezerwacja-zalogowanego §4)
   // — działa też dla wizyt założonych w panelu (bez tokenu anulowania).

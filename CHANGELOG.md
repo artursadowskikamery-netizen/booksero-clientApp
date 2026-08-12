@@ -9,6 +9,20 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.23] — 2026-08-12 — Lista wizyt pokazuje, że rezerwacja jest dla dwojga
+
+- Karta wizyty dla dwóch osób dostaje plakietkę „dla 2 osób" i drugą linię
+  z osobą towarzyszącą: jej imię, jej zabieg i JEJ specjalista. Dotąd
+  z listy w ogóle nie wynikało, że wizyta jest dla dwojga — widać było
+  jedną osobę i jednego pracownika.
+- Oznaczenie także w historii wizyt.
+- Pola są opcjonalne: dopóki serwer ich nie wysyła, lista wygląda jak
+  dotąd (zero regresji). Zamówienie na dane po stronie backendu:
+  docs/ZAMOWIENIE-para-na-liscie-wizyt.md — po ich wdrożeniu funkcja
+  zapali się sama, bez nowego wydania aplikacji. Teksty ×16.
+
+---
+
 ## [1.0.22] — 2026-08-12 — Para: nie da się wybrać tego samego specjalisty
 
 - Specjalista wybrany dla jednej osoby jest przy drugiej WYSZARZONY

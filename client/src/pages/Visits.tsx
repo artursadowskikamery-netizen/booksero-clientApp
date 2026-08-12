@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Clock, MapPin } from "lucide-react";
+import { ChevronLeft, Clock, MapPin, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
@@ -96,11 +96,28 @@ export default function Visits() {
           {upcoming.length === 0 && <div className="text-sm text-muted mb-2">{t("visits.none")}</div>}
           {upcoming.map((a) => (
             <div key={a.id} className="rounded-2xl border border-brand bg-surface p-4 mb-3">
-              <div className="text-xs text-muted mb-1">{fmt(a)}</div>
+              <div className="text-xs text-muted mb-1 flex items-center gap-2">
+                {fmt(a)}
+                {/* Wizyta dla dwóch osób — bez tej plakietki z listy nie wynika,
+                    że to rezerwacja pary (obie osoby mają własny zabieg). */}
+                {(a.partySize ?? 1) >= 2 && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 border border-line px-2 py-0.5 text-[10px] font-bold text-ink-2">
+                    <Users size={10} /> {t("visits.couple")}
+                  </span>
+                )}
+              </div>
               <div className="font-bold">{a.serviceName}</div>
               <div className="text-sm text-muted flex items-center gap-1.5 mt-0.5">
                 <MapPin size={13} /> {a.salonName} · {a.staffName}
               </div>
+              {/* Druga osoba: jej zabieg i JEJ specjalista — inaczej klient widzi
+                  jednego pracownika i nie wie, kto obsłuży towarzysza. */}
+              {(a.partySize ?? 1) >= 2 && (a.companionName || a.companionStaffName) && (
+                <div className="text-sm text-muted flex items-center gap-1.5 mt-0.5">
+                  <Users size={13} />
+                  {[a.companionName, a.companionServiceName, a.companionStaffName].filter(Boolean).join(" · ")}
+                </div>
+              )}
               {(a.canCancel || a.cancellationToken) && (
                 <button
                   onClick={() => setConfirmFor(a)}
@@ -124,7 +141,10 @@ export default function Visits() {
                   <Clock size={16} />
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className="block text-sm font-medium truncate">{a.serviceName}</span>
+                  <span className="block text-sm font-medium truncate">
+                    {a.serviceName}
+                    {(a.partySize ?? 1) >= 2 && <span className="text-muted font-normal"> · {t("visits.couple")}</span>}
+                  </span>
                   <span className="block text-xs text-muted">{fmt(a)} · {a.staffName}</span>
                 </span>
               </div>
