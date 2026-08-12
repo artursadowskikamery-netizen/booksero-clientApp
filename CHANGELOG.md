@@ -9,6 +9,25 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.21] — 2026-08-12 — Rezerwacja dla 2 osób: telefon drugiej osoby
+
+- Rezerwacja pary nie wysyłała numeru drugiej osoby, więc nie dostawała
+  ona kartoteki: bez punktów, bez prośby o opinię, bez wizyty na swoim
+  koncie, a jej kod imienny nie przechodził przy rozliczeniu. Doszło pole
+  „Telefon drugiej osoby" (walidowane jak numer rezerwującego).
+- Przełącznik „Rezerwuję jako niespodziankę" — pole znika, a numer jest
+  POMINIĘTY w żądaniu (nie pusty tekst), więc do obdarowanego nie idzie
+  żadna wiadomość i prezent się nie wydaje.
+- Ostrzeżenie, gdy numer drugiej osoby jest taki sam jak rezerwującego
+  (serwer nie założyłby wtedy drugiej kartoteki).
+- Ekran potwierdzenia pokazuje obie osoby i obie usługi, a gdy numer nie
+  doszedł — delikatną informację, że druga osoba nie zbierze punktów.
+- Pusty terminarz przy rezerwacji pary ma własny komunikat (zwykle brak
+  pokoju dla dwóch osób), a wybór tego samego specjalisty dwa razy —
+  czytelną podpowiedź zamiast surowego „termin zajęty".
+
+---
+
 ## [1.0.20] — 2026-07-28 — Godziny wizyt w strefie czasowej lokalizacji
 
 - Lista „Moje wizyty" pokazywała godzinę wg zegara TELEFONU: wizyta o 11:00

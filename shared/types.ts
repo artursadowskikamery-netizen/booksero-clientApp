@@ -148,6 +148,10 @@ export interface BookingRequest {
   serviceId2?: string;
   staffId2?: string;
   secondClientName?: string;
+  // Telefon 2. osoby — bez niego serwer NIE zakłada jej kartoteki (brak punktów,
+  // brak prośby o opinię, wizyta nie trafia do jej „Moich wizyt"). Przy trybie
+  // „niespodzianka" pole musi być POMINIĘTE (undefined), nigdy pusty string.
+  secondClientPhone?: string;
 }
 
 // ── Bonusy Etap A (SPEC-bonusy-etap-A) ──
@@ -270,6 +274,13 @@ export interface BookingResult {
   prepaymentAmount?: string;
   // Naliczony rabat czasowy (SPEC-rabaty-czasowe §2.2) — cena łączna po rabacie.
   discountApplied?: { name?: string; priceAfter?: string } | null;
+  // Rezerwacja pary (ZLECENIE-aplikacja-para §4) — do ekranu potwierdzenia.
+  partySize?: number;
+  secondClientName?: string;
+  serviceName2?: string;
+  // false przy WYŁĄCZONEJ niespodziance = numer 2. osoby nie doszedł albo był
+  // nieprawidłowy → warto o tym uprzedzić, bo nie zbierze punktów.
+  secondClientHasCard?: boolean;
 }
 
 // ── Skrzynka powiadomień klienta (SPEC-skrzynka-powiadomien) ──

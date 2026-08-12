@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { addDays, format } from "date-fns";
 import { ChevronLeft, Users, Check, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { api } from "../lib/api";
+import { api, ApiError } from "../lib/api";
 import { isLoggedIn, isLoggedInFor } from "../lib/auth";
 import { getPushState, enablePush, type PushState } from "../lib/push";
 import BottomNav from "../components/BottomNav";
@@ -35,6 +35,12 @@ export default function Booking() {
   const [time, setTime] = useState("");
   const [clientName, setName] = useState("");
   const [secondClientName, setName2] = useState("");
+  // Telefon 2. osoby — decyduje o tym, czy dostanie kartotekę (punkty, opinia,
+  // wizyta na jej koncie). „Niespodzianka" = prezent: numeru NIE wysyłamy,
+  // więc do obdarowanego nie idzie żadna wiadomość i prezent się nie wyda.
+  const [secondClientPhone, setPhone2] = useState("");
+  const [phone2Valid, setPhone2Valid] = useState(false);
+  const [surprise, setSurprise] = useState(false);
   const [clientPhone, setPhone] = useState("");
   const [phoneValid, setPhoneValid] = useState(false);
   const [clientEmail, setEmail] = useState("");
@@ -69,7 +75,17 @@ export default function Booking() {
     mutationFn: () =>
       api.book(salonId, {
         serviceId, staffId, date, time, clientName, clientPhone, clientEmail,
-        ...(couple ? { partySize: 2, serviceId2: serviceId, staffId2, secondClientName } : {}),
+        ...(couple
+          ? {
+              partySize: 2,
+              serviceId2: serviceId,
+              staffId2,
+              secondClientName,
+              // Niespodzianka → pole POMINIĘTE (nie pusty string) — serwer
+              // rozróżnia „brak numeru" od „numer pusty".
+              ...(surprise || !secondClientPhone ? {} : { secondClientPhone }),
+            }
+          : {}),
       }),
     onSuccess: (r) => {
       setResult(r);
@@ -127,6 +143,13 @@ export default function Booking() {
           </div>
           <div className="font-bold text-lg">{result.message}</div>
           <div className="text-sm text-muted">{result.service} · {result.staffName}</div>
+          {/* Para: druga osoba ma WŁASNĄ usługę i własnego specjalistę. */}
+          {result.partySize === 2 && result.secondClientName && (
+            <div className="text-sm text-muted">
+              {result.secondClientName}
+              {result.serviceName2 ? ` · ${result.serviceName2}` : ""}
+            </div>
+          )}
           <div className="text-sm">
             {/* Termin wybrany przez klienta — już w czasie lokalizacji. Nie
                 formatujemy result.startAt zegarem telefonu, bo dla salonu
@@ -138,6 +161,14 @@ export default function Booking() {
             <div className="text-sm text-brand font-semibold">
               {result.discountApplied.name}
               {result.discountApplied.priceAfter ? ` · ${result.discountApplied.priceAfter} ${currency}` : ""}
+            </div>
+          )}
+          {/* Numer 2. osoby nie doszedł mimo wyłączonej niespodzianki — bez
+              kartoteki nie zbierze punktów. Delikatnie, bo wizyta jest już
+              zarezerwowana i nic nie trzeba ratować. */}
+          {result.partySize === 2 && !surprise && result.secondClientHasCard === false && (
+            <div className="text-sm rounded-xl bg-surface-2 p-3 mt-2 text-left w-full text-muted">
+              {t("booking.secondNoCard", { name: result.secondClientName || "" })}
             </div>
           )}
           {result.prepaymentRequired && (
@@ -313,7 +344,14 @@ export default function Booking() {
           {!date && <div className="text-sm text-muted">{t("booking.chooseDayFirst")}</div>}
           {date && availQ.isLoading && <div className="text-sm text-muted">{t("common.loading")}</div>}
           {date && availQ.isError && <div className="text-sm text-red-600">{(availQ.error as Error).message}</div>}
-          {date && availQ.data && availQ.data.length === 0 && <div className="text-sm text-muted">{t("booking.noSlots")}</div>}
+          {/* Para: pusty terminarz to zwykle brak POKOJU dla dwóch osób
+              przypisanego do obu usług — konfiguracja lokalizacji, nie usterka.
+              Osobny komunikat, żeby klient nie klikał kolejnych dni na próżno. */}
+          {date && availQ.data && availQ.data.length === 0 && (
+            <div className="text-sm text-muted">
+              {couple ? t("booking.noSlotsCouple") : t("booking.noSlots")}
+            </div>
+          )}
           <div className="flex flex-wrap gap-2">
             {(availQ.data ?? []).map((slot) => (
               <button
@@ -363,6 +401,45 @@ export default function Booking() {
           </label>
           {settings?.requireEmail && <Field label={`${t("booking.email")} *`} value={clientEmail} onChange={setEmail} type="email" />}
 
+          {/* Telefon 2. osoby — decyduje, czy dostanie własną kartotekę.
+              Przy niespodziance pole znika i numer NIE jest wysyłany. */}
+          {couple && (
+            <div className="rounded-2xl border border-line bg-surface p-4 mt-3 mb-2">
+              <button
+                onClick={() => setSurprise((v) => !v)}
+                className="w-full flex items-center justify-between gap-3 text-left"
+              >
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold">{t("booking.surprise")}</span>
+                  <span className="block text-xs text-muted mt-0.5">{t("booking.surpriseHint")}</span>
+                </span>
+                <span className={`w-11 h-6 rounded-full p-0.5 shrink-0 transition-colors ${surprise ? "bg-brand" : "bg-surface-2 border border-line"}`}>
+                  <span className={`block w-5 h-5 rounded-full bg-white transition-transform ${surprise ? "translate-x-5" : ""}`} />
+                </span>
+              </button>
+
+              {!surprise && (
+                <label className="block mt-3">
+                  <span className="text-[11px] font-bold text-ink-2">{t("booking.phone2")}</span>
+                  <div className="mt-1">
+                    <PhoneInput
+                      value={secondClientPhone}
+                      onChange={setPhone2}
+                      onValidChange={setPhone2Valid}
+                      defaultCountry={salon?.salon.country}
+                    />
+                  </div>
+                  <span className="block text-xs text-muted mt-1.5">{t("booking.phone2Hint")}</span>
+                  {/* Ten sam numer co rezerwujący → serwer nie założy drugiej
+                      kartoteki (to ta sama osoba). Lepiej uprzedzić od razu. */}
+                  {phone2Valid && phoneValid && secondClientPhone === clientPhone && (
+                    <span className="block text-xs text-red-400 mt-1.5">{t("booking.phone2Same")}</span>
+                  )}
+                </label>
+              )}
+            </div>
+          )}
+
           {service && (() => {
             // Rabat czasowy wybranego slotu (podgląd — wiążąco liczy serwer).
             const selSlot = availQ.data?.find((s) => s.time === time);
@@ -385,13 +462,24 @@ export default function Booking() {
             );
           })()}
 
-          {bookM.isError && <div className="text-sm text-red-500 mt-2">{(bookM.error as Error).message}</div>}
+          {/* 409 przy parze = serwer nie złożył DWÓCH różnych wolnych osób.
+              Komunikat serwera („termin zajęty") nie podpowiada, co zrobić. */}
+          {bookM.isError && (
+            <div className="text-sm text-red-500 mt-2">
+              {couple && bookM.error instanceof ApiError && bookM.error.status === 409
+                ? t("booking.coupleStaffConflict")
+                : (bookM.error as Error).message}
+            </div>
+          )}
           <Footer>
           <button
             className="btn-primary"
             disabled={
               !clientName ||
               (couple && !secondClientName) ||
+              // Numer 2. osoby: wymagany, gdy NIE jest to niespodzianka —
+              // bez niego druga osoba nie dostanie kartoteki.
+              (couple && !surprise && !phone2Valid) ||
               (settings?.requirePhone && !phoneValid) ||
               (!!clientPhone && !phoneValid) ||
               (settings?.requireEmail && !clientEmail) ||
