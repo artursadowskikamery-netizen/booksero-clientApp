@@ -294,8 +294,27 @@ export default function Booking() {
 
       {step === "staff" && (
         <>
-          <StaffPicker label={couple ? t("booking.specialist1") : undefined} list={staffQ.data} value={staffId} onPick={setStaffId} />
-          {couple && <StaffPicker label={t("booking.specialist2")} list={staffQ.data} value={staffId2} onPick={setStaffId2} />}
+          <StaffPicker
+            label={couple ? t("booking.specialist1") : undefined}
+            list={staffQ.data}
+            value={staffId}
+            onPick={(id) => {
+              setStaffId(id);
+              // Ta sama osoba nie może obsłużyć obu wizyt — jeśli była już
+              // wybrana dla drugiej osoby, zwalniamy ten wybór.
+              if (couple && id !== ANY && id === staffId2) setStaffId2(ANY);
+            }}
+            excludeId={couple ? staffId2 : undefined}
+          />
+          {couple && (
+            <StaffPicker
+              label={t("booking.specialist2")}
+              list={staffQ.data}
+              value={staffId2}
+              onPick={setStaffId2}
+              excludeId={staffId}
+            />
+          )}
           <Footer>
             <button className="btn-primary" disabled={!staffId || (couple && !staffId2)} onClick={() => setStep("time")}>
               {t("common.next")}
@@ -547,7 +566,13 @@ function Steps({ step }: { step: Step }) {
   );
 }
 
-function StaffPicker({ label, list, value, onPick }: { label?: string; list?: StaffMember[]; value: string; onPick: (id: string) => void }) {
+// excludeId: przy rezerwacji pary osoba wybrana dla PIERWSZEJ osoby jest tu
+// wyszarzona i nieklikalna — wizyta pary wymaga DWÓCH różnych specjalistów,
+// więc lepiej nie dać wybrać, niż tłumaczyć błąd po potwierdzeniu.
+// „Dowolny" nigdy nie jest blokowany: serwer sam dobierze wolną, inną osobę.
+function StaffPicker({ label, list, value, onPick, excludeId }: {
+  label?: string; list?: StaffMember[]; value: string; onPick: (id: string) => void; excludeId?: string;
+}) {
   const { t } = useTranslation();
   const options = [
     { id: ANY, name: t("booking.anyStaff") },
@@ -561,18 +586,37 @@ function StaffPicker({ label, list, value, onPick }: { label?: string; list?: St
         </div>
       )}
       <div className="flex flex-wrap gap-2">
-        {options.map((o) => (
-          <button
-            key={o.id}
-            onClick={() => onPick(o.id)}
-            className={`rounded-lg border px-3 py-2 text-sm font-semibold ${value === o.id ? "bg-brand text-brand-contrast border-brand" : "bg-surface border-line"}`}
-          >
-            {o.name}
-          </button>
-        ))}
+        {options.map((o) => {
+          const blocked = !!excludeId && o.id !== ANY && o.id === excludeId;
+          return (
+            <button
+              key={o.id}
+              onClick={() => !blocked && onPick(o.id)}
+              disabled={blocked}
+              title={blocked ? t("booking.staffTaken") : undefined}
+              className={`rounded-lg border px-3 py-2 text-sm font-semibold ${
+                value === o.id
+                  ? "bg-brand text-brand-contrast border-brand"
+                  : blocked
+                    ? "bg-surface border-line text-muted opacity-40 line-through cursor-not-allowed"
+                    : "bg-surface border-line"
+              }`}
+            >
+              {o.name}
+            </button>
+          );
+        })}
       </div>
+      {blockedHint(options, excludeId) && (
+        <p className="text-[11px] text-muted mt-1.5">{t("booking.staffTaken")}</p>
+      )}
     </div>
   );
+}
+
+// Podpowiedź pokazujemy tylko wtedy, gdy któraś pozycja faktycznie jest zablokowana.
+function blockedHint(options: { id: string }[], excludeId?: string): boolean {
+  return !!excludeId && excludeId !== ANY && options.some((o) => o.id === excludeId);
 }
 
 function Field({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {

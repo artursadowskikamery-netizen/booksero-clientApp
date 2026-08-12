@@ -9,6 +9,21 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.22] — 2026-08-12 — Para: nie da się wybrać tego samego specjalisty
+
+- Specjalista wybrany dla jednej osoby jest przy drugiej WYSZARZONY
+  i nieklikalny (z przekreśleniem i wyjaśnieniem) — wizyta pary wymaga
+  dwóch różnych osób, więc blokujemy wybór zamiast tłumaczyć błąd po
+  potwierdzeniu rezerwacji.
+- Blokada działa w obie strony; „Dowolny" nigdy nie jest blokowany
+  (serwer sam dobierze wolną, inną osobę).
+- Zmiana specjalisty pierwszej osoby na tego wybranego dla drugiej
+  zwalnia tamten wybór (wraca na „Dowolny") zamiast blokować ekran.
+- Komunikat o błędzie 409 zostaje jako druga linia obrony (np. gdy termin
+  zajmie ktoś inny w tej samej chwili). Teksty ×16.
+
+---
+
 ## [1.0.21] — 2026-08-12 — Rezerwacja dla 2 osób: telefon drugiej osoby
 
 - Rezerwacja pary nie wysyłała numeru drugiej osoby, więc nie dostawała
