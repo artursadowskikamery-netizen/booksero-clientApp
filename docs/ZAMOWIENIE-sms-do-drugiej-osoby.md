@@ -17,7 +17,7 @@ Druga osoba pary, która MA KARTOTEKĘ (podano jej numer, czyli tryb
 | potwierdzenie rezerwacji | tak | **TAK — to jest zmiana** | nie |
 | przypomnienie przed wizytą | tak | **nie** (bez zmian) | nie |
 | prośba o opinię po wizycie | tak | tak (bez zmian) | nie |
-| odwołanie wizyty | tak | **do rozstrzygnięcia — patrz niżej** | nie |
+| odwołanie wizyty | tak | **nie** (decyzja właściciela) | nie |
 
 ## Szczegóły do uwzględnienia
 
@@ -39,12 +39,14 @@ Druga osoba pary, która MA KARTOTEKĘ (podano jej numer, czyli tryb
    recepcja zakłada wizytę dla dwóch osób i wybierze kartę drugiej osoby —
    inaczej klient dostanie wiadomość tylko przy rezerwacji z aplikacji.
 
-## Pytanie otwarte (proszę o decyzję właściciela przy okazji)
+## Odwołanie wizyty — rozstrzygnięte, NIE zmieniać
 
-Gdy rezerwujący **odwoła** wizytę pary — czy druga osoba ma dostać
-informację o odwołaniu? Argument za: przyszła na wizytę, która nie
-istnieje. Argument przeciw: kolejny SMS z portfela. Nie zakładałem
-niczego z góry, bo to ta sama klasa decyzji co powyższa.
+Właściciel zdecydował (2026-08-12): przy odwołaniu wizyty pary
+powiadomienie dostaje **wyłącznie osoba, która rezerwowała**. Druga osoba
+nie dostaje nic — także wtedy, gdy ma kartotekę i numer.
+
+Czyli zmiana w tym zamówieniu dotyczy **tylko potwierdzenia rezerwacji**.
+Ścieżka odwołania zostaje dokładnie taka, jak jest dziś.
 
 ## UWAGA — dwa miejsca, które trzeba poprawić RAZEM ze zmianą
 
