@@ -9,6 +9,21 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.31] — 2026-08-13 — „Pokaż pozostałe zgody" — żadna nie jest już nieosiągalna
+
+- Zapora z 1.0.30 pamiętała tylko przełączniki, które aplikacja JUŻ kiedyś
+  pokazała. Na urządzeniu, gdzie zgoda zdążyła zniknąć wcześniej, pamięć
+  startowała pusta i nie miała czego przywrócić — przełącznik nie wrócił.
+- Pod listą zgód jest teraz „Pokaż pozostałe zgody". Odsłania każdy pozostały
+  typ, niezależnie od tego, co zwrócił serwer. Zgoda przestaje zależeć od
+  zakresu lokalizacji, stanu i historii — zawsze da się ją włączyć i wyłączyć
+  z aplikacji. RODO wymaga, żeby wycofanie było równie łatwe jak udzielenie;
+  przy zgodzie, której nie da się nawet wyświetlić, ten warunek jest pusty.
+- Domyślny widok zostaje bez zmian: lokalizacja, która zdjęć nie robi, nie
+  pokazuje klientce zgód fotograficznych, dopóki sama o nie nie poprosi.
+
+---
+
 ## [1.0.30] — 2026-08-13 — Raz pokazana zgoda zostaje na zawsze
 
 - Widoczność przełącznika zgody liczyła się WYŁĄCZNIE z odpowiedzi serwera

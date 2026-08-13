@@ -64,6 +64,7 @@ export default function Consents({
 }) {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false); // domyślnie ZWINIĘTE
+  const [wszystkie, setWszystkie] = useState(false); // „Pokaż pozostałe zgody"
   const [data, setData] = useState<ConsentsState | null>(null);
   const [hidden, setHidden] = useState(false); // 404 / błąd odczytu → chowamy sekcję
   const [busy, setBusy] = useState<ConsentType | null>(null);
@@ -116,9 +117,8 @@ export default function Consents({
   //  3. HISTORIA — zgoda, której klientka kiedykolwiek dotknęła. To jest
   //     kluczowe: zgoda spoza zakresu znikała po wyłączeniu i klientka nie
   //     mogła jej już nigdy przywrócić z aplikacji (pułapka jednokierunkowa);
-  //  4. sticky — zestaw z chwili otwarcia ekranu, żeby nic nie znikało pod
-  //     palcem w trakcie klikania.
-  const visible = data
+  //  4. sticky — przełączniki raz już pokazane na tym urządzeniu (patrz PAMIEC).
+  const domyslne = data
     ? ALL.filter(
         (typ) =>
           data.zakres?.includes(typ) ||
@@ -128,8 +128,18 @@ export default function Consents({
       )
     : [];
 
-  // Nie pokazujemy pustej sekcji.
-  if (data && visible.length === 0) return null;
+  // ZGODA MA BYĆ ZAWSZE OSIĄGALNA. Powyższe cztery warunki zależą od tego, co
+  // przyśle serwer — a to okazało się zawodne: zgoda na publikację zdjęć zniknęła
+  // z ekranu trzy razy z rzędu i nie było ŻADNEGO sposobu, by włączyć ją z
+  // aplikacji. RODO wymaga, żeby wycofanie było równie łatwe jak udzielenie;
+  // przy zgodzie, której nie da się nawet wyświetlić, ten warunek jest pusty.
+  // Dlatego reszta typów jest o jedno tapnięcie dalej — zawsze, bez wyjątku.
+  const reszta = ALL.filter((typ) => !domyslne.includes(typ));
+  const visible = wszystkie ? ALL : domyslne;
+
+  // Sekcja bez ANI JEDNEGO przełącznika nie ma sensu — ale to znaczy tylko, że
+  // serwer nic nie zwrócił; `reszta` jest wtedy pełna i przycisk ją odsłoni.
+  if (data && visible.length === 0 && reszta.length === 0) return null;
 
   // Data pod przełącznikiem. Dowodem zgody JEST wpis otwarty (revokedAt === null),
   // a nie ostatni element tablicy — kolejność z serwera nie jest gwarantowana.
@@ -216,6 +226,17 @@ export default function Consents({
                 </div>
               );
             })}
+
+          {/* Wyjście awaryjne: pozostałe zgody na jedno tapnięcie. Znika, gdy
+              wszystkie są już na ekranie — wtedy nie ma czego odsłaniać. */}
+          {data && !wszystkie && reszta.length > 0 && (
+            <button
+              onClick={() => setWszystkie(true)}
+              className="mt-2 text-xs font-semibold text-brand underline underline-offset-2"
+            >
+              {t("consents.showAll")}
+            </button>
+          )}
 
           {err && <p className="text-xs text-red-400 mt-2">{err}</p>}
 
