@@ -10,7 +10,7 @@ import { getPushState, enablePush, type PushState } from "../lib/push";
 import BottomNav from "../components/BottomNav";
 import { PhoneInput } from "../components/PhoneInput";
 import { formatPickedSlot } from "../lib/datetime";
-import type { BookingResult, StaffMember } from "@shared/types";
+import type { BookingResult, StaffMember, Slot } from "@shared/types";
 
 type Step = "service" | "staff" | "time" | "details";
 
@@ -69,6 +69,27 @@ export default function Booking() {
       }),
     enabled: !!salonId && !!serviceId && !!staffId && !!date && step === "time",
   });
+
+  // Terminarz dla PARY przychodzi z serwera osobno dla każdej z dwóch usług,
+  // więc ta sama godzina wraca dwa razy — i drugi zestaw bywa nieposortowany.
+  // Bez scalenia lista dubluje się na ekranie, dwa kafelki tej samej godziny
+  // zaznaczają się naraz, a React dostaje zduplikowany `key`.
+  const sloty = useMemo<Slot[]>(() => {
+    const po = new Map<string, Slot>();
+    for (const s of availQ.data ?? []) {
+      const jest = po.get(s.time);
+      // Wygrywa wpis DOSTĘPNY, a przy remisie ten z rabatem — scalenie nie ma
+      // prawa ani zgubić happy hours, ani pokazać wolnej godziny jako zajętej.
+      const lepszy =
+        !jest ||
+        (!jest.available && s.available) ||
+        (jest.available === s.available && !jest.discount && !!s.discount);
+      if (lepszy) po.set(s.time, s);
+    }
+    const lista: Slot[] = [];
+    po.forEach((s) => lista.push(s));
+    return lista.sort((a, b) => a.time.localeCompare(b.time));
+  }, [availQ.data]);
 
   const qc = useQueryClient();
   const bookM = useMutation({
@@ -371,13 +392,13 @@ export default function Booking() {
           {/* Para: pusty terminarz to zwykle brak POKOJU dla dwóch osób
               przypisanego do obu usług — konfiguracja lokalizacji, nie usterka.
               Osobny komunikat, żeby klient nie klikał kolejnych dni na próżno. */}
-          {date && availQ.data && availQ.data.length === 0 && (
+          {date && availQ.data && sloty.length === 0 && (
             <div className="text-sm text-muted">
               {couple ? t("booking.noSlotsCouple") : t("booking.noSlots")}
             </div>
           )}
           <div className="flex flex-wrap gap-2">
-            {(availQ.data ?? []).map((slot) => (
+            {sloty.map((slot) => (
               <button
                 key={slot.time}
                 onClick={() => setTime(slot.time)}
@@ -466,7 +487,7 @@ export default function Booking() {
 
           {service && (() => {
             // Rabat czasowy wybranego slotu (podgląd — wiążąco liczy serwer).
-            const selSlot = availQ.data?.find((s) => s.time === time);
+            const selSlot = sloty.find((s) => s.time === time);
             const disc = selSlot?.discount ?? null;
             return (
               <div className="rounded-xl bg-surface-2 p-3 mt-3 text-sm">

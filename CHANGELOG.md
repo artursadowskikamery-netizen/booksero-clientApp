@@ -9,6 +9,22 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.28] — 2026-08-13 — Wycofana zgoda wraca; godziny bez dubli
+
+- Poprawka z 1.0.27 działała tylko w obrębie JEDNEGO wejścia na ekran. Kto
+  wyłączył zgodę wcześniej i wyszedł z Profilu, po powrocie już jej nie
+  widział — przełącznik znikał na dobre i nie dało się zgody przywrócić
+  z aplikacji. Dotyczyło zgody na publikację zdjęć.
+- Od teraz pokazujemy każdą zgodę, której klientka KIEDYKOLWIEK dotknęła
+  (jest w jej historii) — obok zgód z zakresu lokalizacji i tych aktualnie
+  posiadanych. Raz wycofana zgoda zawsze da się włączyć z powrotem.
+- Wolne godziny przy rezerwacji DLA PARY wyświetlały się podwójnie (serwer
+  zwraca terminarz osobno dla każdej z dwóch usług), a drugi zestaw był
+  nieposortowany. Godziny są scalane i ustawione rosnąco; przy scaleniu
+  wygrywa termin dostępny, a przy remisie ten z rabatem happy hours.
+
+---
+
 ## [1.0.27] — 2026-08-13 — Zgoda nie znika pod palcem po wyłączeniu
 
 - Zgoda, której lokalizacja nie ma w swoim zakresie (a klientka ją miała),

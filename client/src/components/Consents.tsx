@@ -56,23 +56,6 @@ export default function Consents({
 
   if (hidden) return null;
 
-  // Które przełączniki pokazać: te używane przez lokalizację ORAZ te, które
-  // klientka MA — inaczej nie dałoby się wycofać zgody spoza zakresu, czyli
-  // dokładnie tego, po co ten ekran powstał.
-  //
-  // PLUS wszystko, co było widoczne od otwarcia ekranu (`sticky`). Bez tego
-  // zgoda spoza zakresu ZNIKAŁA w chwili wyłączenia — przestawała spełniać oba
-  // warunki — i klientka nie mogła cofnąć własnego kliknięcia. Wycofanie zgody
-  // przez pomyłkę musi być odwracalne w tym samym miejscu i w tej samej chwili.
-  const visible = data
-    ? ALL.filter(
-        (typ) => data.zakres?.includes(typ) || data.stan?.[typ] === true || sticky.includes(typ),
-      )
-    : [];
-
-  // Nie pokazujemy pustej sekcji.
-  if (data && visible.length === 0) return null;
-
   const dt = (iso: string) =>
     new Intl.DateTimeFormat(i18n.language, { day: "2-digit", month: "2-digit", year: "numeric" })
       .format(new Date(iso));
@@ -83,6 +66,28 @@ export default function Consents({
     (data?.historia ?? []).filter(
       (h) => h.consentType === typ || (typ === "image_publish" && h.consentType === "image"),
     );
+
+  // Które przełączniki pokazać:
+  //  1. zakres — zgody, których lokalizacja używa;
+  //  2. stan === true — zgoda POSIADANA; bez tego nie dałoby się jej wycofać,
+  //     czyli zawiódłby obowiązek, dla którego ten ekran powstał;
+  //  3. HISTORIA — zgoda, której klientka kiedykolwiek dotknęła. To jest
+  //     kluczowe: zgoda spoza zakresu znikała po wyłączeniu i klientka nie
+  //     mogła jej już nigdy przywrócić z aplikacji (pułapka jednokierunkowa);
+  //  4. sticky — zestaw z chwili otwarcia ekranu, żeby nic nie znikało pod
+  //     palcem w trakcie klikania.
+  const visible = data
+    ? ALL.filter(
+        (typ) =>
+          data.zakres?.includes(typ) ||
+          data.stan?.[typ] === true ||
+          wpisyTypu(typ).length > 0 ||
+          sticky.includes(typ),
+      )
+    : [];
+
+  // Nie pokazujemy pustej sekcji.
+  if (data && visible.length === 0) return null;
 
   // Data pod przełącznikiem. Dowodem zgody JEST wpis otwarty (revokedAt === null),
   // a nie ostatni element tablicy — kolejność z serwera nie jest gwarantowana.
