@@ -9,6 +9,21 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.30] — 2026-08-13 — Raz pokazana zgoda zostaje na zawsze
+
+- Widoczność przełącznika zgody liczyła się WYŁĄCZNIE z odpowiedzi serwera
+  (zakres lokalizacji + stan + historia). Gdy którykolwiek składnik zniknął
+  z odpowiedzi, zgoda przestawała być osiągalna: nie było czego kliknąć, żeby
+  ją przywrócić. Przy zgodzie na publikację zdjęć zdarzyło się to trzykrotnie.
+- Aplikacja pamięta teraz na urządzeniu, które przełączniki już pokazała, i nie
+  odbiera ich nigdy. To lista nazw samych typów zgód, bez danych osobowych,
+  a jedyny jej skutek to przełącznik, który klientka może obsłużyć.
+- Uwaga: to jest ZAPORA, nie wyjaśnienie. Jeżeli historia zgody znika
+  z odpowiedzi serwera, to osobna sprawa do sprawdzenia po stronie panelu —
+  historia jest dowodem RODO i nie ma prawa się gubić.
+
+---
+
 ## [1.0.29] — 2026-08-13 — Kolor lokalizacji trzyma się całej aplikacji
 
 - Barwy salonu ustawione w panelu widać było TYLKO na ekranie salonu. Wejście

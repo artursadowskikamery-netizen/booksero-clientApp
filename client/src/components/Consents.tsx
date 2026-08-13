@@ -11,6 +11,48 @@ import type { ConsentsState, ConsentType, ConsentHistoryItem } from "@shared/typ
 // jest widoczny od razu na ekranie Profilu, bez wchodzenia w podekran.
 const ALL: ConsentType[] = ["marketing", "reviews", "image_store", "image_publish"];
 
+// PAMIĘĆ NA URZĄDZENIU — zapora ostatniej instancji.
+//
+// Widoczność przełącznika liczyliśmy dotąd wyłącznie z odpowiedzi serwera
+// (zakres lokalizacji + stan + historia). Jeśli którykolwiek z tych składników
+// zniknie z odpowiedzi, zgoda przestaje być OSIĄGALNA: nie ma czego kliknąć,
+// żeby ją przywrócić, a klientce zostaje telefon do recepcji. Dokładnie to
+// zdarzyło się trzykrotnie przy zgodzie na publikację zdjęć. Dlatego raz
+// pokazany przełącznik zapisujemy tu na stałe. To lista nazw samych typów
+// zgód — żadnych danych osobowych — a jedyny jej skutek to przełącznik, który
+// klientka może obsłużyć. Serwer przyjmuje każdy typ ze słownika, więc
+// włączenie zgody zadziała niezależnie od tego, co zniknęło z odpowiedzi.
+const PAMIEC = "booksero_zgody_widoczne";
+
+function zapamietane(): ConsentType[] {
+  try {
+    const l = JSON.parse(localStorage.getItem(PAMIEC) || "[]");
+    return Array.isArray(l) ? ALL.filter((t) => l.includes(t)) : [];
+  } catch {
+    return [];
+  }
+}
+
+function zapamietaj(typy: ConsentType[]): ConsentType[] {
+  const zbior = ALL.filter((t) => typy.includes(t)); // stała kolejność + odsiew śmieci
+  try {
+    localStorage.setItem(PAMIEC, JSON.stringify(zbior));
+  } catch { /* brak localStorage */ }
+  return zbior;
+}
+
+// Typy, które TA odpowiedź serwera uzasadnia pokazać.
+function zOdpowiedzi(d: ConsentsState): ConsentType[] {
+  return ALL.filter(
+    (typ) =>
+      d.zakres?.includes(typ) ||
+      d.stan?.[typ] === true ||
+      (d.historia ?? []).some(
+        (h) => h.consentType === typ || (typ === "image_publish" && h.consentType === "image"),
+      ),
+  );
+}
+
 export default function Consents({
   networkName,
   multiSalon,
@@ -26,9 +68,10 @@ export default function Consents({
   const [hidden, setHidden] = useState(false); // 404 / błąd odczytu → chowamy sekcję
   const [busy, setBusy] = useState<ConsentType | null>(null);
   const [err, setErr] = useState("");
-  // Typy widoczne od momentu otwarcia ekranu — raz pokazany przełącznik nie
-  // może zniknąć pod palcem klientki (patrz komentarz przy `visible`).
-  const [sticky, setSticky] = useState<ConsentType[]>([]);
+  // Typy raz już pokazane — na tym urządzeniu, na zawsze (patrz `PAMIEC`).
+  // Stan startowy czytamy z pamięci, więc przełącznik jest na miejscu jeszcze
+  // przed odpowiedzią serwera.
+  const [sticky, setSticky] = useState<ConsentType[]>(() => zapamietane());
 
   // Stanu NIE cache'ujemy: zgodę może zmienić recepcja albo sama klientka na
   // innym urządzeniu, więc pobieramy przy każdym wejściu na ekran.
@@ -39,9 +82,8 @@ export default function Consents({
       .then((d) => {
         if (!alive) return;
         setData(d);
-        // Zapamiętujemy zestaw z PIERWSZEGO odczytu — od tej chwili te
-        // przełączniki zostają na ekranie niezależnie od zmian stanu.
-        setSticky(ALL.filter((typ) => d.zakres?.includes(typ) || d.stan?.[typ] === true));
+        // Dokładamy do pamięci, nigdy z niej nie ujmujemy.
+        setSticky((p) => zapamietaj([...p, ...zOdpowiedzi(d)]));
       })
       .catch((e) => {
         if (!alive) return;
@@ -118,6 +160,7 @@ export default function Consents({
     try {
       const swiezy = await api.zgodaSet(typ, !data.stan?.[typ]);
       setData(swiezy); // PATCH oddaje pełny stan — bez drugiego GET
+      setSticky((p) => zapamietaj([...p, ...zOdpowiedzi(swiezy), typ]));
     } catch (e) {
       if (e instanceof ApiError && e.status === 401) return onUnauthorized();
       setErr(t("consents.saveError"));
