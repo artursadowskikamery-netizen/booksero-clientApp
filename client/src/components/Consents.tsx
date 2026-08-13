@@ -26,6 +26,9 @@ export default function Consents({
   const [hidden, setHidden] = useState(false); // 404 / błąd odczytu → chowamy sekcję
   const [busy, setBusy] = useState<ConsentType | null>(null);
   const [err, setErr] = useState("");
+  // Typy widoczne od momentu otwarcia ekranu — raz pokazany przełącznik nie
+  // może zniknąć pod palcem klientki (patrz komentarz przy `visible`).
+  const [sticky, setSticky] = useState<ConsentType[]>([]);
 
   // Stanu NIE cache'ujemy: zgodę może zmienić recepcja albo sama klientka na
   // innym urządzeniu, więc pobieramy przy każdym wejściu na ekran.
@@ -33,7 +36,13 @@ export default function Consents({
     let alive = true;
     api
       .zgody()
-      .then((d) => alive && setData(d))
+      .then((d) => {
+        if (!alive) return;
+        setData(d);
+        // Zapamiętujemy zestaw z PIERWSZEGO odczytu — od tej chwili te
+        // przełączniki zostają na ekranie niezależnie od zmian stanu.
+        setSticky(ALL.filter((typ) => d.zakres?.includes(typ) || d.stan?.[typ] === true));
+      })
       .catch((e) => {
         if (!alive) return;
         if (e instanceof ApiError && e.status === 401) return onUnauthorized();
@@ -50,8 +59,15 @@ export default function Consents({
   // Które przełączniki pokazać: te używane przez lokalizację ORAZ te, które
   // klientka MA — inaczej nie dałoby się wycofać zgody spoza zakresu, czyli
   // dokładnie tego, po co ten ekran powstał.
+  //
+  // PLUS wszystko, co było widoczne od otwarcia ekranu (`sticky`). Bez tego
+  // zgoda spoza zakresu ZNIKAŁA w chwili wyłączenia — przestawała spełniać oba
+  // warunki — i klientka nie mogła cofnąć własnego kliknięcia. Wycofanie zgody
+  // przez pomyłkę musi być odwracalne w tym samym miejscu i w tej samej chwili.
   const visible = data
-    ? ALL.filter((typ) => data.zakres?.includes(typ) || data.stan?.[typ] === true)
+    ? ALL.filter(
+        (typ) => data.zakres?.includes(typ) || data.stan?.[typ] === true || sticky.includes(typ),
+      )
     : [];
 
   // Nie pokazujemy pustej sekcji.

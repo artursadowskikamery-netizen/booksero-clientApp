@@ -9,6 +9,18 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.27] — 2026-08-13 — Zgoda nie znika pod palcem po wyłączeniu
+
+- Zgoda, której lokalizacja nie ma w swoim zakresie (a klientka ją miała),
+  ZNIKAŁA z ekranu w chwili wyłączenia — przestawała spełniać warunek
+  widoczności — i nie dało się jej włączyć z powrotem. Pułapka bez wyjścia
+  przy zgodzie na publikację zdjęć.
+- Przełączniki widoczne przy otwarciu ekranu zostają na nim do wyjścia,
+  niezależnie od zmian stanu. Wycofanie zgody przez pomyłkę jest teraz
+  odwracalne w tym samym miejscu i w tej samej chwili.
+
+---
+
 ## [1.0.26] — 2026-08-13 — Języki: Norweg dostaje norweski, reszta angielski
 
 - Telefony norweskie przedstawiają się jako `nb-NO` / `nn-NO`, a nie `no`,
