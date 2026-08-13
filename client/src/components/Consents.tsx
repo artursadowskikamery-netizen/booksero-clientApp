@@ -65,6 +65,7 @@ export default function Consents({
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false); // domyślnie ZWINIĘTE
   const [wszystkie, setWszystkie] = useState(false); // „Pokaż pozostałe zgody"
+  const [odswiez, setOdswiez] = useState(0); // bump → ponowny odczyt ze serwera
   const [data, setData] = useState<ConsentsState | null>(null);
   const [hidden, setHidden] = useState(false); // 404 / błąd odczytu → chowamy sekcję
   const [busy, setBusy] = useState<ConsentType | null>(null);
@@ -75,7 +76,10 @@ export default function Consents({
   const [sticky, setSticky] = useState<ConsentType[]>(() => zapamietane());
 
   // Stanu NIE cache'ujemy: zgodę może zmienić recepcja albo sama klientka na
-  // innym urządzeniu, więc pobieramy przy każdym wejściu na ekran.
+  // innym urządzeniu, więc pobieramy przy każdym wejściu na ekran ORAZ przy
+  // każdym rozwinięciu sekcji. To drugie ma znaczenie praktyczne: klientka
+  // wychodzi od recepcji i od razu zagląda w telefon — bez tego zobaczyłaby
+  // stan sprzed rozmowy, dopóki nie wyszłaby z Profilu i nie wróciła.
   useEffect(() => {
     let alive = true;
     api
@@ -95,7 +99,7 @@ export default function Consents({
       alive = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [odswiez]);
 
   if (hidden) return null;
 
@@ -182,7 +186,10 @@ export default function Consents({
   return (
     <div className="rounded-2xl bg-surface border border-line mt-5 overflow-hidden">
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          if (!open) setOdswiez((n) => n + 1); // rozwinięcie = świeży odczyt
+          setOpen((v) => !v);
+        }}
         aria-expanded={open}
         className="w-full flex items-center gap-2 p-4 text-left"
       >

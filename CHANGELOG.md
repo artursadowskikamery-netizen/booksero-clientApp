@@ -9,6 +9,15 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.32] — 2026-08-13 — Zgody odświeżają się przy rozwinięciu sekcji
+
+- Stan zgód pobierał się przy wejściu na ekran Profilu. Klientka, która wraca
+  od recepcji i od razu zagląda w telefon, widziała stan sprzed rozmowy do
+  czasu, aż wyszła z Profilu i wróciła.
+- Rozwinięcie sekcji ZGODY pobiera teraz świeży stan z serwera.
+
+---
+
 ## [1.0.31] — 2026-08-13 — „Pokaż pozostałe zgody" — żadna nie jest już nieosiągalna
 
 - Zapora z 1.0.30 pamiętała tylko przełączniki, które aplikacja JUŻ kiedyś
