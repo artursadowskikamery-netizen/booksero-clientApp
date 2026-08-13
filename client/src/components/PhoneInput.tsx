@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { parsePhoneNumberFromString, AsYouType, getExampleNumber } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
@@ -58,6 +58,19 @@ export function PhoneInput({
     value ? detectCountryFromPhone(value) : asCountryCode(defaultCountry),
   );
 
+  // Wartość ustawiona Z ZEWNĄTRZ (numer z konta dociąga się PO zamontowaniu
+  // ekranu, więc początkowy stan kraju już nie wystarcza) musi przestawić także
+  // FLAGĘ — inaczej numer niemiecki wyświetliłby się przy polskim prefiksie.
+  // Porównanie z ostatnią wartością, którą sami wysłaliśmy, odróżnia zmianę
+  // z zewnątrz od własnego pisania (przy pisaniu kraj ustawia już emit()),
+  // dzięki czemu nie nadpisujemy ręcznego wyboru kraju przez użytkownika.
+  const lastEmitted = useRef<string | null>(null);
+  useEffect(() => {
+    if (value === lastEmitted.current) return;
+    const parsed = value ? parsePhoneNumberFromString(value) : null;
+    if (parsed?.country) setCountry(parsed.country as CountryCode);
+  }, [value]);
+
   // Część krajowa do wyświetlenia — wartość przechowujemy zawsze jako "+…".
   const displayValue = useMemo(() => {
     if (!value) return "";
@@ -87,6 +100,7 @@ export function PhoneInput({
         // w trakcie pisania → prefiks + cyfry (walidacja zaświeci się po wyjściu).
         next = parsed && parsed.isValid() ? parsed.number : digits ? "+" + countryCallingCode(c) + digits : "";
       }
+      lastEmitted.current = next; // patrz efekt synchronizacji kraju wyżej
       onChange(next);
       if (onValidChange) {
         const p = next ? parsePhoneNumberFromString(next) : null;

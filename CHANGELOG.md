@@ -9,6 +9,22 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.24] — 2026-08-13 — PILNE: odblokowana rezerwacja z aplikacji
+
+- Przycisk „Potwierdź rezerwację" był zablokowany bez żadnego komunikatu.
+  Pole telefonu dostawało numer z konta jako same cyfry („48530012345"),
+  więc do prefiksu kraju doklejał się drugi prefiks (+48 48 530…) i numer
+  nie przechodził walidacji.
+- Numer wstawiamy teraz z pola `phoneE164` (postać kanoniczna „+48…"),
+  a pole samo wyciąga z niej część krajową i kraj do flagi. Gdy serwer
+  odda `phoneE164: null` (numeru nie da się zinterpretować), pole zostaje
+  puste — klientka wpisuje numer sama.
+- Pole telefonu przestawia teraz także FLAGĘ, gdy numer dociąga się
+  z konta po otwarciu ekranu — numer zagraniczny pokazuje właściwy kraj,
+  a ręczny wybór kraju przez klientkę nie jest nadpisywany.
+
+---
+
 ## [1.0.23] — 2026-08-12 — Lista wizyt pokazuje, że rezerwacja jest dla dwojga
 
 - Karta wizyty dla dwóch osób dostaje plakietkę „dla 2 osób" i drugą linię

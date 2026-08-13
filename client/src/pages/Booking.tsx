@@ -111,7 +111,12 @@ export default function Booking() {
     const me = meQ.data;
     if (!me) return;
     setName((v) => v || me.name);
-    setPhone((v) => v || me.phone);
+    // TYLKO phoneE164 (postać kanoniczna „+48…"). Pole telefonu samo wyciągnie
+    // z niej część krajową i kraj do flagi. Podstawianie `me.phone` (same cyfry)
+    // dublowało prefiks i blokowało przycisk „Potwierdź rezerwację".
+    // phoneE164 = null → numeru nie da się zinterpretować: zostawiamy pole
+    // puste, klientka wpisze go sama.
+    if (me.phoneE164) setPhone((v) => v || me.phoneE164!);
   }, [meQ.data]);
 
   const service = servicesQ.data?.find((s) => s.id === serviceId);

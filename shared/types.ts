@@ -236,7 +236,16 @@ export interface LoyaltyState {
 // ── Logowanie klienta + self-service (SPEC-logowanie-klienta) ──
 export interface ClientMe {
   name: string;
+  // UWAGA: `phone` to SAME CYFRY z tokenu (np. "48530012345", bez plusa).
+  // NIE WOLNO go wstawiać do pola telefonu z wyborem kraju — nie da się
+  // odróżnić „ma już kierunkowy" od „numer krajowy", więc prefiks się dublował
+  // (+48 48 530…) i walidacja blokowała przycisk rezerwacji. Zostawione
+  // wyłącznie dla zgodności wstecz.
   phone: string;
+  // Numer ROZŁOŻONY przez serwer — tego używamy w formularzach.
+  phoneE164?: string | null; // "+48530012345"; null = numeru nie da się zinterpretować
+  phoneNational?: string | null; // "530012345" — część krajowa
+  phoneCountry?: string | null; // "PL" — do selektora kraju
   tenantId: string;
   salons: { id: string; name: string }[];
 }
