@@ -298,8 +298,12 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: "en",
-    supportedLngs: SUPPORTED_LANGS as unknown as string[],
+    // Telefony norweskie przedstawiają się jako nb-NO albo nn-NO (samo „no"
+    // jest rzadkie), więc bez tych aliasów Norweg dostawał ANGIELSKI mimo
+    // gotowego tłumaczenia. Języki spoza listy (np. duński) trafiają na
+    // angielski — nigdy na polski.
+    fallbackLng: { nb: ["no", "en"], nn: ["no", "en"], default: ["en"] },
+    supportedLngs: [...SUPPORTED_LANGS, "nb", "nn"] as unknown as string[],
     nonExplicitSupportedLngs: true, // fr-BE -> fr, cs-CZ -> cs
     load: "languageOnly",
     interpolation: { escapeValue: false },

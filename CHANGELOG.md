@@ -9,6 +9,20 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.26] — 2026-08-13 — Języki: Norweg dostaje norweski, reszta angielski
+
+- Telefony norweskie przedstawiają się jako `nb-NO` / `nn-NO`, a nie `no`,
+  więc Norweg dostawał interfejs po ANGIELSKU mimo gotowego tłumaczenia.
+  Dodane aliasy nb/nn → no.
+- Do serwera szedł SUROWY kod języka z telefonu (np. `da`, `nb`), którego
+  Booksero nie zna — odpowiadał więc własnym domyślnym. Efekt: interfejs
+  po angielsku, a SMS-y i powiadomienia w innym języku. Teraz wysyłamy
+  język, w którym aplikacja NAPRAWDĘ mówi (`resolvedLanguage`).
+- Języki spoza listy 16 (np. duński) trafiają na angielski — nigdy na
+  polski. Klient może ręcznie wybrać dowolny z 16 na ekranie startowym.
+
+---
+
 ## [1.0.25] — 2026-08-13 — Zgody klientki w Profilu (RODO)
 
 - Profil ma sekcję „Zgody" bezpośrednio na ekranie, pod danymi klientki

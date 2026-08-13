@@ -19,7 +19,11 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
     headers: {
       Accept: "application/json",
-      "X-Locale": (i18n.language || "pl").slice(0, 2),
+      // resolvedLanguage, nie language: `language` niesie SUROWY kod z telefonu
+      // (np. "da", "nb-NO"), więc serwer dostawał język, którego nie zna,
+      // i odpowiadał własnym domyślnym — interfejs po angielsku, a SMS po
+      // polsku. `resolvedLanguage` to język, w którym aplikacja NAPRAWDĘ mówi.
+      "X-Locale": (i18n.resolvedLanguage || i18n.language || "pl").slice(0, 2),
       ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
       ...(init?.body ? { "Content-Type": "application/json" } : {}),
       ...(init?.headers || {}),
