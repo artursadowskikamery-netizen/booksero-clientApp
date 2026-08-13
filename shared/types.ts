@@ -313,3 +313,28 @@ export interface ClientNotification {
   createdAt: string; // ISO — kursor stronicowania (param before)
   readAt?: string | null;
 }
+
+// ── Zgody klientki (SPEC-zgody-klientek) — rejestr RODO ──
+// Cztery typy. UWAGA: image_store (przechowywanie w kartotece) i image_publish
+// (publikacja na zewnątrz) to DWIE RÓŻNE rzeczy i nie wolno ich łączyć w jeden
+// przełącznik — klientka musi móc zgodzić się na dokumentację „przed i po",
+// odmawiając mediów społecznościowych.
+export type ConsentType = "marketing" | "reviews" | "image_store" | "image_publish";
+
+export interface ConsentHistoryItem {
+  id: string;
+  // Stare wpisy mogą mieć "image" (bez podkreślnika) — wyświetlamy je jak
+  // image_publish. W `stan` i `zakres` ta wartość nigdy nie wystąpi.
+  consentType: string;
+  grantedAt: string;
+  revokedAt: string | null;
+  source: string; // język wewnętrzny salonu — NIE pokazujemy klientce
+  note: string | null;
+}
+
+export interface ConsentsState {
+  stan: Partial<Record<ConsentType, boolean>>;
+  zakres: ConsentType[]; // których zgód lokalizacja w ogóle używa
+  brakujace?: string[]; // dane dla panelu recepcji — aplikacja tego NIE pokazuje
+  historia: ConsentHistoryItem[];
+}

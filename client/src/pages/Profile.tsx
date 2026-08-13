@@ -7,6 +7,7 @@ import { api, ApiError } from "../lib/api";
 import { isLoggedIn, clearToken } from "../lib/auth";
 import { getPushState, enablePush, disablePush, disablePushOnLogout, deviceSubscribed, type PushState } from "../lib/push";
 import { APP_VERSION, checkForUpdate, applyUpdate } from "../lib/version";
+import Consents from "../components/Consents";
 import BottomNav from "../components/BottomNav";
 
 // Profil zalogowanego klienta (Faza 2). Bez sesji → przekierowanie na logowanie.
@@ -22,6 +23,15 @@ export default function Profile() {
   }, [logged, salonId, navigate]);
 
   const meQ = useQuery({ queryKey: ["clientMe"], queryFn: () => api.clientMe(), enabled: logged });
+
+  // Nazwa sieci — potrzebna WYŁĄCZNIE do zdania o zasięgu zgód, gdy klientka ma
+  // kartoteki w kilku lokalizacjach. Przy jednej lokalizacji nie pobieramy.
+  const tenantQ = useQuery({
+    queryKey: ["tenant", meQ.data?.tenantId],
+    queryFn: () => api.tenant(meQ.data!.tenantId),
+    enabled: !!meQ.data?.tenantId && (meQ.data?.salons.length ?? 0) > 1,
+    retry: false,
+  });
 
   // Token wygasł/nieważny (401) LUB klient skasowany z bazy (404) →
   // wyczyść sesję i na logowanie (bez martwej sesji z czerwonym błędem).
@@ -127,6 +137,20 @@ export default function Profile() {
               <div className="text-sm text-muted font-mono">{meQ.data.phone}</div>
             </div>
           </div>
+
+          {/* Zgody (RODO art. 7 ust. 3) — pod danymi klientki, NAD listą salonów,
+              bezpośrednio na ekranie Profilu (bez osobnego podekranu, żeby
+              wycofanie było równie łatwe jak udzielenie). Sekcja zwijana,
+              domyślnie zwinięta — decyzja właściciela. */}
+          <Consents
+            multiSalon={meQ.data.salons.length > 1}
+            networkName={tenantQ.data?.name}
+            onUnauthorized={() => {
+              clearToken();
+              void disablePushOnLogout();
+              navigate(`/salon/${salonId}/login`);
+            }}
+          />
 
           {meQ.data.salons.length > 0 && (
             <>

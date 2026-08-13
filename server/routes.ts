@@ -113,6 +113,13 @@ export function registerRoutes(app: Express) {
   app.post("/api/client/app-event", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client/app-event`, req.body ?? {}, loc(req), auth(req))));
 
+  // ── Zgody klientki (SPEC-zgody-klientek) — rejestr RODO ──
+  app.get("/api/client/zgody", async (req, res) =>
+    relay(res, await bookseroGet(`/api/public/client/zgody`, loc(req), auth(req))));
+
+  app.patch("/api/client/zgody", async (req, res) =>
+    relay(res, await bookseroPatch(`/api/public/client/zgody`, req.body ?? {}, loc(req), auth(req))));
+
   // ── Skrzynka powiadomień klienta (SPEC-skrzynka-powiadomien) ──
   app.get("/api/client/notifications", async (req, res) => {
     const q = new URLSearchParams(req.query as Record<string, string>).toString();

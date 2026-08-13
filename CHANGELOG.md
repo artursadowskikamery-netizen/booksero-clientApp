@@ -9,6 +9,30 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.25] — 2026-08-13 — Zgody klientki w Profilu (RODO)
+
+- Profil ma sekcję „Zgody" bezpośrednio na ekranie, pod danymi klientki
+  i nad listą salonów — bez osobnego podekranu, żeby wycofanie zgody było
+  równie łatwe jak jej udzielenie (RODO art. 7 ust. 3). Sekcja jest
+  zwijana i domyślnie zwinięta.
+- Cztery osobne przełączniki: informacje o promocjach, prośba o opinię,
+  zdjęcia w kartotece BEZ publikacji oraz publikacja zdjęć w galerii
+  i mediach społecznościowych. Przechowywanie i publikacja są celowo
+  rozdzielone — klientka może zgodzić się na dokumentację „przed i po",
+  odmawiając mediów społecznościowych.
+- Pod każdym przełącznikiem data udzielenia albo wycofania (z wpisu
+  otwartego w rejestrze, nie z ostatniego w kolejności); przy wpisach
+  z importu pokazujemy adnotację zamiast zmyślonej daty.
+- Przełączniki widoczne wg zakresu lokalizacji, ale zgoda POSIADANA spoza
+  zakresu też się pokazuje — inaczej nie dałoby się jej wycofać.
+- Wyłączenie działa jak włączenie: jedno dotknięcie, bez pytania „czy na
+  pewno" i bez ostrzeżeń. Stan wyłącznie z serwera (nic nie jest zaznaczone
+  domyślnie), pobierany przy każdym wejściu na ekran.
+- Przy kartotekach w kilku lokalizacjach zdanie o zasięgu: ustawienia
+  dotyczą wszystkich salonów sieci. Teksty ×16.
+
+---
+
 ## [1.0.24] — 2026-08-13 — PILNE: odblokowana rezerwacja z aplikacji
 
 - Przycisk „Potwierdź rezerwację" był zablokowany bez żadnego komunikatu.

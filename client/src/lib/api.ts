@@ -3,7 +3,7 @@ import { getToken } from "./auth";
 import type {
   Tenant, SalonPublic, Category, Service, StaffMember, TeamMember, Review, Slot,
   BookingRequest, BookingResult, ClientMe, ClientAppointment, LoyaltyState, ReferralsState,
-  ClientCodesState, ClientNotification,
+  ClientCodesState, ClientNotification, ConsentsState, ConsentType,
 } from "@shared/types";
 
 export class ApiError extends Error {
@@ -122,6 +122,15 @@ export const api = {
     req<{ ok: boolean; updated: number; count: number }>(`/api/client/notifications/read`, {
       method: "POST",
       body: JSON.stringify(body),
+    }),
+
+  // ── Zgody klientki (SPEC-zgody-klientek) ──
+  // PATCH zwraca PEŁNY, świeży stan — podmieniamy dane w miejscu, bez drugiego GET.
+  zgody: () => req<ConsentsState>(`/api/client/zgody`),
+  zgodaSet: (typ: ConsentType, udzielona: boolean) =>
+    req<ConsentsState>(`/api/client/zgody`, {
+      method: "PATCH",
+      body: JSON.stringify({ typ, udzielona }),
     }),
 
   // Stan KONTA (nie urządzenia!) — źródło prawdy dla przełącznika w Profilu.
