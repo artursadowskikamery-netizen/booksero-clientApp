@@ -9,6 +9,24 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.29] — 2026-08-13 — Kolor lokalizacji trzyma się całej aplikacji
+
+- Barwy salonu ustawione w panelu widać było TYLKO na ekranie salonu. Wejście
+  w Rezerwuj, Wizyty, Bonusy czy Profil zostawiało aplikację w domyślnym
+  niebieskim BookSero — żaden z tych ekranów koloru nie nakładał, a zakładka
+  „Salon" prowadzi na listę sieci, która akcent twardo zerowała. Jedno
+  kliknięcie w dolne menu i marka lokalizacji znikała do końca sesji.
+- Kolor ma teraz jednego właściciela: komponent nad routerem nakłada go na
+  KAŻDY adres `/salon/…`, w tym na ekrany, które dopiero powstaną.
+- Kolor jest pamiętany na urządzeniu osobno dla każdej lokalizacji i sieci,
+  więc wchodzi natychmiast, bez mrugnięcia niebieskim w oczekiwaniu na sieć.
+  Wartość z serwera zawsze wygrywa — zmiana koloru w panelu wchodzi od razu.
+- Lista salonów sieci zachowuje barwy TEJ sieci, jeśli klientka już u niej
+  była. Kolor obcej firmy się nie przenosi (pamięć jest kluczowana siecią),
+  a ekran startowy BookSero zostaje neutralny.
+
+---
+
 ## [1.0.28] — 2026-08-13 — Wycofana zgoda wraca; godziny bez dubli
 
 - Poprawka z 1.0.27 działała tylko w obrębie JEDNEGO wejścia na ekran. Kto

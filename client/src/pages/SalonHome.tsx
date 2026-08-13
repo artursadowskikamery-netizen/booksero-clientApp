@@ -4,7 +4,7 @@ import { useRoute, useLocation } from "wouter";
 import { Camera, Users, Bell, Sparkles, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
-import { applyAccent, saveAccent } from "../lib/themes";
+import { saveAccent } from "../lib/themes";
 import { isLoggedInFor } from "../lib/auth";
 import { setAppBadgeCount } from "../lib/push";
 import { saveLastSalon } from "../lib/lastSalon";
@@ -27,12 +27,11 @@ export default function SalonHome() {
   const teamQ = useQuery({ queryKey: ["team", salonId], queryFn: () => api.team(salonId), enabled: !!salonId });
 
   // Szata: zawsze ciemna; kolor akcentu (guziki) per salon z profilu Booksero.
+  // NAKŁADANIE koloru robi <SalonAccent/> nad routerem — dla wszystkich ekranów
+  // /salon/… naraz. Tutaj zostaje wyłącznie ZAPIS trwały.
   const accent = salonQ.data?.profile?.appAccent ?? null;
   useEffect(() => {
     if (!salonQ.data) return;
-    // Kolor nakładamy zawsze — także na ekranie logowania, żeby klient od razu
-    // widział barwy salonu, do którego wchodzi.
-    applyAccent(accent);
     // Odpowiedź 200 bez pola salon jest możliwa (BFF podstawia komunikat błędu
     // zachowując status 200) — bez tego strażnika leci wyjątek i biały ekran.
     if (!salonQ.data.salon) return;

@@ -4,6 +4,12 @@
 // Brak pola = domyślny niebieski #0A84FF (wariant dark #0071e3).
 
 const KEY = "booksero_accent";
+// Pamięć koloru PER LOKALIZACJA i PER SIEĆ. Bez niej kolor znał wyłącznie ekran
+// salonu — wejście w Rezerwuj / Wizyty / Bonusy / Profil świeciło domyślnym
+// niebieskim BookSero, czyli aplikacja gubiła barwy lokalizacji zaraz po
+// pierwszym kliknięciu w dolne menu.
+const MAP = "booksero_accent_map";
+const MAP_MAX = 40; // klientka odwiedza kilka lokalizacji; to jest zapora, nie limit
 const HEX_RE = /^#[0-9a-f]{6}$/i;
 
 // Gotowa paleta akcentów (te same wartości waliduje panel Booksero).
@@ -47,6 +53,45 @@ export function loadAccent(): string | null {
   } catch {
     return null;
   }
+}
+
+function czytajMape(): Record<string, string> {
+  try {
+    const o = JSON.parse(localStorage.getItem(MAP) || "{}");
+    return o && typeof o === "object" && !Array.isArray(o) ? (o as Record<string, string>) : {};
+  } catch {
+    return {};
+  }
+}
+
+// Zapamiętanie koloru pod kluczem lokalizacji ORAZ sieci. Dzięki wpisowi sieci
+// lista salonów zachowuje barwy tej sieci, zamiast mrugać niebieskim w środku
+// złotej ścieżki — i nie zapożycza koloru od innej firmy.
+export function rememberAccent(
+  gdzie: { salonId?: string | null; tenantId?: string | null },
+  accent?: string | null,
+) {
+  const m = czytajMape();
+  // Zapora rozrostu: przy przepełnieniu zaczynamy od czystej mapy, bo wpisy
+  // nie mają znaczników czasu, a kolor i tak wraca przy najbliższym wejściu.
+  const baza = Object.keys(m).length > MAP_MAX ? {} : m;
+  const wpisz = (k: string) => {
+    if (accent) baza[k] = accent;
+    else delete baza[k];
+  };
+  if (gdzie.salonId) wpisz(`s:${gdzie.salonId}`);
+  if (gdzie.tenantId) wpisz(`t:${gdzie.tenantId}`);
+  try {
+    localStorage.setItem(MAP, JSON.stringify(baza));
+  } catch { /* brak localStorage */ }
+}
+
+export function accentForSalon(salonId?: string | null): string | null {
+  return (salonId && czytajMape()[`s:${salonId}`]) || null;
+}
+
+export function accentForTenant(tenantId?: string | null): string | null {
+  return (tenantId && czytajMape()[`t:${tenantId}`]) || null;
 }
 
 // Czarny lub biały tekst guzika — zależnie od jasności akcentu

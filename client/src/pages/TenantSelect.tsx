@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
-import { applyAccent } from "../lib/themes";
+import { applyAccent, accentForTenant } from "../lib/themes";
 import { loadLastSalon } from "../lib/lastSalon";
 import { captureRefFromUrl } from "../lib/referral";
 import BottomNav from "../components/BottomNav";
@@ -26,12 +26,16 @@ export default function TenantSelect() {
     enabled: !!tenantId,
   });
 
-  // Ekran wyboru sieci/miasta — neutralny akcent (kolor salonu dopiero po wyborze).
+  // Lista salonów sieci trzyma BARWY TEJ SIECI, jeśli klientka już u niej była.
+  // Wcześniej ekran twardo zerował akcent — a to jest zakładka „Salon" z dolnego
+  // menu, więc jedno kliknięcie w środku złotej ścieżki przestawiało całą
+  // aplikację na niebieski. Kolor obcej sieci się nie przenosi: pamięć jest
+  // kluczowana po `tenantId`, a nieznana sieć daje null, czyli neutralny BookSero.
   // Wejście z linku polecającego (?ref=) zapamiętujemy do czasu rejestracji.
   useEffect(() => {
-    applyAccent(null);
+    applyAccent(accentForTenant(tenantId));
     captureRefFromUrl();
-  }, []);
+  }, [tenantId]);
 
   const tenant = tQ.data;
   const countries = tenant?.countries ?? [];

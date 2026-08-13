@@ -19,6 +19,7 @@ import Notifications from "./pages/Notifications";
 import PushOpen from "./pages/PushOpen";
 import SlugRedirect from "./pages/SlugRedirect";
 import InstallBanner from "./components/InstallBanner";
+import SalonAccent from "./components/SalonAccent";
 
 // Przy starcie (zalogowany klient): raz wyślij sygnał instalacji (standalone)
 // i dorejestruj to urządzenie, jeśli KONTO ma powiadomienia włączone (R4) —
@@ -48,6 +49,8 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <PushBootstrap />
+      {/* Kolor lokalizacji dla WSZYSTKICH ekranów /salon/… — jeden właściciel */}
+      <SalonAccent />
       <InstallBanner />
       <Switch>
         <Route path="/" component={Landing} />
