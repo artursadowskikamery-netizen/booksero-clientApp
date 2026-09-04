@@ -115,3 +115,25 @@ firm." Strażnik w teście wzorem `para-dwie-kartoteki.test.ts`.
   stronie publicznej. Dokładne trafienie albo nic.
 - Żadnego licznika, „znaleziono N", stron wyników.
 - Komunikat kolizji hasła nigdy nie nazywa drugiej firmy.
+
+## F. Uzupełnienie 2026-09-04 — zasięg hasła to KRAJ
+
+Pytanie właściciela: dwie obce firmy „BBeauty" — Koszalin i Rzym.
+
+- Hasło zapisuje się z **krajem lokalizacji** (`country` z profilu salonu).
+  Kolizje (identyczne / zawierające / trigramy ≥ 0,8) sprawdzane **tylko
+  wśród haseł tego samego kraju**. „bbeauty" w PL i „bbeauty" w IT nie
+  kolidują.
+- Sieć z lokalizacjami w kilku krajach rejestruje to samo hasło w każdym —
+  to ta sama firma, wolno.
+- Dwie obce firmy w TYM SAMYM kraju: **kto pierwszy, ten ma** gołe słowo;
+  druga musi się odróżnić („bbeauty koszalin"). Komunikat odmowy bez nazwy
+  właściciela hasła. Spory o markę → pomoc techniczna, ręczne przepisanie;
+  automat ich nie rozstrzyga.
+- Punkt publiczny dostaje parametr **`country`** (ISO-2, wymagany):
+  `GET /api/public/app/password?q=<tekst>&country=PL`. Dopasowanie =
+  znormalizowane hasło + kraj. Aplikacja bierze kraj z tego samego wyboru
+  flagi, co przy numerze telefonu (domyślnie z ustawień telefonu).
+- Testy: „bbeauty" PL i „bbeauty" IT przez dwie obce firmy → oba przyjęte;
+  „bbeauty" PL dwa razy przez obce firmy → drugi odrzucony; zapytanie
+  `q=bbeauty&country=IT` → tylko Rzym.
