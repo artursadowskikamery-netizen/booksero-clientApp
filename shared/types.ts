@@ -338,3 +338,31 @@ export interface ConsentsState {
   brakujace?: string[]; // dane dla panelu recepcji — aplikacja tego NIE pokazuje
   historia: ConsentHistoryItem[];
 }
+
+// ── Wejście do salonu bez kodu QR (ZLECENIE-panel-haslo-salonu-i-wejscie-po-numerze) ──
+// Co panel już umie. Dopóki punktu nie ma (404), aplikacja zakłada false/false:
+// pole hasła działa jak dawne pole adresu wizytówki, ścieżka po numerze jest
+// ukryta. Po wdrożeniu panelu aplikacja włącza obie rzeczy sama.
+export interface EntryCapabilities {
+  password: boolean;
+  phoneFind: boolean;
+}
+
+// Trafienie hasłem salonu — firma + lokalizacje, które to hasło noszą.
+export interface PasswordHit {
+  tenantId: string;
+  tenantName: string;
+  salons: { salonId: string; name: string; city?: string | null; logo?: string | null }[];
+}
+
+// „Masz kartotekę w…" — po weryfikacji kodu SMS.
+export interface FindResult {
+  ticket: string;
+  tenants: {
+    tenantId: string;
+    tenantName: string;
+    salons: { salonId: string; name: string; city?: string | null; logo?: string | null }[];
+  }[];
+}
+
+export type EntryMethod = "qr" | "password" | "phone" | "recent" | "link";

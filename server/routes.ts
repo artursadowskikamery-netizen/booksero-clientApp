@@ -67,6 +67,40 @@ export function registerRoutes(app: Express) {
   app.post("/api/salon/:salonId/appointments", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/book/${s(req)}/appointments`, req.body, loc(req), auth(req))));
 
+  // ── Wejście do salonu bez kodu QR (ZLECENIE-panel-haslo-salonu-i-wejscie-po-numerze) ──
+  // Co panel już umie. Odpowiedź inna niż 200 (punktu jeszcze nie ma, awaria)
+  // → false/false, ZAWSZE ze statusem 200: aplikacja ma wtedy działać jak
+  // dotychczas, a nie pokazywać błąd. Wynik trzymamy 5 minut — ten punkt woła
+  // każdy zimny start, a zmienia się raz na wdrożenie panelu.
+  let capsCache: { at: number; data: { password: boolean; phoneFind: boolean } } | null = null;
+  app.get("/api/app/entry-capabilities", async (req, res) => {
+    if (capsCache && Date.now() - capsCache.at < 5 * 60_000) return res.json(capsCache.data);
+    const r = await bookseroGet(`/api/public/app/entry-capabilities`, loc(req));
+    const d = (r.ok && r.data && typeof r.data === "object" ? r.data : {}) as Record<string, unknown>;
+    const data = { password: d.password === true, phoneFind: d.phoneFind === true };
+    // Niepowodzenie też zapamiętujemy — krócej (1 min), żeby nie młócić panelu,
+    // ale i nie czekać 5 minut po jego wdrożeniu.
+    capsCache = { at: r.ok ? Date.now() : Date.now() - 4 * 60_000, data };
+    return res.json(data);
+  });
+
+  // Hasło salonu → firma + lokalizacje. Dopasowanie dokładne robi panel.
+  app.get("/api/app/password", async (req, res) => {
+    const q = new URLSearchParams({
+      q: String(req.query.q || ""),
+      country: String(req.query.country || ""),
+    }).toString();
+    relay(res, await bookseroGet(`/api/public/app/password?${q}`, loc(req)));
+  });
+
+  // „Masz już u nas kartotekę?" — SMS → lista firm → wejście bez drugiego SMS-a.
+  app.post("/api/client-auth/find/request", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client-auth/find/request`, req.body ?? {}, loc(req))));
+  app.post("/api/client-auth/find/verify", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client-auth/find/verify`, req.body ?? {}, loc(req))));
+  app.post("/api/client-auth/find/enter", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client-auth/find/enter`, req.body ?? {}, loc(req))));
+
   app.post("/api/client-auth/request-code", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client-auth/request-code`, req.body, loc(req))));
 

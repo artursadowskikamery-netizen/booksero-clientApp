@@ -27,18 +27,32 @@ system, jest gorszy niż brak asystenta.
 
 ## 1. Jak klientka wchodzi do salonu
 
-Cztery drogi, wszystkie z ekranu startowego („Znajdź swój salon"):
+Drogi z ekranu startowego („Znajdź swój salon"), stan od 1.0.33:
 
 1. **Kod QR** — skaner w aplikacji. Kod z wizytówki prowadzi wprost do salonu.
-2. **Krótki adres salonu (slug)** — wpisany ręcznie, ten sam, co na wizytówce.
-3. **Kod sieci** (`t:<identyfikator>`) — otwiera listę salonów firmy: kraj →
-   miasto → salon. Poziomy z jedną opcją zwijają się same.
+2. **Hasło salonu** — pole „Wpisz hasło swojej ulubionej firmy". Słowo, które
+   recepcja mówi klientce („wpisz Vivi"); ustawia je lokalizacja w panelu.
+   Dopasowanie DOKŁADNE, w obrębie kraju (obok pola wybór kraju flagą).
+   Kilka lokalizacji z tym samym hasłem → wybór wewnątrz tej firmy. To samo
+   pole rozumie po cichu dawne adresy wizytówki i kody sieci
+   (`t:<identyfikator>`).
+3. **Numer telefonu** — „Masz już u nas kartotekę? Wejdź numerem telefonu":
+   jeden SMS, lista firm z kartoteką, wejście od razu zalogowane. Nie wycieka
+   nic: trzeba mieć telefon klientki w ręku.
 4. **Ostatnio odwiedzane salony** — do **pięciu** kafelków z nazwą, miastem
-   i logo, zapisanych na urządzeniu. Klientka wracająca nie musi nic pamiętać
-   ani skanować ponownie. Salon usunięty z systemu znika z listy.
+   i logo, zapisanych na urządzeniu. Salon usunięty z systemu znika z listy.
 
 Osobno działa **link polecenia** (`/r/<kod>`) — otwiera sieć polecającego
 i zapamiętuje kod aż do rejestracji.
+
+**Czego celowo NIE MA: wyszukiwarki ani listy salonów.** Każde podpowiadanie
+po nazwie jest katalogiem, a katalog pozwala konkurencji wypisać klientów
+Booksero. Nowa klientka bez kodu, hasła i kartoteki dostaje link, hasło lub
+QR od salonu — aplikacja jest wejściem dla klientek salonu, nie miejscem
+szukania salonów. Stopka: „Pierwszy raz? Poproś salon o hasło lub kod QR."
+
+Drogi 2 (hasło) i 3 (numer) włączają się same, gdy panel je wdroży; do tego
+czasu pole hasła działa jak dawne pole adresu wizytówki.
 
 **Numer wersji aplikacji jest widoczny na ekranie startowym, pod polem kodu —
 bez logowania.** To celowe: gdyby wersja była tylko w Profilu, klientka

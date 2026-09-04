@@ -30,6 +30,12 @@ Nowa sekcja „Aplikacja BookSero" (pod danymi salonu / nad stopką):
   (np. `app.booksero.com/svp`).
 - Teksty przetłumaczone we wszystkich 16 językach wizytówki (pl, en, de,
   nl, cs, sv, es, fr, it, hr, el, tr, bg, fi, no, uk).
+- **Uzupełnienie 2026-09-04 — HASŁO SALONU.** Obok kodu QR i adresu trzeci
+  element: *„Wpisz w aplikacji BookSero: Vivi"* — treść z pierwszego hasła
+  lokalizacji (ZLECENIE-panel-haslo-salonu-i-wejscie-po-numerze §A).
+  Hasło jest po to, żeby dało się je POWIEDZIEĆ i WYDRUKOWAĆ — bez
+  wizytówki połowa jego sensu przepada. Lokalizacja bez hasła: element
+  pominięty, bez pustego miejsca.
 
 ## 3. Widget rezerwacji
 

@@ -24,7 +24,10 @@ export default function SlugRedirect() {
     api
       .resolveSlug(slug)
       .then(({ salonId }) => {
-        if (alive) navigate(`/salon/${salonId}`, { replace: true });
+        if (!alive) return;
+        // Wejście linkiem z wizytówki/QR aparatem — licznik dla właściciela.
+        void api.entryEvent("link", { salonId });
+        navigate(`/salon/${salonId}`, { replace: true });
       })
       .catch(() => {
         if (alive) setFailed(true);

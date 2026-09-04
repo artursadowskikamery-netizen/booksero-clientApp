@@ -4,6 +4,7 @@ import type {
   Tenant, SalonPublic, Category, Service, StaffMember, TeamMember, Review, Slot,
   BookingRequest, BookingResult, ClientMe, ClientAppointment, LoyaltyState, ReferralsState,
   ClientCodesState, ClientNotification, ConsentsState, ConsentType,
+  EntryCapabilities, PasswordHit, FindResult, EntryMethod,
 } from "@shared/types";
 
 export class ApiError extends Error {
@@ -152,6 +153,33 @@ export const api = {
     req<{ ok?: boolean }>(`/api/client/push/unsubscribe`, { method: "POST", body: JSON.stringify({ endpoint }) }),
   appEvent: (type: "install", platform: "android" | "ios" | "web") =>
     req<{ ok?: boolean }>(`/api/client/app-event`, { method: "POST", body: JSON.stringify({ type, platform }) }),
+  // Którędy klientka weszła do salonu — licznik dla właściciela w panelu
+  // (zakładka aplikacji). Bez tokenu i bez danych osobowych: tylko metoda
+  // i identyfikator lokalizacji/sieci. Ogień i zapomnij — błąd nic nie psuje.
+  entryEvent: (method: EntryMethod, ids: { salonId?: string; tenantId?: string }) =>
+    req<{ ok?: boolean }>(`/api/client/app-event`, {
+      method: "POST",
+      body: JSON.stringify({ type: "entry", method, ...ids }),
+    }).catch(() => ({ ok: false })),
+
+  // ── Wejście do salonu bez kodu QR ──
+  entryCapabilities: () => req<EntryCapabilities>(`/api/app/entry-capabilities`),
+  // Hasło salonu: dopasowanie DOKŁADNE po stronie panelu, w obrębie kraju.
+  passwordLookup: (q: string, country: string) =>
+    req<PasswordHit>(`/api/app/password?q=${encodeURIComponent(q)}&country=${encodeURIComponent(country)}`),
+  // „Masz już u nas kartotekę?" — jeden SMS: lista firm z kartoteką + wejście.
+  findRequest: (phone: string) =>
+    req<{ ok: boolean; retryAfter?: number }>(`/api/client-auth/find/request`, {
+      method: "POST",
+      body: JSON.stringify({ phone }),
+    }),
+  findVerify: (phone: string, code: string) =>
+    req<FindResult>(`/api/client-auth/find/verify`, { method: "POST", body: JSON.stringify({ phone, code }) }),
+  findEnter: (ticket: string, tenantId: string, salonId: string) =>
+    req<{ token: string; client?: { name: string; phone: string } }>(`/api/client-auth/find/enter`, {
+      method: "POST",
+      body: JSON.stringify({ ticket, tenantId, salonId }),
+    }),
 
   // ── Moje kody (SPEC-bonusy-etap-B2) ──
   clientCodes: () => req<ClientCodesState>(`/api/client/codes`),

@@ -9,6 +9,35 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.33] — 2026-09-04 — Ekran startowy w języku klientki: hasło salonu i wejście po numerze
+
+- Pole „UUID salonu lub slug wizytówki" mówiło językiem programisty. Klientka
+  salonu masażu nie wie, co to UUID ani slug — pole odstraszało, zamiast
+  zapraszać. Teraz: **„Wpisz hasło swojej ulubionej firmy"** z podpowiedzią
+  *„np. Vivi — zapytaj w salonie"*.
+- **Hasło salonu**: słowo, które recepcja mówi klientce. Dopasowanie
+  DOKŁADNE, w obrębie kraju (obok pola wybór kraju flagą, domyślnie
+  z ustawień telefonu). Kilka lokalizacji z tym samym hasłem → wybór wewnątrz
+  tej firmy. Dawne adresy wizytówki i kody działają dalej w tym samym polu,
+  po cichu.
+- **„Masz już u nas kartotekę? Wejdź numerem telefonu"**: jeden SMS = lista
+  firm, w których klientka ma kartotekę, i wejście od razu zalogowane. Ta
+  droga nie wycieka nic — żeby zobaczyć, że salon jest na Booksero, trzeba
+  mieć w ręku telefon jego klientki. Ekran po wysłaniu od razu przewiduje
+  „kod nie przyszedł? pierwszy raz? poproś salon o hasło lub kod QR".
+- Świadomie BEZ wyszukiwarki i listy salonów: każde podpowiadanie po nazwie
+  jest katalogiem, a katalog pozwala konkurencji wypisać klientów Booksero.
+- Stopka: „Pierwszy raz? Poproś salon o hasło lub kod QR." Zdanie „Nie
+  przeglądasz tu innych firm" zostaje — przy tych regułach jest prawdziwe.
+- Licznik wejść dla właściciela: aplikacja zgłasza, którędy klientka weszła
+  (QR / hasło / numer / ostatnio odwiedzane / link) — bez tokenu i danych
+  osobowych.
+- Obie nowe drogi włączają się SAME, gdy panel je wdroży (punkt
+  `entry-capabilities`). Do tego czasu ekran działa jak dotychczas, z nowymi
+  napisami. Nowe teksty w 16 językach.
+
+---
+
 ## [1.0.32] — 2026-08-13 — Zgody odświeżają się przy rozwinięciu sekcji
 
 - Stan zgód pobierał się przy wejściu na ekran Profilu. Klientka, która wraca
