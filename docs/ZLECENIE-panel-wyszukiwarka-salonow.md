@@ -1,3 +1,5 @@
+
+> **WYCOFANE 2026-09-04** decyzją właściciela — wyszukiwanie po nazwie z podpowiadaniem jest katalogiem i pozwala wypisać listę klientów Booksero. Zastąpione przez `ZLECENIE-panel-haslo-salonu-i-wejscie-po-numerze.md`.
 # ZLECENIE dla agenta panelu — wyszukiwarka salonów dla aplikacji klienckiej
 
 Decyzja właściciela 2026-09-04. Powód: ekran startowy aplikacji ma pole
