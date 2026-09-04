@@ -137,3 +137,34 @@ Pytanie właściciela: dwie obce firmy „BBeauty" — Koszalin i Rzym.
 - Testy: „bbeauty" PL i „bbeauty" IT przez dwie obce firmy → oba przyjęte;
   „bbeauty" PL dwa razy przez obce firmy → drugi odrzucony; zapytanie
   `q=bbeauty&country=IT` → tylko Rzym.
+
+## G. Uzupełnienie 2026-09-04 — rzeczy, których łatwo nie zauważyć
+
+1. **SMS w ścieżce „po numerze" idzie jako BookSero**, nie jako salon.
+   Klientka może mieć kartoteki w dwóch firmach — podpisanie SMS-a jedną
+   z nich zdradzałoby ją przed wyborem. Osobny, neutralny szablon i nadawca.
+2. **Odpowiedź `find/request` musi pozwolić aplikacji zbudować ekran
+   „nie dostałaś kodu?"** — zwrócić `retryAfter` (sekundy do ponownej
+   wysyłki), tak samo jak przy 429 w zwykłym logowaniu. Treść ekranu robi
+   aplikacja: „Jeśli masz u nas kartotekę, wysłaliśmy kod. Nie przyszedł?
+   Pierwszy raz? Poproś salon o hasło lub kod QR."
+3. **Usunięcie / zmiana hasła:** ostrzeżenie w panelu („to hasło może być na
+   Twoich wizytówkach") i **90 dni karencji** — usunięte hasło nadal
+   działa, w panelu widać datę wygaśnięcia. Pole `expiresAt` w tabeli.
+4. **Limity per IP:** operatorzy komórkowi i publiczne wi-fi wypuszczają
+   tysiące osób spod jednego adresu. Skrobanie zatrzymuje limit MINUTOWY
+   (zostaje 20/min); dobowy podnieść do **2000/IP** i liczyć dodatkowo per
+   urządzenie (nagłówek z identyfikatorem instalacji, który aplikacja
+   wyśle).
+5. **Alfabety niełacińskie:** normalizacja `toLowerCase` + usunięcie
+   diakrytyków łacińskich; cyrylica i greka zostają jak są. **Lista
+   zakazanych słów per język** (el, bg, uk co najmniej): „μασάζ", „масаж",
+   „масажі" odrzucane jak „masaż".
+6. **Wizytówka:** `SPEC-aplikacja-na-wizytowce.md` (repo aplikacji) zyskuje
+   trzeci element obok kodu QR i adresu: „Wpisz w aplikacji BookSero: Vivi"
+   — treść generowana z pierwszego hasła lokalizacji.
+
+Świadomie POZA zakresem: automatyczne tworzenie hasła ze sluga (slug bywa
+ogólny — powstałyby hasła, których zakazujemy); rozstrzyganie sporów o markę
+(pomoc techniczna); „zapomniałam hasła salonu" (od tego jest ścieżka po
+numerze).
