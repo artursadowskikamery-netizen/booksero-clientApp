@@ -286,15 +286,25 @@ export default function Landing() {
         )}
         <div className="relative flex-1 min-w-0">
           <KeyRound size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+          {/* autoComplete="off" + nazwa pola bez słowa „password"/„hasło":
+              Chrome podstawiał tu z autouzupełniania NAZWĘ FIRMY zapamiętaną
+              z innych formularzy („VIVI ESTETIC Sp. z o.o."), a klientka
+              brała to za podpowiedź aplikacji. Nazwa z „password" włączyłaby
+              z kolei menedżer haseł. */}
           <input
+            name="booksero-entry"
+            id="booksero-entry"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && go()}
             placeholder={t("landing.placeholder")}
+            autoComplete="off"
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
             enterKeyHint="go"
+            data-lpignore="true"
+            data-1p-ignore="true"
             className={`${inputCls} pl-9 pr-4`}
             aria-label={t("landing.codeLabel")}
           />

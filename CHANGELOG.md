@@ -9,6 +9,16 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.34] — 2026-09-04 — Pole hasła bez podpowiedzi przeglądarki
+
+- Chrome podstawiał do pola hasła salonu NAZWĘ FIRMY zapamiętaną z innych
+  formularzy („VIVI ESTETIC Sp. z o.o."), a klientka brała to za podpowiedź
+  aplikacji i dostawała „nie znaleziono". Pole ma teraz wyłączone
+  autouzupełnianie i nazwę techniczną bez słowa „hasło", żeby nie obudzić
+  menedżera haseł.
+
+---
+
 ## [1.0.33] — 2026-09-04 — Ekran startowy w języku klientki: hasło salonu i wejście po numerze
 
 - Pole „UUID salonu lub slug wizytówki" mówiło językiem programisty. Klientka
