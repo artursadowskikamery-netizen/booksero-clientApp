@@ -154,13 +154,18 @@ export const api = {
   appEvent: (type: "install", platform: "android" | "ios" | "web") =>
     req<{ ok?: boolean }>(`/api/client/app-event`, { method: "POST", body: JSON.stringify({ type, platform }) }),
   // Którędy klientka weszła do salonu — licznik dla właściciela w panelu
-  // (zakładka aplikacji). Bez tokenu i bez danych osobowych: tylko metoda
-  // i identyfikator lokalizacji/sieci. Ogień i zapomnij — błąd nic nie psuje.
+  // (zakładka aplikacji). Osobny punkt panelu, bez tokenu, bez danych
+  // osobowych: tylko lokalizacja i metoda. Panel przyjmuje WYŁĄCZNIE salonId —
+  // wejście na poziomie sieci (wybór lokalizacji dopiero za chwilę) zgłasza
+  // ekran wyboru, gdy klientka tapnie salon. Ogień i zapomnij — błąd nic nie
+  // psuje i nie ponawiamy (panel i tak odpowiada 200 przy limicie).
   entryEvent: (method: EntryMethod, ids: { salonId?: string; tenantId?: string }) =>
-    req<{ ok?: boolean }>(`/api/client/app-event`, {
-      method: "POST",
-      body: JSON.stringify({ type: "entry", method, ...ids }),
-    }).catch(() => ({ ok: false })),
+    ids.salonId
+      ? req<{ ok?: boolean }>(`/api/app/entry`, {
+          method: "POST",
+          body: JSON.stringify({ salonId: ids.salonId, method }),
+        }).catch(() => ({ ok: false }))
+      : Promise.resolve({ ok: false }),
 
   // ── Wejście do salonu bez kodu QR ──
   entryCapabilities: () => req<EntryCapabilities>(`/api/app/entry-capabilities`),

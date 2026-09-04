@@ -51,8 +51,16 @@ Booksero. Nowa klientka bez kodu, hasła i kartoteki dostaje link, hasło lub
 QR od salonu — aplikacja jest wejściem dla klientek salonu, nie miejscem
 szukania salonów. Stopka: „Pierwszy raz? Poproś salon o hasło lub kod QR."
 
-Drogi 2 (hasło) i 3 (numer) włączają się same, gdy panel je wdroży; do tego
-czasu pole hasła działa jak dawne pole adresu wizytówki.
+Panel wdrożył obie drogi 2026-09-05. Droga 2 (hasło) jest włączona.
+**Droga 3 (numer) jest ZARYGLOWANA w aplikacji** do decyzji właściciela:
+zestawia klientce listę firm należących do niezależnych administratorów
+danych i czeka na potwierdzenie prawnika oraz wpis do polityki prywatności.
+Sero nie ma prawa jej klientkom obiecywać, dopóki rygiel nie zejdzie.
+
+**Wyłącznik aplikacji per lokalizacja** (panel): firma może wyłączyć
+aplikację; wtedy każda droga wejścia, także QR i link, kończy się komunikatem
+„Ta firma nie udostępnia aplikacji". Wizytówka i rezerwacja online działają
+dalej.
 
 **Numer wersji aplikacji jest widoczny na ekranie startowym, pod polem kodu —
 bez logowania.** To celowe: gdyby wersja była tylko w Profilu, klientka

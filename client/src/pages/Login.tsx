@@ -85,7 +85,10 @@ export default function Login() {
       setCodeNonce((n) => n + 1); // uzbrój nasłuch WebOTP na ten nowy SMS
     } catch (e) {
       // 429 z licznikiem → pokaż odliczanie zamiast surowego komunikatu.
+      // 404 = lokalizacja ma WYŁĄCZONĄ aplikację (wyłącznik per lokalizacja
+      // w panelu, 2026-09-05) — to nie jest „nie znaleziono", tylko decyzja firmy.
       if (e instanceof ApiError && e.status === 429 && e.retryAfter) setCooldown(e.retryAfter);
+      else if (e instanceof ApiError && e.status === 404) setErr(t("auth.appDisabled"));
       else setErr((e as Error).message);
     } finally {
       setBusy(false);
@@ -116,6 +119,7 @@ export default function Login() {
     } catch (e) {
       // 422 = kod poprawny, ale numer jest nowy — potrzebne imię (auto-rejestracja).
       if (e instanceof ApiError && e.status === 422) setStage("name");
+      else if (e instanceof ApiError && e.status === 404) setErr(t("auth.appDisabled"));
       else setErr((e as Error).message);
     } finally {
       setBusy(false);

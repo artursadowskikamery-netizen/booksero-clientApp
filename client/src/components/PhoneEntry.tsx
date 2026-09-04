@@ -116,7 +116,9 @@ export default function PhoneEntry() {
       void api.entryEvent("phone", { salonId, tenantId });
       navigate(`/salon/${salonId}`);
     } catch (e) {
-      setErr((e as Error).message);
+      // 404 = lokalizacja wyłączyła aplikację między listą a wejściem.
+      if (e instanceof ApiError && e.status === 404) setErr(t("auth.appDisabled"));
+      else setErr((e as Error).message);
       setBusy(false);
     }
   }

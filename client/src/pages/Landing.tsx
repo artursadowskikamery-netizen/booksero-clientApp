@@ -16,6 +16,14 @@ import type { EntryCapabilities, EntryMethod } from "@shared/types";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// BLOKADA PRAWNA (panel, SPEC §8, 2026-09-05): ścieżka po numerze zestawia
+// klientce listę firm należących do NIEZALEŻNYCH administratorów danych.
+// Czeka na potwierdzenie prawnika i wpis do polityki prywatności. Panel już
+// ją obsługuje i zgłasza `phoneFind: true`, więc bez tego rygla klientki
+// zobaczyłyby ją od razu. Odblokowanie = zmiana tej stałej na true + wersja.
+// Do testów właściciela: adres ekranu startowego z `?phoneEntry=1`.
+const PHONE_ENTRY_RELEASED = false;
+
 // EKRAN STARTOWY — próg aplikacji. BookSero jest jedną aplikacją dla wszystkich
 // firm, więc zanim cokolwiek pokaże, musi wiedzieć, DO KTÓREGO salonu wchodzi
 // ta osoba. Trzy drogi, każda w języku klientki (decyzja właściciela 2026-09-04):
@@ -41,6 +49,8 @@ export default function Landing() {
   // obie rzeczy włączają się same, bez nowej wersji aplikacji.
   const [caps, setCaps] = useState<EntryCapabilities>({ password: false, phoneFind: false });
   const { t, i18n } = useTranslation();
+  const phoneTest = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("phoneEntry") === "1";
+  const phoneFind = caps.phoneFind && (PHONE_ENTRY_RELEASED || phoneTest);
 
   // Ekran startowy = neutralna powłoka BookSero — zawsze domyślny niebieski
   // (kolor salonu wraca dopiero na ekranach salonu).
@@ -71,8 +81,7 @@ export default function Landing() {
     if (!v) return;
     setMsg("");
     if (v.toLowerCase().startsWith("t:")) {
-      void api.entryEvent(method, { tenantId: v.slice(2) });
-      navigate(`/t/${v.slice(2)}`);
+      navigate(`/t/${v.slice(2)}?via=${method}`);
       return;
     }
     if (/^ML\d+$/i.test(v)) {
@@ -87,8 +96,7 @@ export default function Landing() {
         void api.entryEvent(method, { salonId: v });
         navigate(`/salon/${v}`);
       } catch {
-        void api.entryEvent(method, { tenantId: v });
-        navigate(`/t/${v}`);
+        navigate(`/t/${v}?via=${method}`);
       } finally {
         setBusy(false);
       }
@@ -108,15 +116,19 @@ export default function Landing() {
           }
           if (hit?.salons?.length > 1) {
             // Kilka lokalizacji z tym hasłem → wybór wewnątrz TEJ firmy
-            // (ekran kraj → miasto → salon, który już mamy).
-            void api.entryEvent(method, { tenantId: hit.tenantId });
-            navigate(`/t/${hit.tenantId}`);
+            // (ekran kraj → miasto → salon, który już mamy). `via` niesie
+            // metodę wejścia — licznik zgłosi ją, gdy klientka tapnie salon.
+            navigate(`/t/${hit.tenantId}?via=${method}`);
             return;
           }
         } catch (e) {
-          // 404 = nie ma takiego hasła; inne błędy też nie przerywają —
-          // adres wizytówki wciąż może zadziałać.
+          // 404 = nie ma takiego hasła; adres wizytówki wciąż może zadziałać.
+          // 429 = limit zapytań — to trzeba pokazać, próba adresu nic nie da.
           if (!(e instanceof ApiError)) throw e;
+          if (e.status === 429) {
+            setMsg(e.message);
+            return;
+          }
         }
       }
       // 2. Dawny adres wizytówki (slug) — działa dalej, po cichu.
@@ -146,8 +158,7 @@ export default function Landing() {
       if (ref) saveRef(ref.trim());
       const mT = u.pathname.match(/\/t\/([0-9a-f-]{36})/i);
       if (mT) {
-        void api.entryEvent("qr", { tenantId: mT[1] });
-        navigate(`/t/${mT[1]}`);
+        navigate(`/t/${mT[1]}?via=qr`);
         return;
       }
       const mS = u.pathname.match(/\/salon\/([0-9a-f-]{36})/i);
@@ -318,7 +329,7 @@ export default function Landing() {
 
       {/* WEJŚCIE PO NUMERZE — tylko gdy panel to umie. Zwinięte do jednej
           linijki, żeby ekran nie straszył dwoma formularzami naraz. */}
-      {caps.phoneFind && !phoneOpen && (
+      {phoneFind && !phoneOpen && (
         <button
           onClick={() => { setMsg(""); setPhoneOpen(true); }}
           className="mt-4 w-full text-sm text-brand font-semibold py-2 flex items-center justify-center gap-2"
@@ -326,7 +337,7 @@ export default function Landing() {
           <Smartphone size={15} /> {t("landing.phoneEntry")}
         </button>
       )}
-      {caps.phoneFind && phoneOpen && <PhoneEntry />}
+      {phoneFind && phoneOpen && <PhoneEntry />}
 
       {/* Nowa klientka bez kodu, hasła ani kartoteki: aplikacja jest wejściem
           dla klientek salonu, nie miejscem szukania salonów — mówimy to wprost.

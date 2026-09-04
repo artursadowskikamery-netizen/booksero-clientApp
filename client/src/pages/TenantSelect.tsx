@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useRoute, useLocation } from "wouter";
+import { useRoute, useLocation, useSearch } from "wouter";
+import type { EntryMethod } from "@shared/types";
 import { useQuery } from "@tanstack/react-query";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -46,10 +47,21 @@ export default function TenantSelect() {
   const cityObj = cities.find((c) => c.city === activeCity) ?? null;
   const salons = cityObj?.salons ?? [];
 
+  // Metoda wejścia z ekranu startowego (`?via=password|qr|…`). Licznik wejść
+  // w panelu przyjmuje tylko lokalizację, więc zgłaszamy go dopiero tu — gdy
+  // klientka wybierze salon. Bez `via` (wejście linkiem /t/…) → „link".
+  const search = useSearch();
+  const via = (new URLSearchParams(search).get("via") || "link") as EntryMethod;
+  const wejdz = (salonId: string) => {
+    void api.entryEvent(via, { salonId });
+    navigate(`/salon/${salonId}`);
+  };
+
   // Jeśli w wybranym mieście jest jeden salon — od razu do kalendarza.
   useEffect(() => {
-    if (cityObj && salons.length === 1) navigate(`/salon/${salons[0].id}`);
-  }, [cityObj, salons, navigate]);
+    if (cityObj && salons.length === 1) wejdz(salons[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cityObj, salons]);
 
   if (tQ.isLoading) return <div className="p-6 text-muted">{t("common.loading")}</div>;
   if (tQ.isError) return <div className="p-6 text-red-600 text-sm">{(tQ.error as Error).message}</div>;
@@ -125,7 +137,7 @@ export default function TenantSelect() {
           <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted mt-2 mb-2">{t("common.chooseSalon")}</h2>
           <div className="divide-y divide-line">
             {salons.map((s) => (
-              <button key={s.id} onClick={() => navigate(`/salon/${s.id}`)} className="w-full flex items-center gap-3 text-left py-3">
+              <button key={s.id} onClick={() => wejdz(s.id)} className="w-full flex items-center gap-3 text-left py-3">
                 <MapPin size={18} className="text-brand shrink-0" />
                 <div className="flex-1">
                   <div className="font-medium text-sm">{s.name}</div>

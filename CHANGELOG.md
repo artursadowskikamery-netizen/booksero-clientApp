@@ -9,6 +9,29 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.35] — 2026-09-05 — Dopasowanie do wdrożonego panelu; ścieżka po numerze zaryglowana
+
+- Panel wdrożył hasła salonu i wejście po numerze (SPEC panelu z audytem).
+  Aplikacja włącza hasła sama — flaga kraju przy polu pojawia się od razu.
+- **Ścieżka po numerze ZARYGLOWANA** do decyzji właściciela: zestawia
+  klientce listę firm należących do niezależnych administratorów danych
+  i czeka na potwierdzenie prawnika oraz wpis do polityki prywatności (SPEC
+  panelu §8). Panel zgłasza gotowość, więc bez rygla klientki zobaczyłyby ją
+  dziś. Odblokowanie = jedna stała + wersja. Do testów właściciela: ekran
+  startowy z `?phoneEntry=1`.
+- Licznik wejść przeniesiony na właściwy punkt panelu (`/api/public/app/entry`,
+  tylko lokalizacja + metoda). Wejście na poziomie sieci zgłasza ekran wyboru
+  salonu, gdy klientka tapnie lokalizację (`?via=` w adresie).
+- **Wyłącznik aplikacji per lokalizacja** (nowość panelu): firma może
+  wyłączyć aplikację, a wtedy także dotychczasowe drogi (QR, link, ostatnio
+  odwiedzane) oddają 404 przy logowaniu. Zamiast ogólnego błędu: „Ta firma
+  nie udostępnia aplikacji. Zarezerwuj przez wizytówkę lub zadzwoń do salonu."
+  W 16 językach.
+- Limit zapytań o hasło (429) pokazuje komunikat serwera zamiast „nie
+  znaleziono".
+
+---
+
 ## [1.0.34] — 2026-09-04 — Pole hasła bez podpowiedzi przeglądarki
 
 - Chrome podstawiał do pola hasła salonu NAZWĘ FIRMY zapamiętaną z innych

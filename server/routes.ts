@@ -93,6 +93,11 @@ export function registerRoutes(app: Express) {
     relay(res, await bookseroGet(`/api/public/app/password?${q}`, loc(req)));
   });
 
+  // Licznik wejść (którędy klientka weszła) — osobny punkt panelu, bez tokenu.
+  // `app-event` się nie nadaje: wymaga tokenu i stempluje kartotekę.
+  app.post("/api/app/entry", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/app/entry`, req.body ?? {}, loc(req))));
+
   // „Masz już u nas kartotekę?" — SMS → lista firm → wejście bez drugiego SMS-a.
   app.post("/api/client-auth/find/request", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client-auth/find/request`, req.body ?? {}, loc(req))));
