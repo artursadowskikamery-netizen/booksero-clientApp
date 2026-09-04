@@ -168,3 +168,27 @@ Pytanie właściciela: dwie obce firmy „BBeauty" — Koszalin i Rzym.
 ogólny — powstałyby hasła, których zakazujemy); rozstrzyganie sporów o markę
 (pomoc techniczna); „zapomniałam hasła salonu" (od tego jest ścieżka po
 numerze).
+
+## H. Decyzje właściciela 2026-09-04 (zamykają zakres)
+
+- **Hasło ze sluga automatycznie: NIE.** Zamiast tego podpowiedź w panelu
+  przy pierwszym wejściu w ustawienia aplikacji lokalizacji:
+  *„Ustaw hasło salonu — klientki wpiszą je zamiast skanować kod."*
+- **Licznik wejść: TAK**, w zakładce aplikacji (tam, gdzie konfiguruje się
+  aplikację), per lokalizacja: ile wejść kodem QR / hasłem / numerem
+  telefonu / z listy ostatnio odwiedzanych / linkiem. Aplikacja wysyła
+  zdarzenie istniejącym punktem `POST /api/public/client/app-event`
+  z `type: "entry"` i `method: "qr" | "password" | "phone" | "recent" | "link"`
+  oraz `salonId`. Panel: przyjąć nowy typ (dziś jest tylko `install`),
+  zliczać, pokazać (ostatnie 30 dni + łącznie). Zdarzenie idzie BEZ tokenu
+  (klientka może nie być jeszcze zalogowana) — więc bez danych osobowych,
+  tylko `salonId` + `method`, z limitem na IP.
+- **Test na jednej firmie**: VIVIEstetic (Żory lub Pniówek). Kolizje między
+  obcymi firmami pokrywają testy jednostkowe — w bazie jest jedna firma.
+
+**Potrzebne aplikacji, żeby mogła wyjść PRZED panelem:**
+`GET /api/public/app/entry-capabilities` → `{ password: true, phoneFind: true }`.
+Dopóki punktu nie ma (404), aplikacja zakłada `false/false`: pole hasła
+zachowuje się jak dawne pole adresu wizytówki (z nowym, ludzkim napisem),
+a ścieżka po numerze jest ukryta. Po wdrożeniu panelu aplikacja włącza obie
+rzeczy sama, bez nowej wersji.
