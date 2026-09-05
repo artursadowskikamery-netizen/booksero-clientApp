@@ -9,6 +9,14 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.46] — 2026-09-05 — Poprawny odcisk klucza Google Play
+
+- Odcisk klucza Google Play App Signing odczytany z podpisanego APK
+  (2C:52:B2:75…). Odcisk skopiowany ze strony Play Console (A4:21…) nie
+  był kluczem podpisu paczki; aplikacja ze sklepu pokazywała pasek adresu.
+
+---
+
 ## [1.0.45] — 2026-09-05 — Odciski kluczy Google Play (assetlinks)
 
 - `/.well-known/assetlinks.json` zawiera oba odciski SHA-256 dla

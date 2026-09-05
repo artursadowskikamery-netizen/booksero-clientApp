@@ -25,9 +25,13 @@ export const ASSET_LINKS: unknown[] = [
       sha256_cert_fingerprints: [
         // 1. klucz paczki PWABuilder (com.booksero.app, ZIP z 2026-09-05)
         "97:DD:B7:54:CA:B9:E4:23:94:48:51:75:62:2E:57:D3:8D:04:FA:39:18:3B:34:0E:F0:5C:FB:E1:AB:E8:8C:58",
-        // 2. klucz Google Play App Signing (Play Console → Chronione przez
-        //    Google Play → Zarządzaj podpisywaniem aplikacji, 2026-09-05)
-        "A4:21:24:6B:CF:36:F4:F9:D3:90:B0:A5:05:43:55:BC:F0:BE:2F:24:67:D2:C7:AA:28:40:6B:2D:A9:B6:25:B1",
+        // 2. klucz Google Play App Signing — odczytany WPROST z podpisanego
+        //    APK pobranego z Play Console (Eksplorator pakietów → Pobrania →
+        //    „Podpisany, uniwersalny plik APK"), bloki v1/v2/v3, 2026-09-05.
+        //    Odcisk A4:21:24:6B:… skopiowany ze strony „Podpisywanie
+        //    aplikacji" NIE był kluczem podpisu paczki — Chrome pokazywał
+        //    pasek adresu. Zawsze weryfikować odcisk z pliku APK.
+        "2C:52:B2:75:60:AE:52:A6:9D:AA:20:48:3C:31:2A:DA:E9:46:20:5F:FA:19:94:DF:7A:FA:14:CB:DC:65:86:E5",
       ],
     },
   },
