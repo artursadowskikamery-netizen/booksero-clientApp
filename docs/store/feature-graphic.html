@@ -1,21 +1,23 @@
 <!doctype html><html><head><meta charset="utf-8"><style>
-html,body{margin:0;width:1024px;height:500px;overflow:hidden;background:#0b0d10;font-family:"Liberation Sans",Arial,Helvetica,sans-serif}
-.bg{position:absolute;inset:0;background:
- radial-gradient(600px 380px at 18% 30%,rgba(0,113,227,.28),transparent 70%),
- radial-gradient(520px 320px at 85% 80%,rgba(0,113,227,.18),transparent 70%),#0b0d10}
-.wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:44px}
-.icon{width:180px;height:180px;border-radius:42px;background:#0071e3;box-shadow:0 18px 50px rgba(0,113,227,.35)}
-.icon svg{width:180px;height:180px;display:block}
-.name{font-weight:800;font-size:124px;letter-spacing:-3px;line-height:1;color:#fff}
-.name b{color:#0071e3;font-weight:800}
-</style></head><body><div class="bg"></div>
-<div class="wrap">
-  <div class="icon"><svg viewBox="0 0 180 180"><text id="g" x="0" y="0" fill="#fff" font-family="Liberation Sans, Arial, sans-serif" font-weight="800" font-size="132">b</text></svg></div>
-  <div class="name">Book<b>Sero</b></div>
-</div>
+html,body{margin:0;width:1024px;height:500px;overflow:hidden;background:#202226}
+svg{display:block;width:1024px;height:500px}
+</style></head><body>
+<svg viewBox="0 0 1024 500" font-family="Liberation Sans, Arial, sans-serif" font-weight="800">
+  <g id="grp">
+    <rect id="sq" x="0" y="0" width="180" height="180" rx="42" fill="#0071e3"/>
+    <text id="g" fill="#fff" font-size="132">b</text>
+    <text id="w" font-size="124" letter-spacing="-3" fill="#fff">Book<tspan fill="#0071e3">Sero</tspan></text>
+  </g>
+</svg>
 <script>
-  // Wyśrodkowanie GEOMETRYCZNE glifu „b": środek jego obrysu = środek kwadratu.
-  const g=document.getElementById('g'); const bb=g.getBBox();
-  g.setAttribute('x', 90-(bb.x+bb.width/2)); g.setAttribute('y', 90-(bb.y+bb.height/2));
+  const g=document.getElementById('g'), w=document.getElementById('w'), grp=document.getElementById('grp');
+  // 1. „b" geometrycznie w środku kwadratu (środek obrysu glifu = (90,90)).
+  let bb=g.getBBox(); g.setAttribute('x',90-(bb.x+bb.width/2)); g.setAttribute('y',90-(bb.y+bb.height/2));
+  // 2. napis na prawo od kwadratu, wyrównany w pionie do środka kwadratu.
+  const GAP=44; let wb=w.getBBox();
+  w.setAttribute('x',180+GAP-wb.x); w.setAttribute('y',90-(wb.y+wb.height/2));
+  // 3. cała grupa (kwadrat + napis) dokładnie w środku płótna 1024×500.
+  const gb=grp.getBBox();
+  grp.setAttribute('transform',`translate(${512-(gb.x+gb.width/2)},${250-(gb.y+gb.height/2)})`);
 </script>
 </body></html>
