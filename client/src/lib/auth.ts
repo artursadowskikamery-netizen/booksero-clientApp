@@ -89,6 +89,10 @@ export function hasSessionFor(tenantId: string | null | undefined): boolean {
 
 // Firmy, w których klientka ma sesję na tym telefonie — do przełącznika
 // „Twoje pozostałe firmy".
+export function sessionToken(tenantId: string): string | null {
+  return readSessions()[tenantId]?.token ?? null;
+}
+
 export function listSessions(): { tenantId: string; name: string | null }[] {
   return Object.entries(readSessions()).map(([tenantId, s]) => ({ tenantId, name: s.name ?? null }));
 }

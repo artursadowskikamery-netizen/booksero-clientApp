@@ -151,8 +151,15 @@ export const api = {
   }) => req<{ ok?: boolean }>(`/api/client/push/subscribe`, { method: "POST", body: JSON.stringify(body) }),
   pushUnsubscribe: (endpoint: string) =>
     req<{ ok?: boolean }>(`/api/client/push/unsubscribe`, { method: "POST", body: JSON.stringify({ endpoint }) }),
-  appEvent: (type: "install", platform: "android" | "ios" | "web") =>
-    req<{ ok?: boolean }>(`/api/client/app-event`, { method: "POST", body: JSON.stringify({ type, platform }) }),
+  // `token`: sesja INNEJ firmy niż aktywna — zdarzenie instalacji stempluje
+  // kartotekę w tej firmie, której token niesie; klientka z kartotekami
+  // w kilku firmach ma dostać stempel w każdej.
+  appEvent: (type: "install", platform: "android" | "ios" | "web", token?: string | null) =>
+    req<{ ok?: boolean }>(`/api/client/app-event`, {
+      method: "POST",
+      body: JSON.stringify({ type, platform }),
+      ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
+    }),
   // Którędy klientka weszła do salonu — licznik dla właściciela w panelu
   // (zakładka aplikacji). Osobny punkt panelu, bez tokenu, bez danych
   // osobowych: tylko lokalizacja i metoda. Panel przyjmuje WYŁĄCZNIE salonId —

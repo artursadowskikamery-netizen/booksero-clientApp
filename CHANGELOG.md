@@ -9,6 +9,20 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.42] — 2026-09-05 — Stempel „ma aplikację" w każdej firmie i zaraz po logowaniu
+
+- Panel wysyła teraz (opcjonalnie, z puli SMS lokalizacji) link do aplikacji
+  klientkom, które jej NIE mają — a o tym, kto ją ma, dowiaduje się ze
+  zdarzenia instalacji z aplikacji. Zdarzenie szło raz na urządzenie, tylko
+  przy starcie i tylko dla aktywnej firmy: klientka z kartotekami w dwóch
+  firmach dostałaby od drugiej SMS z linkiem do aplikacji, którą już ma,
+  a instalacja przed logowaniem czekałaby do następnego uruchomienia.
+- Zdarzenie idzie teraz raz NA FIRMĘ, zaraz po każdym logowaniu (także po
+  wejściu numerem, dla wszystkich firm z listy) i przy starcie dla każdej
+  zapamiętanej sesji.
+
+---
+
 ## [1.0.41] — 2026-09-05 — Wiele firm naraz: bez wylogowania, bez drugiego SMS-a
 
 - Uwaga właściciela: po wejściu numerem do jednej firmy druga „znikała" —

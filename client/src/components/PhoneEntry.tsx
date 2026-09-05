@@ -6,7 +6,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { api, ApiError } from "../lib/api";
 import { setToken, rememberSession } from "../lib/auth";
 import { saveRecentSalon } from "../lib/recentSalons";
-import { autoRejoinPush } from "../lib/push";
+import { autoRejoinPush, sendInstallSignalOnce } from "../lib/push";
 import type { FindResult } from "@shared/types";
 
 // WEJŚCIE NUMEREM TELEFONU — krok „kod z SMS" i wybór salonu.
@@ -131,6 +131,7 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
       const firma = r.tenants.find((tn) => tn.tenantId === tenantId);
       setToken(token, tenantId, firma?.tenantName ?? null);
       autoRejoinPush();
+      void sendInstallSignalOnce(tenantId, token);
       void api.entryEvent("phone", { salonId, tenantId });
       // WIELE FIRM NARAZ: ten sam bilet otwiera każdą firmę z listy, więc
       // wchodzimy po cichu także do pozostałych — klientka nie będzie musiała
@@ -144,7 +145,12 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
         if (tn.tenantId === tenantId || tn.salons.length === 0) continue;
         void api
           .findEnter(r.ticket, tn.tenantId, tn.salons[0].salonId)
-          .then((x) => rememberSession(tn.tenantId, x.token, tn.tenantName))
+          .then((x) => {
+            rememberSession(tn.tenantId, x.token, tn.tenantName);
+            // Stempel „ma aplikację" także w tej firmie — inaczej słałaby
+            // klientce SMS z linkiem do aplikacji, którą już ma.
+            void sendInstallSignalOnce(tn.tenantId, x.token);
+          })
           .catch(() => {});
       }
       navigate(`/salon/${salonId}`);

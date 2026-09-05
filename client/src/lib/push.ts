@@ -1,6 +1,7 @@
 // Web Push + sygnał instalacji (PWA). Klucz publiczny VAPID pobieramy z API
 // (zero sekretów w aplikacji); treść i język powiadomień ogarnia serwer.
 import { api, ApiError } from "./api";
+import { getAuthTenant } from "./auth";
 
 export type PushPlatform = "android" | "ios" | "web";
 export type PushState = "unsupported" | "ios-install" | "denied" | "default" | "subscribed";
@@ -177,15 +178,26 @@ export async function setAppBadgeCount(count: number): Promise<void> {
   }
 }
 
-// Sygnał instalacji: raz, przy pierwszym uruchomieniu w trybie standalone
-// (kafelek „Zainstalowało aplikację" w panelu). Endpoint idempotentny.
+// Sygnał instalacji — RAZ NA FIRMĘ na tym urządzeniu (tryb standalone).
+// Od 2026-09-05 to zdarzenie ma wagę biznesową: panel na jego podstawie
+// stempluje kartotekę „ma aplikację" i WYŁĄCZA klientkę z automatu „link do
+// aplikacji SMS-em" (płatnego z puli lokalizacji). Dlatego:
+//  - klucz per firma, nie per urządzenie: klientka z kartotekami w dwóch
+//    firmach ma dostać stempel w OBU (inaczej druga firma słałaby jej SMS
+//    z linkiem do aplikacji, którą już ma);
+//  - wysyłamy nie tylko przy starcie, ale i zaraz po każdym logowaniu
+//    (instalacja przed logowaniem czekałaby do następnego uruchomienia);
+//  - `token` pozwala wysłać w imieniu sesji innej firmy niż aktywna.
+// Endpoint jest idempotentny — powtórka nic nie psuje.
 const INSTALL_KEY = "booksero_install_sent";
-export async function sendInstallSignalOnce(): Promise<void> {
+export async function sendInstallSignalOnce(tenantId?: string | null, token?: string | null): Promise<void> {
   try {
     if (!isStandalone()) return;
-    if (localStorage.getItem(INSTALL_KEY)) return;
-    await api.appEvent("install", platform());
-    localStorage.setItem(INSTALL_KEY, "1");
+    const firma = tenantId || getAuthTenant() || "default";
+    const key = `${INSTALL_KEY}:${firma}`;
+    if (localStorage.getItem(key)) return;
+    await api.appEvent("install", platform(), token ?? null);
+    localStorage.setItem(key, "1");
   } catch {
     /* spróbujemy przy następnym starcie */
   }

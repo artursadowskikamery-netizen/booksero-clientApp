@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { setToken, isLoggedInFor } from "../lib/auth";
 import { loadRef, clearRef } from "../lib/referral";
-import { autoRejoinPush } from "../lib/push";
+import { autoRejoinPush, sendInstallSignalOnce } from "../lib/push";
 import { PhoneInput } from "../components/PhoneInput";
 
 // Logowanie klienta: telefon → kod SMS → sesja (SPEC-logowanie-klienta).
@@ -115,6 +115,8 @@ export default function Login() {
       setToken(token, tenantId);
       // Konto ma powiadomienia „włączone" → dorejestruj to urządzenie po cichu.
       autoRejoinPush();
+      // Stempel „ma aplikację" w tej firmie — nie czekamy do następnego startu.
+      void sendInstallSignalOnce(tenantId);
       navigate(`/salon/${salonId}`);
     } catch (e) {
       // 422 = kod poprawny, ale numer jest nowy — potrzebne imię (auto-rejestracja).

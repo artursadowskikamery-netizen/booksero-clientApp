@@ -3,7 +3,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Route, Switch } from "wouter";
 import { useTranslation } from "react-i18next";
 import { queryClient } from "./lib/queryClient";
-import { isLoggedIn } from "./lib/auth";
+import { isLoggedIn, listSessions, sessionToken } from "./lib/auth";
 import { autoRejoinPush, sendInstallSignalOnce } from "./lib/push";
 import Landing from "./pages/Landing";
 import TenantSelect from "./pages/TenantSelect";
@@ -27,7 +27,10 @@ import SalonAccent from "./components/SalonAccent";
 function PushBootstrap() {
   useEffect(() => {
     if (!isLoggedIn()) return;
+    // Stempel „ma aplikację" w każdej firmie, w której jest sesja na tym
+    // urządzeniu (raz na firmę; endpoint idempotentny).
     sendInstallSignalOnce();
+    for (const s of listSessions()) void sendInstallSignalOnce(s.tenantId, sessionToken(s.tenantId));
     autoRejoinPush();
   }, []);
   // Push przy OTWARTEJ aplikacji: service worker daje znać (postMessage)
