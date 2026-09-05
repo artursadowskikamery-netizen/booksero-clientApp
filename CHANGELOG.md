@@ -9,6 +9,17 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.39] — 2026-09-05 — Diagnostyka nasłuchu SMS przy wejściu numerem (tryb testowy)
+
+- Kod z SMS-a nadal nie trafiał do pola po zgodzie w oknie Google. W trybie
+  testowym pod polem kodu jest linijka diagnostyczna: kiedy nasłuch został
+  uzbrojony, co odebrał, czy został odwołany, co odpowiedział serwer przy
+  wysyłce i weryfikacji.
+- Pole kodu nie jest już czyszczone po odpowiedzi serwera na wysyłkę SMS-a —
+  gdy SMS wyprzedzi odpowiedź, kod z WebOTP już tam jest.
+
+---
+
 ## [1.0.38] — 2026-09-05 — Kod z SMS-a wpisuje się sam także przy wejściu numerem
 
 - Przy wejściu numerem Google pytało „wypełnić kodem?", a po zgodzie kod nie

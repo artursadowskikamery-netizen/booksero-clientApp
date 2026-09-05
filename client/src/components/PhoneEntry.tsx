@@ -19,7 +19,7 @@ import type { FindResult } from "@shared/types";
 // więc ekran po wysłaniu od razu przewiduje „kod nie przyszedł" — inaczej
 // ścieżka wyglądałaby na zepsutą dokładnie dla tych, dla których nie jest
 // przeznaczona.
-export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: () => void }) {
+export default function PhoneEntry({ phone, onBack, debug }: { phone: string; onBack: () => void; debug?: boolean }) {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
 
@@ -30,6 +30,11 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
   const [otpRound, setOtpRound] = useState(0);
   const [cooldown, setCooldown] = useState(0);
   const [found, setFound] = useState<FindResult | null>(null);
+  // Diagnostyka (tylko tryb testowy właściciela): co robi nasłuch SMS-a i co
+  // odpowiada serwer. Poprzednio jedna taka linijka wskazała przyczynę, której
+  // nie dało się wyrozumować z kodu (skrót zamiast aplikacji).
+  const [diag, setDiag] = useState<string[]>([]);
+  const log = (m: string) => setDiag((d) => [...d.slice(-5), `${new Date().toISOString().slice(11, 19)} ${m}`]);
 
   const ladny = parsePhoneNumberFromString(phone)?.formatInternational() ?? phone;
 
@@ -52,13 +57,19 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
   // się dopiero po ZUŻYCIU kodu — gdyby klientka poprosiła o kolejny.
   useEffect(() => {
     if (stage !== "code") return;
-    if (typeof window === "undefined" || !("OTPCredential" in window)) return;
+    if (typeof window === "undefined" || !("OTPCredential" in window)) {
+      log("nasłuch: brak WebOTP w tej przeglądarce");
+      return;
+    }
     const ac = new AbortController();
+    const runda = otpRound;
+    log(`nasłuch #${runda}: uzbrojony`);
     navigator.credentials
       .get({ otp: { transport: ["sms"] }, signal: ac.signal } as CredentialRequestOptions)
       .then((cred) => {
         const otp = (cred as unknown as { code?: string } | null)?.code;
         const clean = otp ? otp.replace(/\D/g, "").slice(0, 6) : "";
+        log(`nasłuch #${runda}: odebrano „${otp ?? ""}" → ${clean || "(pusto)"}`);
         if (clean.length === 6) {
           setCode(clean);
           verify(clean);
@@ -69,8 +80,14 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
         // przezbrajanie zapętliłoby się).
         if (!ac.signal.aborted) setOtpRound((r) => r + 1);
       })
-      .catch(() => {});
-    return () => ac.abort();
+      .catch((e: unknown) => {
+        const n = (e as { name?: string })?.name || String(e);
+        if (n !== "AbortError") log(`nasłuch #${runda}: odrzucony ${n}`);
+      });
+    return () => {
+      log(`nasłuch #${runda}: odwołany`);
+      ac.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, otpRound]);
 
@@ -88,10 +105,14 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
     setErr("");
     setBusy(true);
     try {
+      log("wysyłanie SMS…");
       const r = await api.findRequest(phone);
-      setCode("");
+      log(`SMS: serwer OK, retryAfter ${r?.retryAfter ?? "-"}`);
+      // Pola NIE czyścimy: gdy SMS wyprzedzi odpowiedź serwera, kod z WebOTP
+      // już tu jest — wyczyszczenie skasowałoby go klientce sprzed nosa.
       setCooldown(typeof r?.retryAfter === "number" && r.retryAfter > 0 ? r.retryAfter : 60);
     } catch (e) {
+      log(`SMS: błąd ${(e as Error).message}`);
       if (e instanceof ApiError && e.status === 429 && e.retryAfter) setCooldown(e.retryAfter);
       else setErr((e as Error).message);
     } finally {
@@ -105,7 +126,9 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
     setErr("");
     setBusy(true);
     try {
+      log(`weryfikacja kodu ${theCode}…`);
       const r = await api.findVerify(phone, theCode);
+      log(`weryfikacja OK: firm ${r.tenants.length}, salonów ${r.tenants.reduce((n, tn) => n + tn.salons.length, 0)}`);
       setFound(r);
       const all = r.tenants.flatMap((tn) => tn.salons.map((s) => ({ tenantId: tn.tenantId, salonId: s.salonId })));
       // Jedna firma, jedna lokalizacja → bez pytania, prosto do środka.
@@ -115,6 +138,7 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
       }
       setStage("pick");
     } catch (e) {
+      log(`weryfikacja: błąd ${(e as Error).message}`);
       setErr((e as Error).message);
     } finally {
       setBusy(false);
@@ -244,6 +268,9 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
       )}
 
       {err && <p className="text-xs text-red-400 mt-3">{err}</p>}
+      {debug && diag.length > 0 && (
+        <pre className="mt-3 text-[10px] leading-snug text-muted whitespace-pre-wrap break-all">{diag.join("\n")}</pre>
+      )}
     </div>
   );
 }

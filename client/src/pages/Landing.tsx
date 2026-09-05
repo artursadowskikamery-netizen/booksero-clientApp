@@ -325,7 +325,7 @@ export default function Landing() {
       </div>
 
       {phoneFlow ? (
-        <PhoneEntry phone={phoneFlow} onBack={() => setPhoneFlow(null)} />
+        <PhoneEntry phone={phoneFlow} onBack={() => setPhoneFlow(null)} debug={testMode || phoneTest} />
       ) : (
         <>
           <label htmlFor="booksero-entry" className="text-[11px] font-bold text-ink-2">
