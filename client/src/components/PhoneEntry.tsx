@@ -2,39 +2,44 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { ClipboardPaste } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { api, ApiError } from "../lib/api";
 import { setToken } from "../lib/auth";
 import { autoRejoinPush } from "../lib/push";
-import { PhoneInput } from "./PhoneInput";
 import type { FindResult } from "@shared/types";
 
-// „MASZ JUŻ U NAS KARTOTEKĘ? WEJDŹ NUMEREM TELEFONU."
+// WEJŚCIE NUMEREM TELEFONU — krok „kod z SMS" i wybór salonu.
 //
-// Dla klientki, która ma kartotekę, a straciła kod QR (nowy telefon,
-// reinstalacja). Jeden SMS = znalezienie salonu + zalogowanie. Ta droga nie
-// wycieka nic: żeby zobaczyć, że salon jest na Booksero, trzeba mieć w ręku
-// telefon jego klientki. Dlatego mogła zastąpić wyszukiwarkę.
+// Numer wpisuje się w TO SAMO pole, co hasło salonu (ekran startowy sam
+// poznaje, że to numer) — tu przychodzi już gotowy, w formacie
+// międzynarodowym. Komponent od razu wysyła kod i pokazuje pole na kod;
+// klientka nie ma drugiego formularza do wypełniania.
 //
 // Odpowiedź na wpisany numer jest ZAWSZE taka sama (nawet gdy numeru nie ma),
-// więc ekran po wysłaniu musi od razu przewidzieć „kod nie przyszedł" —
-// inaczej ścieżka wyglądałaby na zepsutą dokładnie dla tych, dla których nie
-// jest przeznaczona.
-export default function PhoneEntry() {
+// więc ekran po wysłaniu od razu przewiduje „kod nie przyszedł" — inaczej
+// ścieżka wyglądałaby na zepsutą dokładnie dla tych, dla których nie jest
+// przeznaczona.
+export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: () => void }) {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
 
-  const [phone, setPhone] = useState("");
-  const [phoneValid, setPhoneValid] = useState(false);
   const [code, setCode] = useState("");
-  const [stage, setStage] = useState<"phone" | "code" | "pick">("phone");
+  const [stage, setStage] = useState<"code" | "pick">("code");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [codeNonce, setCodeNonce] = useState(0);
   const [cooldown, setCooldown] = useState(0);
   const [found, setFound] = useState<FindResult | null>(null);
 
-  // Auto-uzupełnienie kodu z SMS-a — ta sama mechanika, co przy logowaniu
-  // (WebOTP na Androidzie, podpowiedź nad klawiaturą na iOS).
+  const ladny = parsePhoneNumberFromString(phone)?.formatInternational() ?? phone;
+
+  // Pierwszy SMS idzie od razu po wejściu w ten krok.
+  useEffect(() => {
+    void sendCode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phone]);
+
+  // Auto-uzupełnienie kodu z SMS-a — ta sama mechanika, co przy logowaniu.
   useEffect(() => {
     if (stage !== "code") return;
     if (typeof window === "undefined" || !("OTPCredential" in window)) return;
@@ -66,15 +71,13 @@ export default function PhoneEntry() {
   const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
   async function sendCode() {
-    if (!phoneValid || cooldown > 0) return;
+    if (cooldown > 0) return;
     setErr("");
     setBusy(true);
     try {
-      const r = await api.findRequest(phone.trim());
-      setStage("code");
+      const r = await api.findRequest(phone);
       setCode("");
       setCodeNonce((n) => n + 1);
-      // Serwer mówi, kiedy wolno wysłać ponownie; bez tej informacji — minuta.
       setCooldown(typeof r?.retryAfter === "number" && r.retryAfter > 0 ? r.retryAfter : 60);
     } catch (e) {
       if (e instanceof ApiError && e.status === 429 && e.retryAfter) setCooldown(e.retryAfter);
@@ -90,7 +93,7 @@ export default function PhoneEntry() {
     setErr("");
     setBusy(true);
     try {
-      const r = await api.findVerify(phone.trim(), theCode);
+      const r = await api.findVerify(phone, theCode);
       setFound(r);
       const all = r.tenants.flatMap((tn) => tn.salons.map((s) => ({ tenantId: tn.tenantId, salonId: s.salonId })));
       // Jedna firma, jedna lokalizacja → bez pytania, prosto do środka.
@@ -127,25 +130,10 @@ export default function PhoneEntry() {
     "w-full rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand";
 
   return (
-    <div className="rounded-2xl border border-line bg-surface p-4 mt-3">
-      <h2 className="text-sm font-bold">{t("landing.phoneTitle")}</h2>
-      <p className="text-xs text-muted mt-1 mb-3">{t("landing.phoneHint")}</p>
-
-      {stage !== "pick" && (
-        <div className="mb-3">
-          <PhoneInput value={phone} onChange={setPhone} onValidChange={setPhoneValid} disabled={stage !== "phone"} />
-        </div>
-      )}
-
-      {stage === "phone" && (
-        <button className="btn-primary" disabled={!phoneValid || busy || cooldown > 0} onClick={sendCode}>
-          {cooldown > 0 ? t("auth.retryIn", { time: mmss(cooldown) }) : busy ? t("common.loading") : t("auth.sendCode")}
-        </button>
-      )}
-
+    <div>
       {stage === "code" && (
         <>
-          <p className="text-xs text-ink-2 mb-2">{t("landing.codeSent")}</p>
+          <p className="text-sm text-ink-2 mb-3">{t("landing.codeSentTo", { phone: ladny })}</p>
           <label className="text-[11px] font-bold text-ink-2">{t("auth.code")}</label>
           <input
             type="text"
@@ -183,15 +171,16 @@ export default function PhoneEntry() {
           <button className="btn-primary" disabled={code.length < 4 || busy} onClick={() => verify()}>
             {busy ? t("common.loading") : t("auth.verify")}
           </button>
-          <button
-            className="w-full text-sm text-brand font-semibold py-3 disabled:opacity-50"
-            disabled={busy || cooldown > 0}
-            onClick={sendCode}
-          >
-            {cooldown > 0 ? t("auth.retryIn", { time: mmss(cooldown) }) : t("auth.resend")}
-          </button>
+          <div className="flex items-center justify-between mt-1">
+            <button className="text-sm text-brand font-semibold py-3 disabled:opacity-50" disabled={busy || cooldown > 0} onClick={sendCode}>
+              {cooldown > 0 ? t("auth.retryIn", { time: mmss(cooldown) }) : t("auth.resend")}
+            </button>
+            <button className="text-sm text-muted font-semibold py-3" disabled={busy} onClick={onBack}>
+              {t("landing.changeNumber")}
+            </button>
+          </div>
           {/* Zawsze widoczne — odpowiedź serwera nie mówi, czy numer istnieje. */}
-          <p className="text-xs text-muted mt-2">{t("landing.codeNotArrived")}</p>
+          <p className="text-xs text-muted mt-1">{t("landing.codeNotArrived")}</p>
         </>
       )}
 
@@ -201,15 +190,18 @@ export default function PhoneEntry() {
             <>
               <p className="text-sm text-ink-2">{t("landing.noAccounts")}</p>
               <p className="text-xs text-muted mt-1">{t("landing.firstTime")}</p>
+              <button className="text-sm text-brand font-semibold py-3" onClick={onBack}>
+                {t("landing.changeNumber")}
+              </button>
             </>
           ) : (
             <>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted mb-2">{t("landing.pickSalon")}</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-muted mb-2">{t("landing.pickSalon")}</p>
               <div className="space-y-3">
                 {found.tenants.map((tn) => (
                   <div key={tn.tenantId}>
                     <p className="text-sm font-bold mb-1">{tn.tenantName}</p>
-                    <div className="rounded-xl border border-line divide-y divide-line overflow-hidden">
+                    <div className="rounded-2xl border border-line bg-surface divide-y divide-line overflow-hidden">
                       {tn.salons.map((s) => (
                         <button
                           key={s.salonId}

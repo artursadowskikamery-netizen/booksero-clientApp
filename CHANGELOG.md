@@ -9,6 +9,25 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.36] — 2026-09-05 — Ekran startowy: jedno pole, żadnych wyborów
+
+- Uwaga właściciela: dwa formularze naraz (nazwa z listą krajów + osobny
+  formularz numeru) to za dużo, klientka jest zdezorientowana.
+- **Jedno pole** i jeden przycisk. Etykieta: „Wpisz nazwę swojej ulubionej
+  firmy" — dla klientki to nazwa jej salonu; słowo „hasło" zostaje tylko
+  w panelu, dla właściciela. Gdy wejście po numerze będzie odblokowane:
+  „Wpisz nazwę salonu albo swój numer telefonu" — aplikacja sama poznaje,
+  co wpisano; klientka niczego nie wybiera.
+- Duża lista krajów z flagą zniknęła. Kraj siedzi w jednej drobnej linijce
+  „🇵🇱 PL · zmień" pod przyciskiem; lista rozwija się dopiero po tapnięciu.
+- Po numerze pole zamienia się w krok „kod z SMS" z widocznym numerem
+  i „Zmień numer"; po kodzie — lista salonów albo od razu wejście. Osobny
+  formularz numeru przestał istnieć.
+- Wszystkie napisy z „hasłem" przepisane na język klientki („zapytaj
+  w salonie, co wpisać") w 16 językach.
+
+---
+
 ## [1.0.35] — 2026-09-05 — Dopasowanie do wdrożonego panelu; ścieżka po numerze zaryglowana
 
 - Panel wdrożył hasła salonu i wejście po numerze (SPEC panelu z audytem).

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { QrCode, KeyRound, X, Smartphone } from "lucide-react";
+import { QrCode, X } from "lucide-react";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+import type { CountryCode } from "libphonenumber-js";
 import { api, ApiError } from "../lib/api";
 import { applyAccent } from "../lib/themes";
 import { saveRef } from "../lib/referral";
@@ -24,14 +26,22 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 // Do testów właściciela: adres ekranu startowego z `?phoneEntry=1`.
 const PHONE_ENTRY_RELEASED = false;
 
+// Czy wpis wygląda na numer telefonu (a nie na nazwę salonu): same cyfry,
+// spacje, myślniki, nawiasy, ewentualny plus — i co najmniej 7 cyfr.
+function wyglądaJakNumer(v: string): boolean {
+  return /^\+?[\d\s\-().]+$/.test(v) && v.replace(/\D/g, "").length >= 7;
+}
+
 // EKRAN STARTOWY — próg aplikacji. BookSero jest jedną aplikacją dla wszystkich
 // firm, więc zanim cokolwiek pokaże, musi wiedzieć, DO KTÓREGO salonu wchodzi
-// ta osoba. Trzy drogi, każda w języku klientki (decyzja właściciela 2026-09-04):
+// ta osoba. Decyzja właściciela 2026-09-05: JEDNO POLE, ŻADNYCH WYBORÓW.
 //   1. kod QR z wizytówki;
-//   2. HASŁO SALONU — słowo, które recepcja mówi klientce („wpisz Vivi");
-//      to samo pole rozumie też dawne adresy wizytówki i kody, klientka nie
-//      musi o tym wiedzieć;
-//   3. NUMER TELEFONU — dla tej, która ma już kartotekę, a straciła kod.
+//   2. jedno pole: nazwa salonu (słowo, które recepcja mówi klientce —
+//      w panelu nazywane „hasłem salonu") ALBO numer telefonu; aplikacja sama
+//      poznaje, co wpisano. To samo pole rozumie po cichu dawne adresy
+//      wizytówki i kody sieci.
+// Kraj (hasła są unikalne w obrębie kraju, numer trzeba umieć odczytać)
+// bierze się z telefonu i siedzi w jednej drobnej linijce „🇵🇱 PL · zmień".
 // Celowo NIE MA tu wyszukiwarki ani listy salonów: każde podpowiadanie po
 // nazwie jest katalogiem, a katalog pozwala konkurencji wypisać klientów
 // Booksero. Z tego ekranu nie da się niczego wypisać ani policzyć.
@@ -41,12 +51,14 @@ export default function Landing() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const [scanning, setScanning] = useState(false);
-  const [phoneOpen, setPhoneOpen] = useState(false);
   const [recent, setRecent] = useState<RecentSalon[]>(() => loadRecentSalons());
   const [country, setCountry] = useState<string>(() => loadEntryCountry());
+  const [countryOpen, setCountryOpen] = useState(false);
+  // Numer w formacie międzynarodowym, gdy klientka weszła numerem — pole
+  // zamienia się wtedy w krok „kod z SMS".
+  const [phoneFlow, setPhoneFlow] = useState<string | null>(null);
   // Co panel już umie. Domyślnie nic — wtedy ekran działa jak dotychczas
-  // (pole = adres wizytówki, ścieżka po numerze ukryta). Po wdrożeniu panelu
-  // obie rzeczy włączają się same, bez nowej wersji aplikacji.
+  // (pole = adres wizytówki). Po wdrożeniu panelu włącza się samo.
   const [caps, setCaps] = useState<EntryCapabilities>({ password: false, phoneFind: false });
   const { t, i18n } = useTranslation();
   const phoneTest = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("phoneEntry") === "1";
@@ -72,6 +84,7 @@ export default function Landing() {
   const pickCountry = (c: string) => {
     setCountry(c);
     saveEntryCountry(c);
+    setCountryOpen(false);
   };
 
   // Wspólna logika wejścia (pole tekstowe i skaner QR). `method` = którędy
@@ -104,8 +117,9 @@ export default function Landing() {
     }
     setBusy(true);
     try {
-      // 1. HASŁO SALONU (dopasowanie dokładne, w obrębie kraju). Brak
-      //    trafienia to zwykły 404 — wtedy próbujemy dawnego adresu wizytówki.
+      // 1. NAZWA SALONU (w panelu: hasło; dopasowanie dokładne, w obrębie
+      //    kraju). Brak trafienia to zwykły 404 — wtedy próbujemy dawnego
+      //    adresu wizytówki.
       if (caps.password) {
         try {
           const hit = await api.passwordLookup(v, country);
@@ -115,14 +129,14 @@ export default function Landing() {
             return;
           }
           if (hit?.salons?.length > 1) {
-            // Kilka lokalizacji z tym hasłem → wybór wewnątrz TEJ firmy
+            // Kilka lokalizacji z tą nazwą → wybór wewnątrz TEJ firmy
             // (ekran kraj → miasto → salon, który już mamy). `via` niesie
             // metodę wejścia — licznik zgłosi ją, gdy klientka tapnie salon.
             navigate(`/t/${hit.tenantId}?via=${method}`);
             return;
           }
         } catch (e) {
-          // 404 = nie ma takiego hasła; adres wizytówki wciąż może zadziałać.
+          // 404 = nie ma takiej nazwy; adres wizytówki wciąż może zadziałać.
           // 429 = limit zapytań — to trzeba pokazać, próba adresu nic nie da.
           if (!(e instanceof ApiError)) throw e;
           if (e.status === 429) {
@@ -137,7 +151,7 @@ export default function Landing() {
       navigate(`/salon/${salonId}`);
     } catch (e) {
       // Awaria połączenia (5xx) to NIE „nie znaleziono" — mówimy prawdę,
-      // żeby klientka nie sprawdzała hasła w salonie, gdy padła sieć.
+      // żeby klientka nie sprawdzała nazwy w salonie, gdy padła sieć.
       const server = e instanceof ApiError && e.status >= 500;
       setMsg(server ? (e as Error).message : t("landing.notFound"));
     } finally {
@@ -145,7 +159,23 @@ export default function Landing() {
     }
   }
 
-  const go = () => openInput(value, "password");
+  // Jedno pole, dwie drogi: numer telefonu → krok „kod z SMS"; wszystko inne
+  // → nazwa salonu. Klientka niczego nie wybiera.
+  function go() {
+    const v = value.trim();
+    if (!v) return;
+    setMsg("");
+    if (phoneFind && wyglądaJakNumer(v)) {
+      const parsed = parsePhoneNumberFromString(v, country as CountryCode);
+      if (!parsed?.isValid()) {
+        setMsg(t("common.invalidPhone"));
+        return;
+      }
+      setPhoneFlow(parsed.number);
+      return;
+    }
+    void openInput(v, "password");
+  }
 
   // Wynik skanu QR: linki z panelu (sieć /t/<id>, salon /salon/<id>, ?ref=);
   // surowy UUID/slug wpada do tej samej logiki co pole tekstowe.
@@ -192,8 +222,9 @@ export default function Landing() {
     setMsg(t("qr.invalid"));
   }
 
-  const inputCls =
-    "w-full rounded-xl border border-line bg-surface-2 py-3 text-sm text-ink outline-none focus:ring-2 focus:ring-brand";
+  // Kraj ma znaczenie tylko, gdy panel rozumie nazwy albo numer — inaczej
+  // byłby pytaniem bez sensu.
+  const showCountry = caps.password || phoneFind;
 
   return (
     <div className="max-w-md mx-auto min-h-screen p-6 flex flex-col">
@@ -274,41 +305,25 @@ export default function Landing() {
         <span className="flex-1 h-px bg-line" />
       </div>
 
-      {/* HASŁO SALONU. Hasło jest unikalne w obrębie KRAJU (dwie obce firmy
-          „BBeauty" — Koszalin i Rzym — nie kolidują), więc obok pola jest
-          kraj: domyślnie z ustawień telefonu, zapamiętany po zmianie. Wybór
-          kraju pokazujemy tylko, gdy panel już rozumie hasła — bez tego byłby
-          pytaniem bez sensu. */}
-      <label className="text-[11px] font-bold text-ink-2">{t("landing.codeLabel")}</label>
-      <div className="flex gap-2 mt-1.5">
-        {caps.password && (
-          <select
-            value={country}
-            onChange={(e) => pickCountry(e.target.value)}
-            aria-label={t("landing.country")}
-            className="shrink-0 max-w-[96px] rounded-xl border border-line bg-surface-2 px-2 py-3 text-sm outline-none focus:ring-2 focus:ring-brand"
-          >
-            {ENTRY_COUNTRIES.map((c) => (
-              <option key={c} value={c}>
-                {countryFlagEmoji(c)} {c}
-              </option>
-            ))}
-          </select>
-        )}
-        <div className="relative flex-1 min-w-0">
-          <KeyRound size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+      {phoneFlow ? (
+        <PhoneEntry phone={phoneFlow} onBack={() => setPhoneFlow(null)} />
+      ) : (
+        <>
+          <label htmlFor="booksero-entry" className="text-[11px] font-bold text-ink-2">
+            {phoneFind ? t("landing.codeLabelBoth") : t("landing.codeLabel")}
+          </label>
           {/* autoComplete="off" + nazwa pola bez słowa „password"/„hasło":
-              Chrome podstawiał tu z autouzupełniania NAZWĘ FIRMY zapamiętaną
-              z innych formularzy („VIVI ESTETIC Sp. z o.o."), a klientka
-              brała to za podpowiedź aplikacji. Nazwa z „password" włączyłaby
-              z kolei menedżer haseł. */}
+              Chrome podstawiał tu z autouzupełniania NAZWĘ FIRMY albo numer
+              telefonu zapamiętane z innych formularzy, a klientka brała to za
+              podpowiedź aplikacji. Nazwa z „password" włączyłaby z kolei
+              menedżer haseł. */}
           <input
             name="booksero-entry"
             id="booksero-entry"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && go()}
-            placeholder={t("landing.placeholder")}
+            placeholder={phoneFind ? t("landing.placeholderBoth") : t("landing.placeholder")}
             autoComplete="off"
             autoCapitalize="none"
             autoCorrect="off"
@@ -316,30 +331,49 @@ export default function Landing() {
             enterKeyHint="go"
             data-lpignore="true"
             data-1p-ignore="true"
-            className={`${inputCls} pl-9 pr-4`}
-            aria-label={t("landing.codeLabel")}
+            className="w-full mt-1.5 rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm text-ink outline-none focus:ring-2 focus:ring-brand"
           />
-        </div>
-      </div>
-      <button onClick={go} disabled={!value.trim() || busy} className="btn-primary mt-3">
-        {busy ? t("common.loading") : t("welcome.start")}
-      </button>
+          <button onClick={go} disabled={!value.trim() || busy} className="btn-primary mt-3">
+            {busy ? t("common.loading") : t("welcome.start")}
+          </button>
 
-      {msg && <p className="text-xs text-red-400 mt-3">{msg}</p>}
+          {/* Kraj: jedna drobna linijka. Nazwy salonów są unikalne w obrębie
+              kraju (dwie obce firmy „BBeauty" — Koszalin i Rzym — nie
+              kolidują), a numer trzeba umieć odczytać. Domyślnie z telefonu;
+              lista rozwija się dopiero po tapnięciu „zmień". */}
+          {showCountry && (
+            <div className="mt-2 text-xs text-muted">
+              {countryOpen ? (
+                <select
+                  autoFocus
+                  value={country}
+                  onChange={(e) => pickCountry(e.target.value)}
+                  onBlur={() => setCountryOpen(false)}
+                  aria-label={t("landing.country")}
+                  className="rounded-lg border border-line bg-surface-2 px-2 py-1.5 text-xs text-ink"
+                >
+                  {ENTRY_COUNTRIES.map((c) => (
+                    <option key={c} value={c}>
+                      {countryFlagEmoji(c)} {c}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <span>
+                  {countryFlagEmoji(country)} {country} ·{" "}
+                  <button onClick={() => setCountryOpen(true)} className="text-brand font-semibold">
+                    {t("landing.countryChange")}
+                  </button>
+                </span>
+              )}
+            </div>
+          )}
 
-      {/* WEJŚCIE PO NUMERZE — tylko gdy panel to umie. Zwinięte do jednej
-          linijki, żeby ekran nie straszył dwoma formularzami naraz. */}
-      {phoneFind && !phoneOpen && (
-        <button
-          onClick={() => { setMsg(""); setPhoneOpen(true); }}
-          className="mt-4 w-full text-sm text-brand font-semibold py-2 flex items-center justify-center gap-2"
-        >
-          <Smartphone size={15} /> {t("landing.phoneEntry")}
-        </button>
+          {msg && <p className="text-xs text-red-400 mt-3">{msg}</p>}
+        </>
       )}
-      {phoneFind && phoneOpen && <PhoneEntry />}
 
-      {/* Nowa klientka bez kodu, hasła ani kartoteki: aplikacja jest wejściem
+      {/* Nowa klientka bez kodu, nazwy ani kartoteki: aplikacja jest wejściem
           dla klientek salonu, nie miejscem szukania salonów — mówimy to wprost.
           Wersja widoczna BEZ logowania — diagnostyka „czy telefon ma świeżą
           aplikację" nie może wymagać zalogowania. */}
