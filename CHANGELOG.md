@@ -9,6 +9,17 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.47] — 2026-09-05 — Wejście numerem telefonu wydane
+
+- Ścieżka „masz już u nas kartotekę? wpisz numer" jest dostępna dla klientek
+  wszędzie tam, gdzie lokalizacja włączyła ją w panelu (decyzja właściciela
+  2026-09-05; polityka prywatności §2a). Rygiel `PHONE_ENTRY_RELEASED`
+  usunięty.
+- Usunięty tryb testowy właściciela (5 tapnięć w wersję, dopisek „· test"
+  i `?phoneEntry=1`) — nie jest już potrzebny.
+
+---
+
 ## [1.0.46] — 2026-09-05 — Poprawny odcisk klucza Google Play
 
 - Odcisk klucza Google Play App Signing odczytany z podpisanego APK

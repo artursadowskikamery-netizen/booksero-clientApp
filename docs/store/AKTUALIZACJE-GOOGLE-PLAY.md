@@ -172,9 +172,9 @@ trzeba opublikować jako stronę, np. `app.booksero.com/polityka`), a formularz
 telefonu, imię i nazwisko, historia wizyt, identyfikator urządzenia do
 powiadomień. Bez tego wpis w sklepie może zostać zawieszony.
 
-**Aplikacja ze sklepu a wejście po numerze** — rygiel prawny po stronie
-aplikacji (strona) obowiązuje tak samo w wersji sklepowej; odblokowanie to
-Republish strony, bez nowej paczki.
+**Aplikacja ze sklepu a wejście po numerze** — od 1.0.47 ścieżka jest
+wydana; o jej widoczności decyduje przełącznik lokalizacji w panelu. Zmiany
+tego typu to Republish strony, bez nowej paczki.
 
 **iPhone** — Google Play go nie dotyczy. Klientki z iPhone'a instalują
 aplikację z Safari („Dodaj do ekranu początkowego"); App Store wymagałby

@@ -18,14 +18,12 @@ import type { EntryCapabilities, EntryMethod } from "@shared/types";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// BLOKADA PRAWNA (panel, SPEC §8, 2026-09-05): ścieżka po numerze zestawia
-// klientce listę firm należących do NIEZALEŻNYCH administratorów danych.
-// Czeka na potwierdzenie prawnika i wpis do polityki prywatności. Panel już
-// ją obsługuje i zgłasza `phoneFind: true`, więc bez tego rygla klientki
-// zobaczyłyby ją od razu. Odblokowanie = zmiana tej stałej na true + wersja.
-// Do testów właściciela: adres ekranu startowego z `?phoneEntry=1`.
-const PHONE_ENTRY_RELEASED = false;
-const TEST_KEY = "booksero_test_phone_entry";
+// WEJŚCIE NUMEREM TELEFONU — wydane 2026-09-05 decyzją właściciela (1.0.47).
+// Ścieżka zestawia klientce listę firm należących do NIEZALEŻNYCH
+// administratorów danych; opis w polityce prywatności §2a. Każda lokalizacja
+// decyduje sama przełącznikiem w panelu (`appEntry.phoneFind`) — aplikacja
+// pokazuje ścieżkę tylko, gdy panel zgłasza `phoneFind: true`. Dawny rygiel
+// `PHONE_ENTRY_RELEASED` i tryb testowy (5 tapnięć w wersję) usunięte.
 
 // Czy wpis wygląda na numer telefonu (a nie na nazwę salonu): same cyfry,
 // spacje, myślniki, nawiasy, ewentualny plus — i co najmniej 7 cyfr.
@@ -62,26 +60,7 @@ export default function Landing() {
   // (pole = adres wizytówki). Po wdrożeniu panelu włącza się samo.
   const [caps, setCaps] = useState<EntryCapabilities>({ password: false, phoneFind: false });
   const { t, i18n } = useTranslation();
-  const phoneTest = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("phoneEntry") === "1";
-  // TRYB TESTOWY WŁAŚCICIELA: 5 tapnięć w numer wersji włącza (i wyłącza)
-  // ścieżkę po numerze na TYM telefonie. W zainstalowanej aplikacji nie ma
-  // paska adresu, więc `?phoneEntry=1` nie da się wpisać — stąd gest.
-  const [testMode, setTestMode] = useState<boolean>(() => {
-    try { return localStorage.getItem(TEST_KEY) === "1"; } catch { return false; }
-  });
-  const [taps, setTaps] = useState(0);
-  const [testInfo, setTestInfo] = useState("");
-  const tapVersion = () => {
-    const n = taps + 1;
-    if (n < 5) { setTaps(n); return; }
-    setTaps(0);
-    const next = !testMode;
-    setTestMode(next);
-    try { if (next) localStorage.setItem(TEST_KEY, "1"); else localStorage.removeItem(TEST_KEY); } catch { /* brak localStorage */ }
-    setTestInfo(next ? "Tryb testowy: wejście numerem WŁĄCZONE" : "Tryb testowy: wejście numerem wyłączone");
-    setTimeout(() => setTestInfo(""), 3000);
-  };
-  const phoneFind = caps.phoneFind && (PHONE_ENTRY_RELEASED || phoneTest || testMode);
+  const phoneFind = caps.phoneFind;
 
   // Ekran startowy = neutralna powłoka BookSero — zawsze domyślny niebieski
   // (kolor salonu wraca dopiero na ekranach salonu).
@@ -399,10 +378,7 @@ export default function Landing() {
       <p className="mt-auto pt-6 text-[11px] text-muted text-center">
         <span className="block">{t("landing.firstTime")}</span>
         <span className="block mt-1">{t("landing.privacyNote")}</span>
-        <span className="block mt-1 opacity-70 select-none" onClick={tapVersion}>
-          BookSero v{APP_VERSION}{testMode ? " · test" : ""}
-        </span>
-        {testInfo && <span className="block mt-1 text-brand font-semibold">{testInfo}</span>}
+        <span className="block mt-1 opacity-70 select-none">BookSero v{APP_VERSION}</span>
       </p>
 
       {scanning && <QrScanner onResult={handleQr} onClose={() => setScanning(false)} />}

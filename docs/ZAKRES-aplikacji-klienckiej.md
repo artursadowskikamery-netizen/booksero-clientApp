@@ -52,10 +52,10 @@ QR od salonu — aplikacja jest wejściem dla klientek salonu, nie miejscem
 szukania salonów. Stopka: „Pierwszy raz? Poproś salon o hasło lub kod QR."
 
 Panel wdrożył obie drogi 2026-09-05. Droga 2 (hasło) jest włączona.
-**Droga 3 (numer) jest ZARYGLOWANA w aplikacji** do decyzji właściciela:
-zestawia klientce listę firm należących do niezależnych administratorów
-danych i czeka na potwierdzenie prawnika oraz wpis do polityki prywatności.
-Sero nie ma prawa jej klientkom obiecywać, dopóki rygiel nie zejdzie.
+**Droga 3 (numer) jest WYDANA od 1.0.47** (decyzja właściciela 2026-09-05,
+opis w polityce prywatności §2a). Działa tylko w lokalizacjach, które włączyły
+ją w panelu (przełącznik „Widoczna przy wejściu numerem telefonu"). Sero może
+ją obiecywać klientkom TYLKO tam, gdzie salon ma ten przełącznik włączony.
 
 **Wyłącznik aplikacji per lokalizacja** (panel): firma może wyłączyć
 aplikację; wtedy każda droga wejścia, także QR i link, kończy się komunikatem
