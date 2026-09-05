@@ -16,5 +16,4 @@
 - Publikacja w Google Play: konto dewelopera zakładane na
   `developer@viviestetic.eu` (nie na prywatnym gmailu), „Firma lub spółka",
   nazwa dewelopera „Booksero". Instrukcja: `docs/store/AKTUALIZACJE-GOOGLE-PLAY.md`.
-- Odciski SHA-256 do `server/assetlinks.ts`: #1 (PWABuilder) wpisany,
-  #2 (Google Play App Signing) do dopisania po pierwszym wgraniu paczki.
+- Odciski SHA-256 w `server/assetlinks.ts`: oba wpisane i sprawdzone (1.0.46).
