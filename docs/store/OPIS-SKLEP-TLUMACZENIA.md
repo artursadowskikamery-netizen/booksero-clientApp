@@ -1,18 +1,24 @@
 # BookSero — wpis w Google Play w 16 językach
 
-Język domyślny wpisu: **English (United States)**. Poniżej tłumaczenia do
-wklejenia w Play Console → Główny wpis w sklepie → Zarządzaj tłumaczeniami →
-Dodaj język. Nazwa aplikacji wszędzie: **BookSero**.
+Język domyślny wpisu: **English (United States)**. Pozostałe języki: Play
+Console → Główny wpis w sklepie → Zarządzaj tłumaczeniami → Dodaj język.
 
-Krótki opis: maks. 80 znaków. Pełny opis: maks. 4000 znaków.
+W każdym języku trzy pola:
+- **Nazwa aplikacji** (maks. 30 znaków): zawsze `BookSero`
+- **Krótki opis** (maks. 80 znaków)
+- **Pełny opis** (maks. 4000 znaków)
 
 ---
 
-## English (en-US) — domyślny
+## English (en-US)
 
-**Short:** Book salon appointments, collect points and claim rewards — all on your phone.
+### Nazwa aplikacji
+BookSero
 
-**Full:**
+### Krótki opis (65 znaków)
+Book salon visits, collect points, claim rewards — on your phone.
+
+### Pełny opis
 BookSero is the app for booking appointments at your favourite salon — fast, easy and without phone calls.
 
 How to start: scan the QR code from your salon, enter the name your salon gave you, or enter with your phone number — the app shows the salons where you already have a client record. BookSero is not a salon directory: you go straight to your own salon.
@@ -36,9 +42,13 @@ BookSero works in 16 languages. The app is free for salon clients.
 
 ## Polski (pl-PL)
 
-**Krótki:** Rezerwuj wizyty w salonie, zbieraj punkty i odbieraj nagrody — w telefonie.
+### Nazwa aplikacji
+BookSero
 
-**Pełny:**
+### Krótki opis (60 znaków)
+Rezerwuj wizyty w salonie, zbieraj punkty, odbieraj nagrody.
+
+### Pełny opis
 BookSero to aplikacja do rezerwacji wizyt w Twoim ulubionym salonie — szybko, wygodnie i bez dzwonienia.
 
 Jak zacząć: zeskanuj kod QR z salonu, wpisz nazwę, którą podał Ci salon, albo wejdź swoim numerem telefonu — aplikacja pokaże salony, w których masz już kartotekę. BookSero nie jest katalogiem salonów: trafiasz prosto do swojego.
@@ -62,9 +72,13 @@ BookSero działa w 16 językach. Aplikacja jest bezpłatna dla klientów salonu.
 
 ## Deutsch (de-DE)
 
-**Kurz:** Salontermine buchen, Punkte sammeln, Prämien einlösen — alles am Handy.
+### Nazwa aplikacji
+BookSero
 
-**Lang:**
+### Krótki opis (54 znaków)
+Salontermine buchen, Punkte sammeln, Prämien einlösen.
+
+### Pełny opis
 BookSero ist die App zum Buchen von Terminen in deinem Lieblingssalon — schnell, bequem und ohne Anruf.
 
 So geht's los: Scanne den QR-Code aus deinem Salon, gib den Namen ein, den dir der Salon genannt hat, oder tritt mit deiner Telefonnummer ein — die App zeigt die Salons, in denen du bereits eine Kundenakte hast. BookSero ist kein Salonverzeichnis: Du landest direkt in deinem eigenen Salon.
@@ -88,9 +102,13 @@ BookSero gibt es in 16 Sprachen. Die App ist für Salonkunden kostenlos.
 
 ## Nederlands (nl-NL)
 
-**Kort:** Boek salonafspraken, spaar punten en verzilver beloningen — op je telefoon.
+### Nazwa aplikacji
+BookSero
 
-**Volledig:**
+### Krótki opis (56 znaków)
+Boek salonafspraken, spaar punten, verzilver beloningen.
+
+### Pełny opis
 BookSero is de app om afspraken te maken bij je favoriete salon — snel, makkelijk en zonder te bellen.
 
 Zo begin je: scan de QR-code van je salon, voer de naam in die je salon je gaf, of ga verder met je telefoonnummer — de app toont de salons waar je al een klantdossier hebt. BookSero is geen salongids: je gaat rechtstreeks naar je eigen salon.
@@ -114,9 +132,13 @@ BookSero werkt in 16 talen. De app is gratis voor salonklanten.
 
 ## Čeština (cs-CZ)
 
-**Krátký:** Rezervuj návštěvy v salonu, sbírej body a získávej odměny — v telefonu.
+### Nazwa aplikacji
+BookSero
 
-**Úplný:**
+### Krótki opis (57 znaków)
+Rezervuj návštěvy v salonu, sbírej body, získávej odměny.
+
+### Pełny opis
 BookSero je aplikace pro rezervaci návštěv ve tvém oblíbeném salonu — rychle, pohodlně a bez telefonování.
 
 Jak začít: naskenuj QR kód ze salonu, zadej název, který ti salon dal, nebo vstup svým telefonním číslem — aplikace ukáže salony, kde už máš kartu klienta. BookSero není katalog salonů: jdeš rovnou do svého.
@@ -140,9 +162,13 @@ BookSero funguje v 16 jazycích. Aplikace je pro klienty salonu zdarma.
 
 ## Svenska (sv-SE)
 
-**Kort:** Boka salongstider, samla poäng och hämta belöningar — direkt i mobilen.
+### Nazwa aplikacji
+BookSero
 
-**Fullständig:**
+### Krótki opis (49 znaków)
+Boka salongstider, samla poäng, hämta belöningar.
+
+### Pełny opis
 BookSero är appen för att boka tider hos din favoritsalong — snabbt, enkelt och utan att ringa.
 
 Så kommer du igång: skanna QR-koden från din salong, ange namnet du fått av salongen eller gå in med ditt telefonnummer — appen visar salongerna där du redan har en kundjournal. BookSero är ingen salongskatalog: du kommer direkt till din egen salong.
@@ -166,9 +192,13 @@ BookSero finns på 16 språk. Appen är gratis för salongens kunder.
 
 ## Español (es-ES)
 
-**Corto:** Reserva citas en tu salón, acumula puntos y canjea premios — en tu móvil.
+### Nazwa aplikacji
+BookSero
 
-**Completo:**
+### Krótki opis (58 znaków)
+Reserva citas en tu salón, acumula puntos, canjea premios.
+
+### Pełny opis
 BookSero es la app para reservar citas en tu salón favorito — rápido, cómodo y sin llamar.
 
 Cómo empezar: escanea el código QR de tu salón, escribe el nombre que te dio el salón o entra con tu número de teléfono — la app te muestra los salones donde ya tienes ficha. BookSero no es un directorio de salones: vas directo al tuyo.
@@ -192,9 +222,13 @@ BookSero funciona en 16 idiomas. La app es gratuita para los clientes del salón
 
 ## Français (fr-FR)
 
-**Court :** Réservez vos rendez-vous en salon, cumulez des points, gagnez des récompenses.
+### Nazwa aplikacji
+BookSero
 
-**Complet :**
+### Krótki opis (62 znaków)
+Réservez en salon, cumulez des points, gagnez des récompenses.
+
+### Pełny opis
 BookSero est l'application pour réserver dans votre salon préféré — vite, simplement et sans appeler.
 
 Pour commencer : scannez le QR code de votre salon, saisissez le nom que le salon vous a donné, ou entrez avec votre numéro de téléphone — l'application affiche les salons où vous avez déjà un dossier client. BookSero n'est pas un annuaire de salons : vous arrivez directement dans le vôtre.
@@ -218,9 +252,13 @@ BookSero est disponible en 16 langues. L'application est gratuite pour les clien
 
 ## Italiano (it-IT)
 
-**Breve:** Prenota nel tuo salone, accumula punti e ottieni premi — dal telefono.
+### Nazwa aplikacji
+BookSero
 
-**Completa:**
+### Krótki opis (54 znaków)
+Prenota nel tuo salone, accumula punti, ottieni premi.
+
+### Pełny opis
 BookSero è l'app per prenotare nel tuo salone preferito — veloce, comoda e senza telefonate.
 
 Come iniziare: scansiona il codice QR del salone, inserisci il nome che ti ha dato il salone oppure entra con il tuo numero di telefono — l'app mostra i saloni in cui hai già una scheda cliente. BookSero non è un elenco di saloni: vai dritto al tuo.
@@ -244,9 +282,13 @@ BookSero è disponibile in 16 lingue. L'app è gratuita per i clienti del salone
 
 ## Hrvatski (hr-HR)
 
-**Kratki:** Rezerviraj termine u salonu, skupljaj bodove i osvajaj nagrade — na mobitelu.
+### Nazwa aplikacji
+BookSero
 
-**Puni:**
+### Krótki opis (62 znaków)
+Rezerviraj termine u salonu, skupljaj bodove, osvajaj nagrade.
+
+### Pełny opis
 BookSero je aplikacija za rezervaciju termina u tvom omiljenom salonu — brzo, jednostavno i bez zvanja.
 
 Kako početi: skeniraj QR kod iz salona, upiši naziv koji ti je salon dao ili uđi svojim brojem telefona — aplikacija prikazuje salone u kojima već imaš karton. BookSero nije imenik salona: ideš izravno u svoj.
@@ -270,9 +312,13 @@ BookSero radi na 16 jezika. Aplikacija je besplatna za klijente salona.
 
 ## Ελληνικά (el-GR)
 
-**Σύντομη:** Κλείσε ραντεβού στο σαλόνι, μάζεψε πόντους, κέρδισε δώρα — από το κινητό.
+### Nazwa aplikacji
+BookSero
 
-**Πλήρης:**
+### Krótki opis (53 znaków)
+Ραντεβού στο σαλόνι, πόντοι και δώρα — από το κινητό.
+
+### Pełny opis
 Το BookSero είναι η εφαρμογή για ραντεβού στο αγαπημένο σου σαλόνι — γρήγορα, εύκολα και χωρίς τηλεφωνήματα.
 
 Πώς ξεκινάς: σκάναρε τον κωδικό QR από το σαλόνι, γράψε το όνομα που σου έδωσε το σαλόνι ή μπες με τον αριθμό τηλεφώνου σου — η εφαρμογή δείχνει τα σαλόνια όπου έχεις ήδη καρτέλα. Το BookSero δεν είναι κατάλογος σαλονιών: πας κατευθείαν στο δικό σου.
@@ -296,9 +342,13 @@ BookSero radi na 16 jezika. Aplikacija je besplatna za klijente salona.
 
 ## Türkçe (tr-TR)
 
-**Kısa:** Salon randevusu al, puan biriktir, ödül kazan — hepsi telefonunda.
+### Nazwa aplikacji
+BookSero
 
-**Tam:**
+### Krótki opis (46 znaków)
+Salon randevusu al, puan biriktir, ödül kazan.
+
+### Pełny opis
 BookSero, favori salonunda randevu almak için uygulamadır — hızlı, kolay ve telefon etmeden.
 
 Nasıl başlanır: salonundaki QR kodu tarat, salonun sana verdiği adı yaz ya da telefon numaranla gir — uygulama, zaten müşteri kaydının olduğu salonları gösterir. BookSero bir salon rehberi değildir: doğrudan kendi salonuna gidersin.
@@ -322,9 +372,13 @@ BookSero 16 dilde çalışır. Uygulama salon müşterileri için ücretsizdir.
 
 ## Български (bg-BG)
 
-**Кратко:** Запазвай часове в салона, събирай точки и получавай награди — на телефона.
+### Nazwa aplikacji
+BookSero
 
-**Пълно:**
+### Krótki opis (59 znaków)
+Запазвай часове в салона, събирай точки, получавай награди.
+
+### Pełny opis
 BookSero е приложението за запазване на часове в любимия ти салон — бързо, удобно и без обаждания.
 
 Как да започнеш: сканирай QR кода от салона, въведи името, което салонът ти е дал, или влез с телефонния си номер — приложението показва салоните, в които вече имаш досие. BookSero не е каталог на салони: отиваш направо в своя.
@@ -348,9 +402,13 @@ BookSero работи на 16 езика. Приложението е безпл
 
 ## Suomi (fi-FI)
 
-**Lyhyt:** Varaa salonkiaikoja, kerää pisteitä ja lunasta palkintoja — puhelimella.
+### Nazwa aplikacji
+BookSero
 
-**Täysi:**
+### Krótki opis (56 znaków)
+Varaa salonkiaikoja, kerää pisteitä, lunasta palkintoja.
+
+### Pełny opis
 BookSero on sovellus ajanvaraukseen suosikkisalonkiisi — nopeasti, helposti ja ilman soittamista.
 
 Näin aloitat: skannaa salongin QR-koodi, syötä salongin antama nimi tai kirjaudu puhelinnumerollasi — sovellus näyttää salongit, joissa sinulla on jo asiakastiedot. BookSero ei ole salonkihakemisto: pääset suoraan omaan salonkiisi.
@@ -374,9 +432,13 @@ BookSero toimii 16 kielellä. Sovellus on salongin asiakkaille ilmainen.
 
 ## Norsk (no-NO)
 
-**Kort:** Bestill salongtimer, samle poeng og hent belønninger — rett på mobilen.
+### Nazwa aplikacji
+BookSero
 
-**Full:**
+### Krótki opis (51 znaków)
+Bestill salongtimer, samle poeng, hent belønninger.
+
+### Pełny opis
 BookSero er appen for å bestille time hos favorittsalongen din — raskt, enkelt og uten å ringe.
 
 Slik starter du: skann QR-koden fra salongen, skriv inn navnet salongen ga deg, eller gå inn med telefonnummeret ditt — appen viser salongene der du allerede har kundekort. BookSero er ingen salongkatalog: du går rett til din egen salong.
@@ -400,9 +462,13 @@ BookSero finnes på 16 språk. Appen er gratis for salongens kunder.
 
 ## Українська (uk-UA)
 
-**Короткий:** Записуйся до салону, збирай бали й отримуй винагороди — у телефоні.
+### Nazwa aplikacji
+BookSero
 
-**Повний:**
+### Krótki opis (53 znaków)
+Записуйся до салону, збирай бали, отримуй винагороди.
+
+### Pełny opis
 BookSero — це застосунок для запису до твого улюбленого салону — швидко, зручно й без дзвінків.
 
 Як почати: відскануй QR-код із салону, введи назву, яку дав тобі салон, або увійди за номером телефону — застосунок покаже салони, де в тебе вже є картка. BookSero — не каталог салонів: ти потрапляєш одразу до свого.
@@ -421,3 +487,4 @@ BookSero — це застосунок для запису до твого ул�
 • Користуйся happy hours і записуйся дешевше.
 
 BookSero працює 16 мовами. Застосунок безкоштовний для клієнтів салону.
+
