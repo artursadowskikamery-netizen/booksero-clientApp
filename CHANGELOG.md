@@ -9,6 +9,16 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.44] — 2026-09-05 — Nieznany adres nie prowadzi na /salon/undefined
+
+- Adres spoza aplikacji (np. `/polityka-prywatnosci` otwarty przez starą
+  wersję aplikacji) trafiał do rozpoznawania adresu wizytówki; odpowiedź
+  serwera bez identyfikatora salonu prowadziła na `/salon/undefined`
+  i ekran „Ten salon nie jest już dostępny". Teraz brak identyfikatora =
+  „nie znaleziono strony".
+
+---
+
 ## [1.0.43] — 2026-09-05 — Polityka prywatności pod publicznym adresem
 
 - Google Play wymaga polityki prywatności pod publicznym adresem. Jest:

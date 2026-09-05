@@ -23,8 +23,16 @@ export default function SlugRedirect() {
     let alive = true;
     api
       .resolveSlug(slug)
-      .then(({ salonId }) => {
+      .then((r) => {
         if (!alive) return;
+        // Odpowiedź 200 BEZ salonId (panel oddaje inny kształt dla nieznanego
+        // adresu) prowadziła na /salon/undefined i ekran „salon nie jest już
+        // dostępny". Brak identyfikatora = nie znaleziono, nic więcej.
+        const salonId = typeof r?.salonId === "string" && r.salonId ? r.salonId : null;
+        if (!salonId) {
+          setFailed(true);
+          return;
+        }
         // Wejście linkiem z wizytówki/QR aparatem — licznik dla właściciela.
         void api.entryEvent("link", { salonId });
         navigate(`/salon/${salonId}`, { replace: true });
