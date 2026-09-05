@@ -184,7 +184,7 @@ osobnej paczki i osobnego procesu — poza zakresem na dziś.
 
 ## 8. Przed pierwszą publikacją — lista do odhaczenia
 
-- [ ] oba odciski SHA-256 w `server/assetlinks.ts`, wdrożone, sprawdzone
+- [x] oba odciski SHA-256 w `server/assetlinks.ts` (1.0.45) — [ ] wdrożone, sprawdzone
       pod `/.well-known/assetlinks.json`
 - [ ] klucz podpisywania z PWABuilder zapisany w dwóch miejscach
 - [x] polityka prywatności pod publicznym adresem: `https://app.booksero.com/polityka-prywatnosci` (od 1.0.43) — [ ] adres wpisany w Play Console, [ ] treść potwierdzona przez prawnika

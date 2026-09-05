@@ -9,6 +9,14 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.45] — 2026-09-05 — Odciski kluczy Google Play (assetlinks)
+
+- `/.well-known/assetlinks.json` zawiera oba odciski SHA-256 dla
+  `com.booksero.app`: klucz paczki PWABuilder i klucz Google Play App
+  Signing. Aplikacja ze sklepu otwiera się bez paska adresu.
+
+---
+
 ## [1.0.44] — 2026-09-05 — Nieznany adres nie prowadzi na /salon/undefined
 
 - Adres spoza aplikacji (np. `/polityka-prywatnosci` otwarty przez starą
