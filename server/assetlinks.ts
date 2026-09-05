@@ -23,7 +23,11 @@ export const ASSET_LINKS: unknown[] = [
       namespace: "android_app",
       package_name: "com.booksero.app",
       sha256_cert_fingerprints: [
-        // TODO: wkleić oba odciski (format AA:BB:CC:… wielkimi literami)
+        // 1. klucz paczki PWABuilder (com.booksero.app, ZIP z 2026-09-05)
+        "97:DD:B7:54:CA:B9:E4:23:94:48:51:75:62:2E:57:D3:8D:04:FA:39:18:3B:34:0E:F0:5C:FB:E1:AB:E8:8C:58",
+        // 2. TODO: klucz Google Play App Signing (Play Console → Integralność
+        //    aplikacji → Podpisywanie aplikacji → SHA-256) — dopisać po
+        //    pierwszym wgraniu paczki na Testy wewnętrzne.
       ],
     },
   },
