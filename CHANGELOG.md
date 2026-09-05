@@ -9,6 +9,15 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.48] — 2026-09-05 — Kraj salonu opisany na ekranie startowym
+
+- Zamiast samej flagi „PL · zmień": ramka „Kraj salonu: 🇵🇱 Polska · zmień"
+  z jednym zdaniem, po co to jest (według kraju szukamy nazwy salonu
+  i czytamy numer telefonu). Nazwa kraju w języku aplikacji, nie kod.
+  16 języków.
+
+---
+
 ## [1.0.47] — 2026-09-05 — Wejście numerem telefonu wydane
 
 - Ścieżka „masz już u nas kartotekę? wpisz numer" jest dostępna dla klientek

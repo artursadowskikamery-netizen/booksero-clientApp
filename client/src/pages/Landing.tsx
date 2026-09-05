@@ -52,6 +52,15 @@ export default function Landing() {
   const [scanning, setScanning] = useState(false);
   const [recent, setRecent] = useState<RecentSalon[]>(() => loadRecentSalons());
   const [country, setCountry] = useState<string>(() => loadEntryCountry());
+  // Nazwa kraju w języku aplikacji („Polska", nie „PL") — klientka nie musi
+  // znać kodów ISO. Gdy przeglądarka nie zna Intl.DisplayNames, zostaje kod.
+  const countryName = (code: string) => {
+    try {
+      return new Intl.DisplayNames([i18n.language], { type: "region" }).of(code) || code;
+    } catch {
+      return code;
+    }
+  };
   const [countryOpen, setCountryOpen] = useState(false);
   // Numer w formacie międzynarodowym, gdy klientka weszła numerem — pole
   // zamienia się wtedy w krok „kod z SMS".
@@ -335,35 +344,40 @@ export default function Landing() {
             {busy ? t("common.loading") : t("welcome.start")}
           </button>
 
-          {/* Kraj: jedna drobna linijka. Nazwy salonów są unikalne w obrębie
+          {/* Kraj salonu — OPISANY (decyzja właściciela 2026-09-05: sama flaga
+              „PL · zmień" nic nie mówiła). Nazwy salonów są unikalne w obrębie
               kraju (dwie obce firmy „BBeauty" — Koszalin i Rzym — nie
-              kolidują), a numer trzeba umieć odczytać. Domyślnie z telefonu;
-              lista rozwija się dopiero po tapnięciu „zmień". */}
+              kolidują), a numer telefonu czytamy według kraju. Domyślnie
+              z telefonu; lista rozwija się po tapnięciu „zmień". */}
           {showCountry && (
-            <div className="mt-2 text-xs text-muted">
-              {countryOpen ? (
-                <select
-                  autoFocus
-                  value={country}
-                  onChange={(e) => pickCountry(e.target.value)}
-                  onBlur={() => setCountryOpen(false)}
-                  aria-label={t("landing.country")}
-                  className="rounded-lg border border-line bg-surface-2 px-2 py-1.5 text-xs text-ink"
-                >
-                  {ENTRY_COUNTRIES.map((c) => (
-                    <option key={c} value={c}>
-                      {countryFlagEmoji(c)} {c}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <span>
-                  {countryFlagEmoji(country)} {country} ·{" "}
-                  <button onClick={() => setCountryOpen(true)} className="text-brand font-semibold">
-                    {t("landing.countryChange")}
-                  </button>
-                </span>
-              )}
+            <div className="mt-3 rounded-xl border border-line bg-surface-2 px-3 py-2 text-xs">
+              <div className="text-ink">
+                <span className="font-bold">{t("landing.country")}:</span>{" "}
+                {countryOpen ? (
+                  <select
+                    autoFocus
+                    value={country}
+                    onChange={(e) => pickCountry(e.target.value)}
+                    onBlur={() => setCountryOpen(false)}
+                    aria-label={t("landing.country")}
+                    className="rounded-lg border border-line bg-surface px-2 py-1 text-xs text-ink"
+                  >
+                    {ENTRY_COUNTRIES.map((c) => (
+                      <option key={c} value={c}>
+                        {countryFlagEmoji(c)} {countryName(c)}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <span>
+                    {countryFlagEmoji(country)} {countryName(country)} ·{" "}
+                    <button onClick={() => setCountryOpen(true)} className="text-brand font-semibold">
+                      {t("landing.countryChange")}
+                    </button>
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-muted">{t("landing.countryHint")}</p>
             </div>
           )}
 
