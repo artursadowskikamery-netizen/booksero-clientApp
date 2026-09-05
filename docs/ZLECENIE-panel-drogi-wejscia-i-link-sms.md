@@ -13,32 +13,34 @@ strona panelu.**
 
 ## A. Model — ustawienia wejścia lokalizacji
 
-Na lokalizacji (obok `app_enabled` i haseł) cztery przełączniki:
+**Kod QR / link — ZAWSZE dostępny, bez przełącznika** (decyzja właściciela
+2026-09-05 po uwadze sesji aplikacji: kod QR to link wydrukowany jako
+obrazek; wydrukowanych kodów żaden przełącznik nie unieważni, więc
+przełącznik byłby fikcją). W zakładce aplikacji QR jest po prostu pokazany
+jako standardowa droga, z kodem do pobrania.
+
+Na lokalizacji (obok `app_enabled` i haseł) przełączniki:
 
 | pole | domyślnie | znaczenie |
 |---|---|---|
-| `appEntry.qr` | **on** | panel pokazuje i generuje materiały z kodem QR / linkiem: sekcja „Aplikacja BookSero" na wizytówce, przycisk „Otwórz aplikację", QR do druku |
 | `appEntry.name` | **on** | wejście nazwą salonu działa; wyłączone → `GET /api/public/app/password` dla haseł tej lokalizacji oddaje 404, moduł haseł w panelu wyszarzony z informacją |
 | `appEntry.smsLink` | **off** | panel wysyła klientce link do aplikacji SMS-em (§C) — **kosztuje SMS z puli lokalizacji** |
 | `appEntry.phoneFind` | **on** | lokalizacja jest na liście „masz kartotekę w…" przy wejściu numerem telefonu; wyłączona → nie wraca z `find/verify` |
 
-Wszystkie cztery przełączniki są **zawsze widoczne** (decyzja właściciela),
-każdy z jednym zdaniem opisu. Zmiany do rejestru zdarzeń.
+Przełączniki są **zawsze widoczne**, każdy z jednym zdaniem opisu. Zmiany
+do rejestru zdarzeń.
 
 `appEntry.phoneFind` nie było w prośbie właściciela — to propozycja sesji
-aplikacji: **zgoda administratora danych na wylistowanie** jego firmy przy
-wejściu numerem to mocny argument dla prawnika w sprawie z SPEC §8. Jeśli
-właściciel odrzuci — pominąć.
+aplikacji, **czeka na jego decyzję**: zgoda administratora danych na
+wylistowanie jego firmy przy wejściu numerem to mocny argument dla prawnika
+w sprawie z SPEC §8. Do czasu decyzji zbuduj pole i przełącznik (domyślnie
+on) — jeśli właściciel odrzuci, schować sam przełącznik, pole zostaje.
 
-## B. Uczciwie o przełączniku „Kod QR"
+## B. Kod QR — bez przełącznika, ale z jednym zdaniem
 
-Kod QR to zwykły link wydrukowany jako obrazek. **Wydrukowanych kodów żaden
-przełącznik nie unieważni** — telefon zeskanuje i otworzy. Dlatego
-`appEntry.qr` steruje wyłącznie tym, co panel POKAZUJE i GENERUJE; aplikacja
-niczego nie blokuje i nie ma tego robić. Opis pod przełącznikiem ma to mówić
-wprost: *„Wyłączenie chowa kod QR i link na wizytówce oraz w materiałach do
-druku. Kody już wydrukowane działają dalej."* Bez tego zdania właściciel
-lokalizacji będzie sądził, że wyłączył wejście — a nie wyłączył.
+W zakładce aplikacji, przy kodzie QR do pobrania: *„Kod QR i link działają
+zawsze — to najprostsza droga dla klientek. Kody już wydrukowane nie dają
+się wyłączyć."*
 
 ## C. Link do aplikacji SMS-em (`appEntry.smsLink`)
 
@@ -87,10 +89,10 @@ marketing — nie wymaga zgody marketingowej. Ale jeśli klientka ma STOP
   (lokalizacja z `name=off` nie wraca; jeśli hasło dzieli kilka lokalizacji,
   wracają tylko te włączone).
 - `find/verify` — respektuje `appEntry.phoneFind`.
-- `GET /api/public/book/:salonId` — dokłada `appEntry` (cztery booleany),
+- `GET /api/public/book/:salonId` — dokłada `appEntry` (booleany),
   żeby wizytówka i aplikacja wiedziały, co pokazywać.
 - Wizytówka / widget (`SPEC-aplikacja-na-wizytowce`) — sekcja aplikacji
-  tylko przy `appEntry.qr`.
+  zawsze (przy `app_enabled`).
 
 ## E. Strona aplikacji (sesja aplikacji, do zrobienia po wdrożeniu panelu)
 
@@ -100,12 +102,11 @@ komunikat „Nie znaleziono" jest prawdziwy i wystarczający.
 
 ## F. Sero
 
-„Lokalizacja decyduje, którędy klientki wchodzą do aplikacji: Ustawienia →
-zakładka aplikacji → cztery przełączniki: kod QR (materiały na wizytówce
-i do druku; wydrukowane kody działają dalej), nazwa salonu (hasła), link
-SMS-em (płatne z puli SMS-ów lokalizacji, raz na klientkę po pierwszej
-rezerwacji, tylko do tych bez aplikacji) oraz widoczność przy wejściu
-numerem telefonu." Strażnik w teście.
+„Kod QR i link do aplikacji działają zawsze. Lokalizacja decyduje o reszcie
+w Ustawieniach → zakładka aplikacji: nazwa salonu (hasła), link SMS-em
+(płatne z puli SMS-ów lokalizacji, raz na klientkę po pierwszej rezerwacji,
+tylko do tych bez aplikacji) oraz widoczność przy wejściu numerem
+telefonu." Strażnik w teście.
 
 ## G. Testy, które MUSZĄ przejść
 
