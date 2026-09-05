@@ -9,6 +9,16 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.40] — 2026-09-05 — Wejście numerem potwierdzone; diagnostyka zdjęta
+
+- Po poprawce panelu (linia WebOTP `@app.booksero.com #kod` w SMS-ie wejścia
+  po numerze) kod wpisuje się sam i pokazuje listę salonów. Potwierdzone na
+  telefonie właściciela.
+- Linijki diagnostyczne spod pola kodu usunięte. Tryb testowy (5 tapnięć
+  w wersję) zostaje — nadal odsłania ścieżkę po numerze tylko na tym telefonie.
+
+---
+
 ## [1.0.39] — 2026-09-05 — Diagnostyka nasłuchu SMS przy wejściu numerem (tryb testowy)
 
 - Kod z SMS-a nadal nie trafiał do pola po zgodzie w oknie Google. W trybie
