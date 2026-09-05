@@ -187,7 +187,7 @@ osobnej paczki i osobnego procesu — poza zakresem na dziś.
 - [ ] oba odciski SHA-256 w `server/assetlinks.ts`, wdrożone, sprawdzone
       pod `/.well-known/assetlinks.json`
 - [ ] klucz podpisywania z PWABuilder zapisany w dwóch miejscach
-- [ ] polityka prywatności pod publicznym adresem, adres wpisany w Play Console
+- [x] polityka prywatności pod publicznym adresem: `https://app.booksero.com/polityka-prywatnosci` (od 1.0.43) — [ ] adres wpisany w Play Console, [ ] treść potwierdzona przez prawnika
 - [ ] formularz „Bezpieczeństwo danych" i ankieta „Ocena treści" wypełnione
 - [ ] opis sklepu (`docs/store/OPIS-SKLEP.md`), grafika 1024×500 (jest),
       zrzuty ekranu telefonu (min. 2, najlepiej 4–6, z ekranów po zalogowaniu)

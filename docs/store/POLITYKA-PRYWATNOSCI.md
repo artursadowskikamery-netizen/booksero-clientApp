@@ -1,21 +1,28 @@
 # Polityka prywatności aplikacji BookSero
 
-_Ostatnia aktualizacja: 2026-07-20_
+_Ostatnia aktualizacja: 2026-09-05_
 
-> UWAGA (do wglądu, usuń przed publikacją): tę treść należy opublikować pod
-> publicznym adresem (np. `https://booksero.com/polityka-prywatnosci` lub
-> `https://viviestetic.eu/polityka-prywatnosci`) i ten adres podać w Google
-> Play Console (Sklep → Polityka prywatności) oraz w sekcji „Bezpieczeństwo
-> danych". Uzupełnij/zweryfikuj pola oznaczone [w nawiasach].
+> NOTATKA ROBOCZA (nie pojawia się na stronie): ten plik jest publikowany
+> automatycznie pod adresem `https://app.booksero.com/polityka-prywatnosci`
+> (także `/privacy`) — ten adres wpisz w Google Play Console (Sklep →
+> Polityka prywatności) i w formularzu „Bezpieczeństwo danych". Cytaty
+> (linie zaczynające się od „>") są pomijane przy publikacji. Sekcje 1 i 2a
+> przepisane 2026-09-05 pod aplikację WIELU firm i wejście numerem telefonu —
+> DO POTWIERDZENIA PRZEZ PRAWNIKA przed publikacją w sklepie.
 
-## 1. Administrator danych
+## 1. Kto odpowiada za Twoje dane
 
-Administratorem danych osobowych przetwarzanych w aplikacji BookSero jest
+Aplikacja BookSero jest jedną aplikacją dla wielu niezależnych salonów.
+**Administratorem Twoich danych osobowych jest salon (firma), w którym masz
+kartotekę** — jego nazwę i dane widzisz w aplikacji po wejściu do salonu.
+Jeśli korzystasz z kilku salonów należących do różnych firm, każda z tych
+firm jest osobnym administratorem danych ze swojej kartoteki.
+
+Aplikację i platformę rezerwacyjną **Booksero** udostępnia
 **VIVI ESTETIC SP. Z O.O.**, ul. Promienna 6–10, 44‑240 Żory, Polska,
-e‑mail: **developer@viviestetic.eu**.
-
-Aplikacja BookSero działa w oparciu o platformę rezerwacyjną **Booksero**,
-która przetwarza dane na zlecenie salonu jako podmiot przetwarzający.
+e‑mail: **developer@viviestetic.eu** — jako operator aplikacji, przetwarzający
+dane na zlecenie salonów (podmiot przetwarzający). W sprawach dotyczących
+Twoich danych możesz zwrócić się do salonu albo na powyższy adres e‑mail.
 
 ## 2. Jakie dane przetwarzamy
 
@@ -32,6 +39,20 @@ która przetwarza dane na zlecenie salonu jako podmiot przetwarzający.
 
 Nie zbieramy danych o lokalizacji, kontaktów z telefonu ani danych
 płatniczych w aplikacji.
+
+## 2a. Jak aplikacja wie, do którego salonu wchodzisz
+
+Do salonu wchodzisz kodem QR, nazwą podaną przez salon albo linkiem od
+salonu. Aplikacja nie ma wyszukiwarki ani katalogu salonów.
+
+Jeśli salon udostępnia **wejście numerem telefonu**: po potwierdzeniu numeru
+kodem SMS aplikacja pokazuje listę salonów, w których masz kartotekę pod
+tym numerem — także jeśli należą do różnych firm. Operator aplikacji
+dopasowuje wtedy Twój numer między salonami wyłącznie po to, żeby pokazać
+**Tobie** Twoje własne kartoteki; żaden salon nie dowiaduje się o Twoich
+kartotekach w innych firmach. Każdy salon może wyłączyć swoją widoczność na
+tej liście. Ta funkcja jest dostępna wyłącznie po weryfikacji, że numer
+należy do Ciebie (kod SMS).
 
 ## 3. Cele i podstawy przetwarzania (RODO)
 

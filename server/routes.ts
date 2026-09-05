@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { bookseroGet, bookseroPost, bookseroPatch, bookseroDelete } from "./booksero";
 import { APP_VERSION } from "@shared/version";
 import { ASSET_LINKS } from "./assetlinks";
+import { privacyPage } from "./privacy";
 
 const enc = encodeURIComponent;
 const loc = (req: Request) => String(req.headers["x-locale"] || "pl").slice(0, 2);
@@ -19,6 +20,14 @@ export function registerRoutes(app: Express) {
   // blokuje ścieżki z kropką (.well-known). Treść w server/assetlinks.ts.
   app.get("/.well-known/assetlinks.json", (_req, res) =>
     res.type("application/json").send(JSON.stringify(ASSET_LINKS)));
+
+  // Polityka prywatności pod publicznym adresem — wymóg Google Play. Trasa
+  // MUSI być zarejestrowana przed statyką, inaczej przechwyci ją aplikacja
+  // (jej router potraktowałby „polityka-prywatnosci" jak adres salonu).
+  const polityka = (_req: Request, res: Response) =>
+    res.type("text/html; charset=utf-8").set("Cache-Control", "public, max-age=300").send(privacyPage());
+  app.get("/polityka-prywatnosci", polityka);
+  app.get("/privacy", polityka);
 
   // Slug wizytówki → { salonId }. (Numer ML nie ma dziś publicznego rozwiązania.)
   app.get("/api/resolve/:slug", async (req, res) =>

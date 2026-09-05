@@ -9,6 +9,18 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.43] — 2026-09-05 — Polityka prywatności pod publicznym adresem
+
+- Google Play wymaga polityki prywatności pod publicznym adresem. Jest:
+  `app.booksero.com/polityka-prywatnosci` (także `/privacy`). Treść żyje
+  w `docs/store/POLITYKA-PRYWATNOSCI.md` — jedno źródło, poprawka treści to
+  Republish bez nowej wersji.
+- Treść przepisana pod aplikację wielu firm (administratorem jest salon,
+  operator aplikacji przetwarza na zlecenie) i uzupełniona o wejście numerem
+  telefonu — do potwierdzenia przez prawnika przed publikacją w sklepie.
+
+---
+
 ## [1.0.42] — 2026-09-05 — Stempel „ma aplikację" w każdej firmie i zaraz po logowaniu
 
 - Panel wysyła teraz (opcjonalnie, z puli SMS lokalizacji) link do aplikacji
