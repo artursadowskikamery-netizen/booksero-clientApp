@@ -13,6 +13,11 @@ Rezerwuj wizyty w salonie, zbieraj punkty i odbieraj nagrody — wszystko w tele
 BookSero to aplikacja do rezerwacji wizyt w Twoim ulubionym salonie —
 szybko, wygodnie i bez dzwonienia.
 
+Jak zacząć: zeskanuj kod QR z salonu, wpisz nazwę, którą podał Ci salon,
+albo wejdź swoim numerem telefonu — aplikacja pokaże salony, w których
+masz już kartotekę. BookSero nie jest katalogiem salonów: trafiasz prosto
+do swojego.
+
 Co możesz zrobić w aplikacji:
 • Zarezerwować wizytę w kilku krokach — wybierz usługę, specjalistę i termin.
 • Rezerwować także dla dwóch osób naraz (tryb dla pary).
@@ -31,10 +36,10 @@ BookSero działa w wielu językach i dostosowuje się do Twojej lokalizacji.
 Aplikacja jest bezpłatna dla klientów salonu.
 
 ## Kategoria
-Styl życia (Lifestyle) — lub „Zdrowie i fitness", do wyboru.
+Uroda. Tagi: Uroda, Kosmetyki, Fryzury, Programy lojalnościowe.
 
 ## Adres polityki prywatności
-[wstaw URL po opublikowaniu, np. https://booksero.com/polityka-prywatnosci]
+https://app.booksero.com/polityka-prywatnosci (wpisany w Play Console 2026-09-05)
 
 ## Dane kontaktowe (Sklep)
 E-mail: developer@viviestetic.eu
