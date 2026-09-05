@@ -9,6 +9,16 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.37] — 2026-09-05 — Tryb testowy właściciela: 5 tapnięć w numer wersji
+
+- Ścieżka po numerze jest zaryglowana do decyzji po prawniku, a w zainstalowanej
+  aplikacji nie ma paska adresu, więc `?phoneEntry=1` nie dało się wpisać.
+  Teraz **5 tapnięć w „BookSero v…"** na ekranie startowym włącza (i kolejne
+  5 wyłącza) ścieżkę po numerze na tym telefonie. Przy włączonym trybie obok
+  wersji widać „· test".
+
+---
+
 ## [1.0.36] — 2026-09-05 — Ekran startowy: jedno pole, żadnych wyborów
 
 - Uwaga właściciela: dwa formularze naraz (nazwa z listą krajów + osobny

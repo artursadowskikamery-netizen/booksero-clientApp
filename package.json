@@ -1,6 +1,6 @@
 {
   "name": "booksero-clientapp",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "type": "module",
   "license": "MIT",
   "description": "BookSero — konsumencka aplikacja (PWA) platformy rezerwacyjnej Booksero.",
