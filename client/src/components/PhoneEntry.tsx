@@ -4,7 +4,8 @@ import { ClipboardPaste } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { api, ApiError } from "../lib/api";
-import { setToken } from "../lib/auth";
+import { setToken, rememberSession } from "../lib/auth";
+import { saveRecentSalon } from "../lib/recentSalons";
 import { autoRejoinPush } from "../lib/push";
 import type { FindResult } from "@shared/types";
 
@@ -111,7 +112,7 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
       const all = r.tenants.flatMap((tn) => tn.salons.map((s) => ({ tenantId: tn.tenantId, salonId: s.salonId })));
       // Jedna firma, jedna lokalizacja → bez pytania, prosto do środka.
       if (all.length === 1) {
-        await enter(r.ticket, all[0].tenantId, all[0].salonId);
+        await enter(r, all[0].tenantId, all[0].salonId);
         return;
       }
       setStage("pick");
@@ -122,14 +123,30 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
     }
   }
 
-  async function enter(ticket: string, tenantId: string, salonId: string) {
+  async function enter(r: FindResult, tenantId: string, salonId: string) {
     setErr("");
     setBusy(true);
     try {
-      const { token } = await api.findEnter(ticket, tenantId, salonId);
-      setToken(token, tenantId);
+      const { token } = await api.findEnter(r.ticket, tenantId, salonId);
+      const firma = r.tenants.find((tn) => tn.tenantId === tenantId);
+      setToken(token, tenantId, firma?.tenantName ?? null);
       autoRejoinPush();
       void api.entryEvent("phone", { salonId, tenantId });
+      // WIELE FIRM NARAZ: ten sam bilet otwiera każdą firmę z listy, więc
+      // wchodzimy po cichu także do pozostałych — klientka nie będzie musiała
+      // prosić o drugi SMS, żeby przejść do drugiej firmy. Wszystkie salony
+      // z listy trafiają do „ostatnio odwiedzanych", żeby były na ekranie
+      // startowym od razu. Błędy tu nic nie psują — główne wejście już jest.
+      for (const tn of r.tenants) {
+        for (const sal of tn.salons) {
+          saveRecentSalon({ id: sal.salonId, name: sal.name, city: sal.city ?? null, logo: sal.logo ?? null });
+        }
+        if (tn.tenantId === tenantId || tn.salons.length === 0) continue;
+        void api
+          .findEnter(r.ticket, tn.tenantId, tn.salons[0].salonId)
+          .then((x) => rememberSession(tn.tenantId, x.token, tn.tenantName))
+          .catch(() => {});
+      }
       navigate(`/salon/${salonId}`);
     } catch (e) {
       // 404 = lokalizacja wyłączyła aplikację między listą a wejściem.
@@ -219,7 +236,7 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
                         <button
                           key={s.salonId}
                           disabled={busy}
-                          onClick={() => enter(found.ticket, tn.tenantId, s.salonId)}
+                          onClick={() => enter(found, tn.tenantId, s.salonId)}
                           className="w-full flex items-center gap-3 p-3 text-left disabled:opacity-60"
                         >
                           {s.logo ? (

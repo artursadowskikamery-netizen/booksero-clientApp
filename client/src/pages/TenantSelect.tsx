@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
+import { listSessions } from "../lib/auth";
 import { applyAccent, accentForTenant } from "../lib/themes";
 import { loadLastSalon } from "../lib/lastSalon";
 import { captureRefFromUrl } from "../lib/referral";
@@ -20,6 +21,14 @@ export default function TenantSelect() {
 
   const [country, setCountry] = useState<string | null>(null);
   const [city, setCity] = useState<string | null>(null);
+  // Przeskok do innej firmy z sekcji „Twoje pozostałe firmy" zostawia ten
+  // sam ekran z nowym tenantId — kroki kraj/miasto muszą zacząć od zera.
+  useEffect(() => {
+    setCountry(null);
+    setCity(null);
+  }, [tenantId]);
+  // Firmy, w których klientka ma sesję na tym telefonie (poza bieżącą).
+  const inneFirmy = listSessions().filter((s) => s.tenantId !== tenantId);
 
   const tQ = useQuery({
     queryKey: ["tenant", tenantId],
@@ -148,6 +157,30 @@ export default function TenantSelect() {
             ))}
           </div>
         </>
+      )}
+
+      {/* WIELE FIRM NARAZ: klientka z kartoteką w dwóch niezależnych firmach
+          przechodzi między nimi tutaj — bez wylogowania i bez drugiego
+          SMS-a (sesje do obu firm zebrał krok wejścia numerem). */}
+      {inneFirmy.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted mb-2">{t("common.otherFirms")}</h2>
+          <div className="rounded-2xl border border-line bg-surface divide-y divide-line overflow-hidden">
+            {inneFirmy.map((f) => (
+              <button
+                key={f.tenantId}
+                onClick={() => navigate(`/t/${f.tenantId}`)}
+                className="w-full flex items-center gap-3 p-3 text-left"
+              >
+                <span className="w-9 h-9 rounded-xl bg-surface-2 border border-line grid place-items-center font-extrabold shrink-0">
+                  {Array.from((f.name || "?").trim())[0]?.toUpperCase() || "?"}
+                </span>
+                <span className="flex-1 min-w-0 text-sm font-bold truncate">{f.name || f.tenantId}</span>
+                <ChevronRight size={16} className="text-muted shrink-0" />
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {lastSalon && <BottomNav salonId={lastSalon} active="salon" />}

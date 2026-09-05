@@ -9,6 +9,25 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.41] — 2026-09-05 — Wiele firm naraz: bez wylogowania, bez drugiego SMS-a
+
+- Uwaga właściciela: po wejściu numerem do jednej firmy druga „znikała" —
+  żeby do niej przejść, trzeba było wyjść i prosić o kod jeszcze raz.
+  Aplikacja trzymała jedną sesję naraz.
+- Aplikacja trzyma teraz sesję do KAŻDEJ firmy, w której klientka weszła.
+  Po wybraniu salonu z listy wchodzi po cichu także do pozostałych firm
+  z tej listy tym samym biletem z SMS-a. Wszystkie salony z listy trafiają
+  od razu do „Ostatnio odwiedzanych".
+- Przełączanie firm odbywa się samo: wejście w salon drugiej firmy (z listy
+  ostatnio odwiedzanych, z kodu QR, z nazwy) używa jej sesji — bez ekranu
+  logowania.
+- Zakładka „Salon" ma sekcję „Twoje pozostałe firmy" — jedno tapnięcie
+  przenosi do drugiej firmy.
+- Wylogowanie kończy sesje we WSZYSTKICH firmach naraz — na cudzym telefonie
+  nie zostaje żadna.
+
+---
+
 ## [1.0.40] — 2026-09-05 — Wejście numerem potwierdzone; diagnostyka zdjęta
 
 - Po poprawce panelu (linia WebOTP `@app.booksero.com #kod` w SMS-ie wejścia
