@@ -9,6 +9,18 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.38] — 2026-09-05 — Kod z SMS-a wpisuje się sam także przy wejściu numerem
+
+- Przy wejściu numerem Google pytało „wypełnić kodem?", a po zgodzie kod nie
+  trafiał do pola. Wyścig: pole na kod jest widoczne od razu, więc nasłuch
+  SMS-a uzbrajał się PRZED wysłaniem, a po odpowiedzi serwera przezbrajał się.
+  SMS przychodził szybciej niż odpowiedź z serwera — okno zgody dotyczyło
+  nasłuchu, który w chwili tapnięcia był już odwołany.
+- Nasłuch uzbraja się raz przy wejściu w krok kodu i nie reaguje na odpowiedź
+  serwera ani na „wyślij ponownie"; przezbraja się dopiero po zużyciu kodu.
+
+---
+
 ## [1.0.37] — 2026-09-05 — Tryb testowy właściciela: 5 tapnięć w numer wersji
 
 - Ścieżka po numerze jest zaryglowana do decyzji po prawniku, a w zainstalowanej

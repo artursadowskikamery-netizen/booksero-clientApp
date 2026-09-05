@@ -27,7 +27,7 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
   const [stage, setStage] = useState<"code" | "pick">("code");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const [codeNonce, setCodeNonce] = useState(0);
+  const [otpRound, setOtpRound] = useState(0);
   const [cooldown, setCooldown] = useState(0);
   const [found, setFound] = useState<FindResult | null>(null);
 
@@ -39,7 +39,17 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phone]);
 
-  // Auto-uzupełnienie kodu z SMS-a — ta sama mechanika, co przy logowaniu.
+  // Auto-uzupełnienie kodu z SMS-a (WebOTP).
+  //
+  // WYŚCIG, który tu kiedyś był: pole na kod jest widoczne od razu, więc
+  // nasłuch uzbrajał się PRZED wysłaniem SMS-a, a po odpowiedzi serwera
+  // przezbrajał się (stary był odwoływany). SMS z Booksero przychodzi
+  // szybciej niż odpowiedź z serwera — okno „zezwolić?" pokazywało się dla
+  // STAREGO nasłuchu, klientka tapała „zezwól", a ten nasłuch był już
+  // odwołany: kod trafiał w próżnię. Dlatego nasłuch uzbraja się raz przy
+  // wejściu w krok kodu, NIE reaguje na odpowiedź serwera ani na „wyślij
+  // ponownie" (oczekujący nasłuch złapie każdy pasujący SMS), a przezbraja
+  // się dopiero po ZUŻYCIU kodu — gdyby klientka poprosiła o kolejny.
   useEffect(() => {
     if (stage !== "code") return;
     if (typeof window === "undefined" || !("OTPCredential" in window)) return;
@@ -55,11 +65,14 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
         } else if (clean) {
           setCode(clean);
         }
+        // Kod zużyty → nowy nasłuch (tylko po SUKCESIE; po odmowie
+        // przezbrajanie zapętliłoby się).
+        if (!ac.signal.aborted) setOtpRound((r) => r + 1);
       })
       .catch(() => {});
     return () => ac.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, codeNonce]);
+  }, [stage, otpRound]);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -77,7 +90,6 @@ export default function PhoneEntry({ phone, onBack }: { phone: string; onBack: (
     try {
       const r = await api.findRequest(phone);
       setCode("");
-      setCodeNonce((n) => n + 1);
       setCooldown(typeof r?.retryAfter === "number" && r.retryAfter > 0 ? r.retryAfter : 60);
     } catch (e) {
       if (e instanceof ApiError && e.status === 429 && e.retryAfter) setCooldown(e.retryAfter);
