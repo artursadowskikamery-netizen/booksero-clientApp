@@ -15,5 +15,7 @@
   `git fetch origin main && git reset --hard origin/main && npm run build` → Republish.
 - Publikacja w Google Play: konto dewelopera zakładane na
   `developer@viviestetic.eu` (nie na prywatnym gmailu), „Firma lub spółka",
-  nazwa dewelopera „Booksero". Instrukcja: `docs/store/AKTUALIZACJE-GOOGLE-PLAY.md`.
+  nazwa dewelopera i nazwa w sklepie „Booksero" (logo w aplikacji: BookSero).
+  Wersja 1 (1.0.44) wysłana do sprawdzenia 2026-09-06.
+  Instrukcja i stan: `docs/store/AKTUALIZACJE-GOOGLE-PLAY.md` §8.
 - Odciski SHA-256 w `server/assetlinks.ts`: oba wpisane i sprawdzone (1.0.46).

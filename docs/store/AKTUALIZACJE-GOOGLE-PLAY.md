@@ -184,16 +184,33 @@ osobnej paczki i osobnego procesu — poza zakresem na dziś.
 
 ## 8. Przed pierwszą publikacją — lista do odhaczenia
 
-- [x] oba odciski SHA-256 w `server/assetlinks.ts` (1.0.46), wdrożone, sprawdzone: aplikacja ze sklepu bez paska adresu (Honor Magic V5, 2026-09-05)
-      pod `/.well-known/assetlinks.json`
-- [ ] klucz podpisywania z PWABuilder zapisany w dwóch miejscach
-- [x] polityka prywatności pod publicznym adresem: `https://app.booksero.com/polityka-prywatnosci` (od 1.0.43) — [ ] adres wpisany w Play Console, [ ] treść potwierdzona przez prawnika
-- [ ] formularz „Bezpieczeństwo danych" i ankieta „Ocena treści" wypełnione
-- [ ] opis sklepu (`docs/store/OPIS-SKLEP.md`), grafika 1024×500 (jest),
-      zrzuty ekranu telefonu (min. 2, najlepiej 4–6, z ekranów po zalogowaniu)
-- [ ] test na ścieżce **Testy wewnętrzne** przed Produkcją: instalacja ze
-      sklepu, brak paska adresu, logowanie z auto-kodem, powiadomienie push
-- [ ] dopiero potem Produkcja
+Stan 2026-09-06: **wersja 1 (1.0.44) wysłana do sprawdzenia Google**
+(Produkcja, 177 krajów + reszta świata, 16 języków wpisu, nazwa w sklepie
+„Booksero"). Konto dewelopera: developer@viviestetic.eu, organizacja
+VIVIEstetic Sp. z o.o.
+
+- [x] oba odciski SHA-256 w `server/assetlinks.ts` (1.0.46), wdrożone, sprawdzone:
+      aplikacja ze sklepu bez paska adresu (Honor Magic V5, 2026-09-05).
+      UWAGA: odcisk Google trzeba czytać z podpisanego APK (Eksplorator
+      pakietów → Pobrania), nie ze strony „Podpisywanie aplikacji"
+- [x] klucz podpisywania z PWABuilder zapisany w dwóch miejscach (właściciel)
+- [x] polityka prywatności: `https://app.booksero.com/polityka-prywatnosci`
+      wpisana w Play Console — [ ] treść potwierdzona przez prawnika
+- [x] „Bezpieczeństwo danych", „Ocena treści" (PEGI 3), grupa docelowa 18+,
+      reklamy: nie, ID reklam: nie, instytucje państwowe/finanse/zdrowie: nie
+- [x] dostęp do aplikacji: instrukcja dla recenzenta (hasło salonu VIVIŻory);
+      [ ] numer testowy ze stałym kodem — zlecenie dla panelu
+      `docs/ZLECENIE-panel-numer-testowy-google-play.md` (repo panelu)
+- [x] wpis w sklepie: domyślny en-US + 15 tłumaczeń
+      (`docs/store/OPIS-SKLEP-TLUMACZENIA.md`), ikona 512, grafika 1024×500
+      (`feature-graphic.html`), 4 zrzuty ekranu
+- [x] test wewnętrzny: instalacja ze sklepu, bez paska adresu, hasło salonu,
+      wejście numerem (1.0.47)
+- [x] Produkcja: wysłane do sprawdzenia 2026-09-06
+
+Po recenzji: jeśli Google odrzuci z powodu logowania SMS → dopisać numer
+testowy (po wdrożeniu zlecenia w panelu) w „Dostęp do aplikacji" i wysłać
+ponownie.
 
 ---
 
