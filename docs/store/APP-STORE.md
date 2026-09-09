@@ -9,7 +9,10 @@ Stan na 2026-09-09.
   **Enrollment ID: 3F2QU4WGT3** (2026-09-09). Apple weryfikuje uprawnienie
   do podpisywania umów (1–3 dni robocze, możliwy telefon), potem mail
   z linkiem do opłaty 99 USD/rok.
-- Xcode: pobieranie na Macu właściciela.
+- Xcode 26.6 zainstalowany (pobrany z developer.apple.com, App Store
+  odmawiał). Homebrew + CocoaPods 1.17 na Macu. Projekt `ios/src` po
+  `pod install` buduje się i działa w symulatorze iPhone 17 Pro Max
+  (2026-09-09): bez paska adresu, salon, usługi, rezerwacja OK.
 
 ## Do zrobienia (po opłacie)
 1. App Store Connect → nowa aplikacja: nazwa „Booksero", Bundle ID
