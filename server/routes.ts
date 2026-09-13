@@ -24,10 +24,10 @@ export function registerRoutes(app: Express) {
   // Polityka prywatności pod publicznym adresem — wymóg Google Play. Trasa
   // MUSI być zarejestrowana przed statyką, inaczej przechwyci ją aplikacja
   // (jej router potraktowałby „polityka-prywatnosci" jak adres salonu).
-  const polityka = (_req: Request, res: Response) =>
-    res.type("text/html; charset=utf-8").set("Cache-Control", "public, max-age=300").send(privacyPage());
-  app.get("/polityka-prywatnosci", polityka);
-  app.get("/privacy", polityka);
+  const polityka = (lang: "pl" | "en") => (_req: Request, res: Response) =>
+    res.type("text/html; charset=utf-8").set("Cache-Control", "public, max-age=300").send(privacyPage(lang));
+  app.get("/polityka-prywatnosci", polityka("pl"));
+  app.get("/privacy", polityka("en"));
 
   // Slug wizytówki → { salonId }. (Numer ML nie ma dziś publicznego rozwiązania.)
   app.get("/api/resolve/:slug", async (req, res) =>

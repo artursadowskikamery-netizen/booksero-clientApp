@@ -8,7 +8,14 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const PLIK = join(process.cwd(), "docs", "store", "POLITYKA-PRYWATNOSCI.md");
+// Dwie wersje językowe: polska (oryginał, dla prawnika) i angielska
+// (tłumaczenie — dla Google Play / App Store i klientek spoza Polski).
+// Adresy: /polityka-prywatnosci → pl, /privacy → en.
+const PLIKI = {
+  pl: join(process.cwd(), "docs", "store", "POLITYKA-PRYWATNOSCI.md"),
+  en: join(process.cwd(), "docs", "store", "PRIVACY-POLICY-EN.md"),
+} as const;
+export type PrivacyLang = keyof typeof PLIKI;
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -59,20 +66,26 @@ export function markdownToHtml(md: string): string {
   return out.join("\n");
 }
 
-export function privacyPage(): string {
+export function privacyPage(lang: PrivacyLang = "pl"): string {
   let md = "";
   try {
-    md = readFileSync(PLIK, "utf8");
+    md = readFileSync(PLIKI[lang], "utf8");
   } catch {
-    md = "# Polityka prywatności\n\nDokument jest chwilowo niedostępny. Napisz: developer@viviestetic.eu";
+    md = lang === "en"
+      ? "# Privacy Policy\n\nThe document is temporarily unavailable. Contact: developer@viviestetic.eu"
+      : "# Polityka prywatności\n\nDokument jest chwilowo niedostępny. Napisz: developer@viviestetic.eu";
   }
   const body = markdownToHtml(md);
+  const title = lang === "en" ? "Privacy Policy — Booksero" : "Polityka prywatności — Booksero";
+  const other = lang === "en"
+    ? '<a href="/polityka-prywatnosci">Wersja polska</a>'
+    : '<a href="/privacy">English version</a>';
   return `<!doctype html>
-<html lang="pl">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Polityka prywatności — BookSero</title>
+<title>${title}</title>
 <style>
   :root { color-scheme: light dark; }
   body { margin: 0; padding: 24px 16px 48px; font: 16px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif; background: #0A0C0D; color: #E6E8EA; }
@@ -90,7 +103,7 @@ export function privacyPage(): string {
 <body>
 <main>
 ${body}
-<footer>BookSero · <a href="/">app.booksero.com</a></footer>
+<footer>Booksero · <a href="/">app.booksero.com</a> · ${other}</footer>
 </main>
 </body>
 </html>`;

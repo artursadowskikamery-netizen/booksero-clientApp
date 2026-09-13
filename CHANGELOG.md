@@ -9,6 +9,15 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.49] — 2026-09-13 — Polityka prywatności po angielsku
+
+- `/privacy` oddaje angielskie tłumaczenie polityki
+  (`docs/store/PRIVACY-POLICY-EN.md`), `/polityka-prywatnosci` — polską.
+  Obie strony linkują do siebie. Wymóg App Store / Google Play dla klientek
+  spoza Polski.
+
+---
+
 ## [1.0.48] — 2026-09-05 — Kraj salonu opisany na ekranie startowym
 
 - Zamiast samej flagi „PL · zmień": ramka „Kraj salonu: 🇵🇱 Polska · zmień"
