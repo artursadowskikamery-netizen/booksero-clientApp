@@ -206,7 +206,10 @@ VIVIEstetic Sp. z o.o.
       (`feature-graphic.html`), 4 zrzuty ekranu
 - [x] test wewnętrzny: instalacja ze sklepu, bez paska adresu, hasło salonu,
       wejście numerem (1.0.47)
-- [x] Produkcja: wysłane do sprawdzenia 2026-09-06
+- [x] Produkcja: wysłane do sprawdzenia 2026-09-06 -> ODRZUCONE 2026-09-10
+      (recenzent utknal na kodzie SMS) -> numer testowy ze stalym kodem
+      wdrozony w panelu, wpisany w "Dostep do aplikacji", wyslane ponownie
+      2026-09-13 (aplikacja 1.0.50: Usun konto, polityka EN)
 
 Po recenzji: jeśli Google odrzuci z powodu logowania SMS → dopisać numer
 testowy (po wdrożeniu zlecenia w panelu) w „Dostęp do aplikacji" i wysłać
