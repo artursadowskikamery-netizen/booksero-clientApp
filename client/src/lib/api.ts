@@ -154,6 +154,14 @@ export const api = {
   // `token`: sesja INNEJ firmy niż aktywna — zdarzenie instalacji stempluje
   // kartotekę w tej firmie, której token niesie; klientka z kartotekami
   // w kilku firmach ma dostać stempel w każdej.
+  // Usunięcie konta w aplikacji — jedno wywołanie NA FIRMĘ (token tej firmy),
+  // jak w find/enter. Po odpowiedzi token jest martwy. `message` z panelu jest
+  // gotowy do pokazania (język z X-Locale).
+  deleteAccount: (token?: string | null) =>
+    req<{ ok: boolean; deleted?: { devices: number; records: number; at: string }; message?: string }>(
+      `/api/client/account/delete-request`,
+      { method: "POST", body: JSON.stringify({}), ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}) },
+    ),
   appEvent: (type: "install", platform: "android" | "ios" | "web", token?: string | null) =>
     req<{ ok?: boolean }>(`/api/client/app-event`, {
       method: "POST",

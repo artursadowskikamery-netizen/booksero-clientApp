@@ -9,6 +9,17 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.50] — 2026-09-13 — Usuń konto w aplikacji (wymóg App Store)
+
+- Profil → **Usuń konto**: okno potwierdzenia (co zniknie, co zostaje),
+  wywołanie panelu dla każdej zapamiętanej firmy, wyczyszczenie sesji,
+  ekran końcowy z komunikatem panelu. Usuwany jest DOSTĘP do aplikacji
+  (sesje, urządzenia, powiadomienia); kartoteka, wizyty i punkty zostają
+  u salonu jako administratora (decyzja właściciela, „wersja szczupła").
+- Polityka prywatności §7 (PL i EN) opisuje tę ścieżkę. 16 języków.
+
+---
+
 ## [1.0.49] — 2026-09-13 — Polityka prywatności po angielsku
 
 - `/privacy` oddaje angielskie tłumaczenie polityki

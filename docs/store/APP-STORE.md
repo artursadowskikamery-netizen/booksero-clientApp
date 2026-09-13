@@ -44,7 +44,15 @@ Stan na 2026-09-09.
 ## Trzy punkty przed pierwszą wysyłką (ustalone 2026-09-13)
 
 ### 1. Usunięcie konta w aplikacji (Apple 5.1.1(v))
-Decyzja: dwie warstwy. Dane aplikacji (sesje, push) usuwamy natychmiast
+**Stan 2026-09-13: WDROŻONE w wersji szczupłej (1.0.50).** Właściciel
+zawęził zakres do warstwy 1: usuwamy dostęp do aplikacji (sesje,
+urządzenia push, znaczniki), kartoteka zostaje u salonu; aplikacja NIE
+składa żądania usunięcia kartoteki. Panel: `POST
+/api/public/client/account/delete-request` (poz. 490). Aplikacja: Profil →
+Usuń konto → potwierdzenie → ekran końcowy. Polityka §7 zaktualizowana.
+Pierwotna propozycja (dwie warstwy) poniżej — dla zapisu.
+
+Decyzja pierwotna: dwie warstwy. Dane aplikacji (sesje, push) usuwamy natychmiast
 jako operator; kartoteka należy do salonu, więc aplikacja SKŁADA żądanie
 usunięcia (RODO art. 17) do każdego salonu z kartoteką pod tym numerem,
 a salon realizuje je w panelu w 30 dni. Apple akceptuje inicjowanie

@@ -1,6 +1,6 @@
 # Polityka prywatności aplikacji BookSero
 
-_Ostatnia aktualizacja: 2026-09-05_
+_Ostatnia aktualizacja: 2026-09-13_
 
 > NOTATKA ROBOCZA (nie pojawia się na stronie): ten plik jest publikowany
 > automatycznie pod adresem `https://app.booksero.com/polityka-prywatnosci`
@@ -88,9 +88,14 @@ Skargę możesz złożyć do Prezesa UODO. Kontakt w sprawie danych:
 
 ## 7. Usunięcie konta i danych
 
-Aby usunąć konto i powiązane dane, napisz na **developer@viviestetic.eu**
-lub poproś o to w salonie. Dane zostaną usunięte z zastrzeżeniem obowiązków
-wynikających z przepisów prawa.
+**W aplikacji: Profil → Usuń konto.** Usuwamy wtedy Twój dostęp do aplikacji
+(sesje na wszystkich urządzeniach, zarejestrowane urządzenia, powiadomienia
+i znaczniki aplikacji na kartotece). Historię wizyt i kartotekę prowadzi
+salon jako administrator danych — żądanie ich usunięcia kieruj bezpośrednio
+do salonu (art. 17 RODO) albo napisz na **developer@viviestetic.eu**, a
+przekażemy je salonowi. Dane zostaną usunięte z zastrzeżeniem obowiązków
+wynikających z przepisów prawa. Po usunięciu konta możesz zalogować się
+ponownie w każdej chwili.
 
 ## 8. Bezpieczeństwo
 

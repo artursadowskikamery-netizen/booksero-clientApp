@@ -161,6 +161,12 @@ export function registerRoutes(app: Express) {
   app.post("/api/client/app-event", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client/app-event`, req.body ?? {}, loc(req), auth(req))));
 
+  // Usunięcie konta W APLIKACJI (App Store 5.1.1(v)): panel kasuje sesje,
+  // urządzenia push i znaczniki aplikacji na kartotece; kartoteka i wizyty
+  // zostają u salonu (administratora). Osoba wyłącznie z tokenu, body puste.
+  app.post("/api/client/account/delete-request", async (req, res) =>
+    relay(res, await bookseroPost(`/api/public/client/account/delete-request`, {}, loc(req), auth(req))));
+
   // ── Zgody klientki (SPEC-zgody-klientek) — rejestr RODO ──
   app.get("/api/client/zgody", async (req, res) =>
     relay(res, await bookseroGet(`/api/public/client/zgody`, loc(req), auth(req))));

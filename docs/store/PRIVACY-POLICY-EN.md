@@ -89,9 +89,14 @@ Data Protection Office (UODO). Contact regarding your data:
 
 ## 7. Deleting your account and data
 
-To delete your account and related data, write to
-**developer@viviestetic.eu** or ask at the salon. Data will be deleted
-subject to obligations arising from the law.
+**In the app: Profile → Delete account.** We then remove your access to the
+app (sessions on all devices, registered devices, notifications and app
+markers on your client record). Your visit history and client record are
+kept by the salon as the data controller — send a request to erase them
+directly to the salon (Art. 17 GDPR) or write to
+**developer@viviestetic.eu** and we will pass it on to the salon. Data will
+be deleted subject to obligations arising from the law. After deleting your
+account you can sign in again at any time.
 
 ## 8. Security
 
