@@ -1,6 +1,26 @@
 # Booksero w App Store (iOS) — stan i plan
 
-Stan na 2026-09-09.
+Stan na 2026-09-14.
+
+## WYSŁANE DO RECENZJI — 2026-09-14 00:15, status „Waiting for Review"
+- App Store Connect: Apple ID aplikacji 6811678561, SKU `booksero`, wersja
+  1.0, build 1.0 (1). Submission ID 71477060-0540-4f31-bb43-a04b8dd82be6.
+- Wynik przyjdzie mailem na developer@viviestetic.eu (zwykle 1–3 dni).
+  Odrzucenie → treść w App Store Connect → App Review; poprawki, nowy
+  Archive (podbić build number w Xcode: General → Build), Add for Review.
+- Co jest w zgłoszeniu: opis EN, 8 zrzutów iPhone 6,9" (1284×2778 lub
+  1320×2868), 1 zrzut iPad 13" (2064×2752), ikona RGB, ocena wieku 4+,
+  polityka `https://app.booksero.com/privacy`, App Privacy (imię, e-mail,
+  telefon, ID użytkownika, ID urządzenia, dane użycia — App Functionality,
+  powiązane z użytkownikiem, bez śledzenia), cena Free, 175 krajów,
+  „regulated medical device: No", dane do logowania dla recenzenta (numer
+  testowy ze stałym kodem — te same co dla Google).
+- Podpisywanie w Xcode: Team VIVI ESTETIC SP. Z O.O. (9WBP3PU6FA),
+  automatyczne. Uwaga: Archive wymaga zarejestrowanego urządzenia w
+  zespole — zarejestrowaliśmy Maca przez uruchomienie celu
+  „My Mac (Designed for iPad)"; iPhone nie był potrzebny.
+- Push na iOS NIE jest skonfigurowany (Firebase placeholder) — decyzja
+  odłożona na po pierwszej publikacji.
 
 ## Zrobione
 - Apple ID firmowe: `developer@viviestetic.eu` (2FA na telefon firmowy).
@@ -14,7 +34,7 @@ Stan na 2026-09-09.
   `pod install` buduje się i działa w symulatorze iPhone 17 Pro Max
   (2026-09-09): bez paska adresu, salon, usługi, rezerwacja OK.
 
-## Do zrobienia (po opłacie)
+## Do zrobienia (po opłacie) — WYKONANE 2026-09-13/14, zostawione jako zapis
 1. App Store Connect → nowa aplikacja: nazwa „Booksero", Bundle ID
    `com.booksero.app` (ten sam identyfikator co Android — osobna
    przestrzeń, nie koliduje), SKU `booksero`.
