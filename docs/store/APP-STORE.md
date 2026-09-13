@@ -40,3 +40,44 @@ Stan na 2026-09-09.
   (pole `autocomplete="one-time-code"`) — sprawdzić w polu kodu.
 - **Skaner QR**: kamera w WKWebView wymaga uprawnienia NSCameraUsageDescription
   w Info.plist (PWABuilder dodaje).
+
+## Trzy punkty przed pierwszą wysyłką (ustalone 2026-09-13)
+
+### 1. Usunięcie konta w aplikacji (Apple 5.1.1(v))
+Decyzja: dwie warstwy. Dane aplikacji (sesje, push) usuwamy natychmiast
+jako operator; kartoteka należy do salonu, więc aplikacja SKŁADA żądanie
+usunięcia (RODO art. 17) do każdego salonu z kartoteką pod tym numerem,
+a salon realizuje je w panelu w 30 dni. Apple akceptuje inicjowanie
+usunięcia w aplikacji z jasną informacją o czasie i administratorze.
+- Panel: `docs/ZLECENIE-panel-usuniecie-konta-w-aplikacji.md` (repo panelu):
+  punkt `POST /api/public/client/account/delete-request`, tabela żądań,
+  ekran „Żądania usunięcia danych", anonimizacja, SMS/e-mail potwierdzenia.
+- Aplikacja (do zrobienia po wdrożeniu panelu): Profil → „Usuń konto" →
+  ekran z wyjaśnieniem dwóch warstw → potwierdzenie → wywołanie dla każdej
+  zapamiętanej sesji → wyczyszczenie localStorage → ekran „Przyjęliśmy
+  żądanie" z listą salonów i datą. Polityka §7 uzupełniona.
+
+### 2. Sign in with Apple
+NIE jest wymagane. Wymóg (4.8) dotyczy aplikacji z logowaniem przez
+konto trzecie (Google, Facebook…). Booksero loguje wyłącznie numerem
+telefonu i kodem SMS — Apple wprost wyłącza taki przypadek. Nic nie robimy.
+
+### 3. Ankieta „App Privacy" w App Store Connect (musi zgadzać się z polityką)
+Odpowiedzi do zaznaczenia:
+- Do we collect data? **Yes**.
+- **Contact Info**: Name, Email Address (optional), Phone Number —
+  linked to user, NOT used for tracking; purpose: App Functionality.
+- **Identifiers**: User ID (identyfikator kartoteki), Device ID (token
+  push) — linked to user, not tracking; App Functionality.
+- **User Content**: Other User Content (rezerwacje, historia wizyt,
+  punkty) — linked to user, not tracking; App Functionality.
+- **Usage Data**: NIE (brak analityki, brak SDK reklamowych).
+- **Location**: NIE. **Purchases**: NIE. **Diagnostics**: NIE.
+- Tracking (ATT): **No**, aplikacja nie śledzi użytkowników.
+- Privacy Policy URL: `https://app.booksero.com/polityka-prywatnosci`
+  (przed wysyłką: wersja EN tej strony — `/privacy` — musi mieć treść po
+  angielsku, dziś oba adresy oddają polski tekst).
+Uwaga: Firebase Messaging w opakowaniu iOS nie jest skonfigurowany (brak
+własnego `GoogleService-Info.plist`), więc nie deklarujemy danych Firebase.
+Jeśli włączymy push natywny — dopisać „Device ID" w Firebase i sprawdzić
+politykę Firebase.
