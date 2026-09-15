@@ -1,6 +1,11 @@
 # Booksero w App Store (iOS) — stan i plan
 
-Stan na 2026-09-14.
+Stan na 2026-09-15.
+
+## ODRZUCONE 2026-09-15 — Guideline 2.1 „Information Needed" (nowe konto)
+Apple prosi o nagranie ekranu z fizycznego iPhone'a + 6 odpowiedzi.
+Tekst odpowiedzi i kolejność nagrania: `APPLE-REVIEW-ODPOWIEDZ-2.1.md`.
+Aplikacja na iPhone'a przez TestFlight (Internal Testing, build 1.0 (1)).
 
 ## WYSŁANE DO RECENZJI — 2026-09-14 00:15, status „Waiting for Review"
 - App Store Connect: Apple ID aplikacji 6811678561, SKU `booksero`, wersja
