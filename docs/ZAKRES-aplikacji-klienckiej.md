@@ -201,9 +201,13 @@ klientki".
 
 ## 10. Instalacja i aktualizacje
 
-- Aplikacja proponuje instalację (baner). Instalacja z przeglądarki daje
-  **prawdziwą aplikację**; „dodaj skrót do ekranu" to co innego i psuje
-  autouzupełnianie kodu SMS.
+- Aplikacja jest w **App Store** i **Google Play** (od 2026-09). Baner
+  instalacji w wersji przeglądarkowej prowadzi do sklepu urządzenia:
+  na iPhonie i iPadzie do App Store, na Androidzie do Google Play (obok
+  dotychczasowej instalacji systemowej, która nadal działa).
+- Instalacja z przeglądarki daje **prawdziwą aplikację**; „dodaj skrót do
+  ekranu" to co innego i psuje autouzupełnianie kodu SMS.
+- To samo konto działa w każdej wersji — logowanie się nie zmienia.
 - **Aktualizacja**: aplikacja porównuje swoją wersję z wersją serwera
   i pozwala się zaktualizować jednym przyciskiem. Numer wersji jest dostępny
   także bez logowania (ekran startowy).
@@ -229,7 +233,8 @@ klientki".
 - Nie pokazuje kalendarza pracowników ani danych innych klientek.
 - Nie wysyła powiadomień o zmianie zgody i nie odświeża stanu w tle.
 - Nie tłumaczy treści wpisanych przez salon.
-- Nie działa jako aplikacja ze sklepu Google Play (publikacja wstrzymana).
+- Nie jest osobnym kontem w sklepie — aplikacja ze sklepu i wersja
+  przeglądarkowa to ta sama aplikacja i to samo konto.
 
 ---
 
@@ -272,5 +277,5 @@ z nawiasem — nie co do słowa. Rozbieżność = wiedza do poprawienia.
 18. Czy aplikacja pokazuje wizyty założone przez recepcję? *(tak, to ta sama baza)*
 19. Co widzi klientka po wylogowaniu na cudzym telefonie? *(dane konta znikają,
    plakietka gaśnie, urządzenie zostaje odpięte od powiadomień)*
-20. Czy aplikacja jest w Google Play? *(nie — publikacja przygotowana, ale
-   wstrzymana; instalacja z przeglądarki)*
+20. Czy aplikacja jest w sklepach? *(tak — App Store i Google Play od
+   2026-09; można też nadal zainstalować ją z przeglądarki)*

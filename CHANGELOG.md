@@ -9,6 +9,30 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.51] — 2026-09-29 — Baner instalacji prowadzi do sklepów
+
+- Aplikacja jest w App Store i Google Play, więc baner „Zainstaluj
+  aplikację BookSero" kieruje do sklepu urządzenia zamiast do instalacji
+  z przeglądarki:
+  - **iOS/iPadOS** — przycisk **Pobierz w App Store** w miejsce instrukcji
+    „Udostępnij → Do ekranu początkowego" (klucz `install.ios` zostaje
+    w tłumaczeniach jako zapas, nie jest już używany w banerze).
+  - **Android** — przycisk **Pobierz w Google Play** obok dotychczasowej
+    instalacji systemowej (`beforeinstallprompt`), która nadal działa.
+  - Nowe klucze `install.appStore` i `install.googlePlay` w 16 językach.
+- Baner nie pokazuje się w aplikacji uruchomionej ze sklepu. Powłoka iOS
+  nie zgłasza się jako `standalone`, więc rozpoznajemy ją po sufiksie
+  `PWAShell` w User-Agent i ciasteczku `app-platform`; Android TWA po
+  `document.referrer` zaczynającym się od `android-app://` (`isStoreApp()`).
+- iPadOS 13+ podaje się w User-Agent za Macintosha — `isAppleMobile()`
+  rozpoznaje go po liczbie punktów dotyku, dzięki czemu iPad w Safari
+  też dostaje przycisk App Store. `platform()` (raportowanie push) bez zmian.
+- Bez zmian w logowaniu — to samo konto w przeglądarce i w aplikacji
+  ze sklepu. Krzyżyk nadal wycisza baner na 14 dni; baner nadal nie
+  pojawia się na ekranie startowym, logowania ani w trakcie rezerwacji.
+
+---
+
 ## [1.0.50] — 2026-09-13 — Usuń konto w aplikacji (wymóg App Store)
 
 - Profil → **Usuń konto**: okno potwierdzenia (co zniknie, co zostaje),

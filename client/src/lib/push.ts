@@ -13,6 +13,34 @@ export function platform(): PushPlatform {
   return "web";
 }
 
+// Adresy w sklepach — aplikacja jest opublikowana w obu (2026-09).
+export const APP_STORE_URL = "https://apps.apple.com/app/booksero/id6811678561";
+export const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.booksero.app";
+
+// iPadOS 13+ podaje się w User-Agent za Macintosha — poznajemy go po dotyku.
+// Osobno od platform(), żeby nie ruszać raportowania platformy dla push.
+export function isAppleMobile(): boolean {
+  const ua = navigator.userAgent || "";
+  if (/iPhone|iPad|iPod/i.test(ua)) return true;
+  return /Macintosh/i.test(ua) && (navigator.maxTouchPoints || 0) > 1;
+}
+
+// Aplikacja uruchomiona z powłoki sklepowej: iOS (WKWebView — sufiks w UA
+// i ciasteczko ustawiane przez powłokę) albo Android TWA (referrer
+// android-app://). Tam zachęta do instalacji nie ma sensu.
+// Uwaga: powłoka iOS NIE zgłasza się jako standalone, więc sam isStandalone()
+// by jej nie wyłapał.
+export function isStoreApp(): boolean {
+  try {
+    if (/PWAShell/i.test(navigator.userAgent || "")) return true;
+    if (/app-platform=\s*iOS/i.test(decodeURIComponent(document.cookie || ""))) return true;
+    if ((document.referrer || "").startsWith("android-app://")) return true;
+  } catch {
+    /* brak dostępu do cookie/referrer — traktujemy jak zwykłą przeglądarkę */
+  }
+  return false;
+}
+
 // PWA uruchomiona z ekranu głównego (standalone).
 export function isStandalone(): boolean {
   try {

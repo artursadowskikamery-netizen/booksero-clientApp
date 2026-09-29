@@ -3,13 +3,21 @@ import { useLocation } from "wouter";
 import { Download, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { isLoggedIn } from "../lib/auth";
-import { isStandalone, platform } from "../lib/push";
+import {
+  APP_STORE_URL,
+  GOOGLE_PLAY_URL,
+  isAppleMobile,
+  isStandalone,
+  isStoreApp,
+  platform,
+} from "../lib/push";
 
-// Zachęta do instalacji PWA (SPEC powiadomienia+instalacja §4). Pokazywana
-// TYLKO: po zalogowaniu, w trybie przeglądarki (nie standalone), gdy nie
-// zainstalowano i nie zamknięto "X" w ostatnich 14 dniach.
-// Android/Chrome: przycisk → systemowy prompt (beforeinstallprompt z main.tsx).
-// iOS Safari: brak promptu — krótka instrukcja Udostępnij → Do ekranu początkowego.
+// Zachęta do instalacji (SPEC powiadomienia+instalacja §4). Pokazywana TYLKO:
+// po zalogowaniu, w przeglądarce (nie standalone, nie powłoka ze sklepu), gdy
+// nie zainstalowano i nie zamknięto "X" w ostatnich 14 dniach.
+// Od publikacji w sklepach (2026-09) baner prowadzi do sklepu urządzenia:
+// iOS/iPadOS → App Store (zamiast instrukcji "Udostępnij → Do ekranu
+// początkowego"), Android → Google Play obok systemowej instalacji PWA.
 const DISMISS_KEY = "booksero_install_dismiss";
 const INSTALLED_KEY = "booksero_installed";
 const DISMISS_DAYS = 14;
@@ -38,21 +46,25 @@ export default function InstallBanner() {
     return () => window.removeEventListener("bip-ready", onReady);
   }, []);
 
-  if (hidden || isStandalone()) return null;
+  if (hidden || isStandalone() || isStoreApp()) return null;
   if (!isLoggedIn()) return null;
   if (localStorage.getItem(INSTALLED_KEY)) return null;
   if (dismissed()) return null;
   // Baner nie może zasłaniać logowania/rezerwacji — nie pokazujemy go tam.
   if (loc === "/" || loc.endsWith("/login") || loc.endsWith("/book")) return null;
 
-  const ios = platform() === "ios";
+  const ios = isAppleMobile();
+  const android = platform() === "android";
   const canPrompt = !!bip();
-  if (!ios && !canPrompt) return null; // np. desktop bez wsparcia — cicho
+  // Desktop bez wsparcia instalacji i bez sklepu na tym urządzeniu — cicho.
+  if (!ios && !android && !canPrompt) return null;
 
   const close = () => {
     localStorage.setItem(DISMISS_KEY, String(Date.now()));
     setHidden(true);
   };
+
+  const storeBtn = "rounded-xl bg-brand text-white text-sm font-bold px-4 py-2 inline-block";
 
   return (
     <div className="fixed left-3 right-3 bottom-20 z-40 max-w-md mx-auto rounded-2xl border border-line bg-surface shadow-lg p-3">
@@ -62,22 +74,32 @@ export default function InstallBanner() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-bold">{t("install.banner")}</div>
-          {ios ? (
-            <p className="text-xs text-muted mt-1">{t("install.ios")}</p>
-          ) : (
-            <button
-              className="mt-2 rounded-xl bg-brand text-white text-sm font-bold px-4 py-2"
-              onClick={async () => {
-                try {
-                  await bip()?.prompt();
-                } catch {
-                  /* odrzucony prompt — baner zostaje do "X" */
-                }
-              }}
-            >
-              {t("install.button")}
-            </button>
-          )}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {ios && (
+              <a className={storeBtn} href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">
+                {t("install.appStore")}
+              </a>
+            )}
+            {android && (
+              <a className={storeBtn} href={GOOGLE_PLAY_URL} target="_blank" rel="noopener noreferrer">
+                {t("install.googlePlay")}
+              </a>
+            )}
+            {!ios && canPrompt && (
+              <button
+                className="rounded-xl border border-line text-sm font-bold px-4 py-2"
+                onClick={async () => {
+                  try {
+                    await bip()?.prompt();
+                  } catch {
+                    /* odrzucony prompt — baner zostaje do "X" */
+                  }
+                }}
+              >
+                {t("install.button")}
+              </button>
+            )}
+          </div>
         </div>
         <button onClick={close} aria-label="X" className="text-muted p-1 shrink-0">
           <X size={16} />
