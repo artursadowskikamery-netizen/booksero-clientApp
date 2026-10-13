@@ -21,7 +21,9 @@ export function countryCallingCode(country: CountryCode): string {
 export function countryFlagEmoji(country: string): string {
   const cc = country.toUpperCase();
   if (!/^[A-Z]{2}$/.test(cc)) return "🏳️";
-  return String.fromCodePoint(...[...cc].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
+  // Array.from zamiast [...cc]: tsconfig nie ustawia target, więc tsc (ES5)
+  // odrzuca rozwijanie łańcucha. Wynik identyczny (cc to dwie litery A–Z).
+  return String.fromCodePoint(...Array.from(cc).map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
 }
 
 function isCountryCode(v: string | undefined | null): v is CountryCode {
