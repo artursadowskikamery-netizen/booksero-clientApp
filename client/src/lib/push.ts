@@ -84,7 +84,7 @@ export async function getPushState(): Promise<PushState> {
   return "default";
 }
 
-// Subskrypcja + rejestracja urządzenia w Booksero. Wymaga zgody (granted).
+// Subskrypcja + rejestracja urządzenia w panelu Booktago. Wymaga zgody (granted).
 // Idempotentne (upsert po endpoint) — bezpieczne przy każdym starcie aplikacji.
 export async function ensurePushSubscribed(): Promise<"ok" | "disabled" | "unsupported"> {
   if (!pushSupported()) return "unsupported";
@@ -154,6 +154,44 @@ export async function deviceSubscribed(): Promise<boolean> {
   }
 }
 
+// PONOWNA ZGODA NA NOWYM ADRESIE (krok 2 Booktago). Zgoda przeglądarki na
+// powiadomienia i subskrypcja push są przypięte do ORIGINU. Klientka, która
+// włączyła powiadomienia na app.booksero.com, na app.booktago.com ma zgodę
+// „default” i brak subskrypcji, choć jej KONTO dalej ma „włączone”. Wtedy
+// autoRejoinPush zwraca "needs-permission", a na nowym hoście dodatkowo
+// zapala baner „Włącz powiadomienia ponownie” (components/PushReprompt.tsx).
+// Prośbę o zgodę wolno wywołać tylko z kliknięcia, dlatego baner, nie
+// automat. Na app.booksero.com nic się nie zmienia (brak banera).
+// Unieważnienie starych tokenów tej samej klientki to sprawa panelu (decyzja
+// 10b) — aplikacja wysyła subskrypcję tym samym wywołaniem co dotąd.
+const HOSTY_PONOWNEJ_ZGODY = new Set(["app.booktago.com"]);
+export const PUSH_REPROMPT_EVENT = "bs-push-reprompt";
+let repromptPending = false;
+
+export function hostPonownejZgody(): boolean {
+  try {
+    return HOSTY_PONOWNEJ_ZGODY.has(window.location.hostname);
+  } catch {
+    return false;
+  }
+}
+
+// Czy od startu aplikacji padło już „needs-permission” na nowym hoście
+// (baner mógł się zamontować po zdarzeniu).
+export function repromptRequested(): boolean {
+  return repromptPending;
+}
+
+function zglosPotrzebeZgody(): void {
+  if (!hostPonownejZgody()) return;
+  repromptPending = true;
+  try {
+    window.dispatchEvent(new Event(PUSH_REPROMPT_EVENT));
+  } catch {
+    /* brak window — nic do pokazania */
+  }
+}
+
 // R4: po zalogowaniu/starcie — konto ma „włączone" i jest zgoda systemowa →
 // ZAWSZE odśwież rejestrację urządzenia na serwerze (upsert po endpointcie).
 // Celowo bez sprawdzania lokalnej subskrypcji: telefon potrafi trzymać żywą
@@ -168,7 +206,11 @@ export async function autoRejoinPush(): Promise<"joined" | "needs-permission" | 
       await ensurePushSubscribed();
       return "joined";
     }
-    return Notification.permission === "default" ? "needs-permission" : "idle";
+    if (Notification.permission === "default") {
+      zglosPotrzebeZgody();
+      return "needs-permission";
+    }
+    return "idle";
   } catch {
     return "idle"; // brak sieci/starego backendu — nie przeszkadzamy
   }

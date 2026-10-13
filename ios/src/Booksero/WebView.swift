@@ -60,18 +60,26 @@ func setAppStoreAsReferrer(contentController: WKUserContentController) {
     contentController.addUserScript(script);
 }
 
+// Ciasteczko app-platform (strona po nim poznaje powłokę ze sklepu i chowa
+// zachętę do instalacji) — dla KAŻDEGO hosta aplikacji, bo od kroku 2
+// Booktago powłoka otwiera app.booktago.com i nadal app.booksero.com.
 func setCustomCookie(webView: WKWebView) {
-    let _platformCookie = HTTPCookie(properties: [
-        .domain: rootUrl.host!,
-        .path: "/",
-        .name: platformCookie.name,
-        .value: platformCookie.value,
-        .secure: "FALSE",
-        .expires: NSDate(timeIntervalSinceNow: 31556926)
-    ])!
+    var cookieHosts = allowedOrigins
+    if let rootHost = rootUrl.host, !cookieHosts.contains(rootHost) {
+        cookieHosts.insert(rootHost, at: 0)
+    }
+    for host in cookieHosts {
+        let _platformCookie = HTTPCookie(properties: [
+            .domain: host,
+            .path: "/",
+            .name: platformCookie.name,
+            .value: platformCookie.value,
+            .secure: "FALSE",
+            .expires: NSDate(timeIntervalSinceNow: 31556926)
+        ])!
 
-    webView.configuration.websiteDataStore.httpCookieStore.setCookie(_platformCookie)
-
+        webView.configuration.websiteDataStore.httpCookieStore.setCookie(_platformCookie)
+    }
 }
 
 func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{

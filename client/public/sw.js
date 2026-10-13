@@ -1,4 +1,4 @@
-// Service worker BookSero — wymagany do instalacji PWA + obsługa Web Push.
+// Service worker Booktago — wymagany do instalacji PWA + obsługa Web Push.
 // Ruch sieciowy przepuszczamy bez cache (offline w kolejnym etapie).
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
@@ -6,7 +6,7 @@ self.addEventListener("fetch", (e) => {
   e.respondWith(fetch(e.request));
 });
 
-// Push z serwera Booksero: payload JSON { title, body, url, kind }.
+// Push z serwera Booktago: payload JSON { title, body, url, kind }.
 // Treść i język ogarnia serwer — my tylko wyświetlamy, co przyszło.
 self.addEventListener("push", (event) => {
   let data = {};
@@ -15,7 +15,7 @@ self.addEventListener("push", (event) => {
   } catch {
     /* payload nie-JSON — pokażemy sam tytuł domyślny */
   }
-  const title = data.title || "BookSero";
+  const title = data.title || "Booktago";
   event.waitUntil(
     self.registration.showNotification(title, {
       body: data.body || "",
@@ -33,7 +33,7 @@ self.addEventListener("push", (event) => {
       requireInteraction: true,
       tag: data.tag || "booksero-msg",
       renotify: true,
-      actions: [{ action: "open", title: "📱 BookSero" }],
+      actions: [{ action: "open", title: "📱 Booktago" }],
     }),
   );
   // Plakietka na ikonie aplikacji (gdzie system wspiera Badging API) — push

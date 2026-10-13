@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "BookSero",
-  "short_name": "BookSero",
+  "name": "Booktago",
+  "short_name": "Booktago",
   "description": "Rezerwuj wizyty w swoim ulubionym salonie.",
   "start_url": "/",
   "scope": "/",

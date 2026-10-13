@@ -8,7 +8,7 @@ const enc = encodeURIComponent;
 const loc = (req: Request) => String(req.headers["x-locale"] || "pl").slice(0, 2);
 const relay = (res: Response, r: { status: number; data: unknown }) => res.status(r.status).json(r.data);
 
-// BFF: mapuje /api/* aplikacji na publiczne /api/public/* Booksero.
+// BFF: mapuje /api/* aplikacji na publiczne /api/public/* panelu Booktago.
 export function registerRoutes(app: Express) {
   app.get("/api/health", (_req, res) => res.json({ ok: true, service: "booksero-clientapp" }));
 
@@ -24,8 +24,8 @@ export function registerRoutes(app: Express) {
   // Polityka prywatności pod publicznym adresem — wymóg Google Play. Trasa
   // MUSI być zarejestrowana przed statyką, inaczej przechwyci ją aplikacja
   // (jej router potraktowałby „polityka-prywatnosci" jak adres salonu).
-  const polityka = (lang: "pl" | "en") => (_req: Request, res: Response) =>
-    res.type("text/html; charset=utf-8").set("Cache-Control", "public, max-age=300").send(privacyPage(lang));
+  const polityka = (lang: "pl" | "en") => (req: Request, res: Response) =>
+    res.type("text/html; charset=utf-8").set("Cache-Control", "public, max-age=300").send(privacyPage(lang, req.hostname));
   app.get("/polityka-prywatnosci", polityka("pl"));
   app.get("/privacy", polityka("en"));
 
@@ -34,7 +34,7 @@ export function registerRoutes(app: Express) {
     relay(res, await bookseroGet(`/api/public/s/${enc(req.params.slug)}`, loc(req))));
 
   // Tenant: marka + hierarchia kraj→miasto→salon.
-  // ZALEŻNOŚĆ: /api/public/tenant/:id trzeba dodać w Booksero (ARCHITEKTURA §8.1).
+  // ZALEŻNOŚĆ: /api/public/tenant/:id trzeba dodać w panelu (ARCHITEKTURA §8.1).
   app.get("/api/tenant/:tenantId", async (req, res) => {
     relay(res, await bookseroGet(`/api/public/tenant/${enc(req.params.tenantId)}`, loc(req)));
   });

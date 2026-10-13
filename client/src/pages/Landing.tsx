@@ -31,7 +31,7 @@ function wyglądaJakNumer(v: string): boolean {
   return /^\+?[\d\s\-().]+$/.test(v) && v.replace(/\D/g, "").length >= 7;
 }
 
-// EKRAN STARTOWY — próg aplikacji. BookSero jest jedną aplikacją dla wszystkich
+// EKRAN STARTOWY — próg aplikacji. Booktago jest jedną aplikacją dla wszystkich
 // firm, więc zanim cokolwiek pokaże, musi wiedzieć, DO KTÓREGO salonu wchodzi
 // ta osoba. Decyzja właściciela 2026-09-05: JEDNO POLE, ŻADNYCH WYBORÓW.
 //   1. kod QR z wizytówki;
@@ -43,7 +43,7 @@ function wyglądaJakNumer(v: string): boolean {
 // bierze się z telefonu i siedzi w jednej drobnej linijce „🇵🇱 PL · zmień".
 // Celowo NIE MA tu wyszukiwarki ani listy salonów: każde podpowiadanie po
 // nazwie jest katalogiem, a katalog pozwala konkurencji wypisać klientów
-// Booksero. Z tego ekranu nie da się niczego wypisać ani policzyć.
+// Booktago. Z tego ekranu nie da się niczego wypisać ani policzyć.
 export default function Landing() {
   const [, navigate] = useLocation();
   const [value, setValue] = useState("");
@@ -71,7 +71,7 @@ export default function Landing() {
   const { t, i18n } = useTranslation();
   const phoneFind = caps.phoneFind;
 
-  // Ekran startowy = neutralna powłoka BookSero — zawsze domyślny niebieski
+  // Ekran startowy = neutralna powłoka Booktago — zawsze domyślny niebieski
   // (kolor salonu wraca dopiero na ekranach salonu).
   useEffect(() => {
     applyAccent(null);
@@ -209,7 +209,8 @@ export default function Landing() {
         navigate(`/r/${mR[1]}`);
         return;
       }
-      // Link ze slugiem (app.booksero.com/<slug> lub panel.booksero.com/<slug>)
+      // Link ze slugiem (app.booktago.com/<slug>, app.booksero.com/<slug> albo
+      // panel.*/<slug>) — host nie ma znaczenia, liczy się sama ścieżka
       // — ten sam QR z wizytówki działa w aparacie telefonu I w tym skanerze.
       const seg = u.pathname.split("/").filter(Boolean);
       if (seg.length === 1 && /^[a-z0-9-]{3,60}$/i.test(seg[0])) {
@@ -235,11 +236,12 @@ export default function Landing() {
 
   return (
     <div className="max-w-md mx-auto min-h-screen p-6 flex flex-col">
-      {/* Nagłówek BookSero + język */}
+      {/* Nagłówek Booktago + język. Człon „tago” w kolorze z logo (#0071E3),
+          niezależnie od akcentu lokalizacji — to znak marki, nie kolor salonu. */}
       <div className="flex items-center gap-2 pt-1">
         <div className="w-9 h-9 rounded-xl bg-brand text-brand-contrast grid place-items-center font-extrabold text-lg">b</div>
         <div className="text-lg font-extrabold tracking-tight">
-          Book<span className="text-brand">Sero</span>
+          Book<span className="text-[#0071E3]">tago</span>
         </div>
         <select
           value={(i18n.language || "pl").slice(0, 2)}
@@ -392,7 +394,7 @@ export default function Landing() {
       <p className="mt-auto pt-6 text-[11px] text-muted text-center">
         <span className="block">{t("landing.firstTime")}</span>
         <span className="block mt-1">{t("landing.privacyNote")}</span>
-        <span className="block mt-1 opacity-70 select-none">BookSero v{APP_VERSION}</span>
+        <span className="block mt-1 opacity-70 select-none">Booktago v{APP_VERSION}</span>
       </p>
 
       {scanning && <QrScanner onResult={handleQr} onClose={() => setScanning(false)} />}

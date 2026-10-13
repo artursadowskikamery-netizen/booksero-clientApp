@@ -51,7 +51,7 @@ export default function SlugRedirect() {
         <div>
           <p className="text-sm text-muted">{t("common.pageNotFound")}</p>
           <button className="btn-primary mt-4" onClick={() => navigate("/", { replace: true })}>
-            BookSero
+            Booktago
           </button>
         </div>
       ) : (

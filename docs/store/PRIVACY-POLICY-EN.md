@@ -1,24 +1,37 @@
-# Booksero App Privacy Policy
+**WERSJA ROBOCZA DO PRZEGLĄDU PRAWNIKA (DRAFT FOR LEGAL REVIEW)**
 
-_Last updated: 2026-09-13_
+> NOTE FOR THE LAWYER AND THE DEVELOPER (not shown on the page): Booktago
+> version prepared on 2026-10-13 on branch `claude/booktago-krok2` (step 2 of
+> the rebranding). Compared with the published version ONLY the app and
+> platform name changes; the controller, the operator (VIVI ESTETIC
+> SP. Z O.O.) and the contact address developer@viviestetic.eu stay the same.
+> BEFORE MERGING INTO main: (1) written approval of the lawyer, (2) remove the
+> bold “WERSJA ROBOCZA…” line at the top (it is visible on the page — on
+> purpose, so that it cannot be published by mistake), (3) set “Last
+> updated” to the publication date.
+
+# Booktago App Privacy Policy
+
+_Last updated: 2026-10-13_
 
 > WORKING NOTE (not shown on the page): English translation of
-> `POLITYKA-PRYWATNOSCI.md`, published at `https://app.booksero.com/privacy`.
-> Keep both files in sync. The Polish text is the original for the lawyer;
-> when the Polish text changes, update this file in the same commit.
+> `POLITYKA-PRYWATNOSCI.md`, published at `https://app.booktago.com/privacy`
+> (the same path also answers on app.booksero.com). Keep both files in sync.
+> The Polish text is the original for the lawyer; when the Polish text
+> changes, update this file in the same commit.
 
 _This is a translation of the Polish privacy policy. In case of doubt, the
 Polish version prevails._
 
 ## 1. Who is responsible for your data
 
-Booksero is a single app used by many independent salons. **The controller
+Booktago is a single app used by many independent salons. **The controller
 of your personal data is the salon (business) where you have a client
 record** — its name and details are shown in the app once you enter the
 salon. If you use several salons that belong to different businesses, each
 of them is a separate controller of the data in its own client record.
 
-The app and the **Booksero** booking platform are provided by
+The app and the **Booktago** booking platform are provided by
 **VIVI ESTETIC SP. Z O.O.**, ul. Promienna 6–10, 44‑240 Żory, Poland,
 e‑mail: **developer@viviestetic.eu** — as the app operator processing data
 on behalf of the salons (data processor). For matters concerning your data
@@ -66,7 +79,7 @@ number belongs to you (SMS code).
 ## 4. Recipients of data
 
 Data may be passed only to entities necessary to run the service:
-- the provider of the **Booksero** platform (hosting, technical operation),
+- the provider of the **Booktago** platform (hosting, technical operation),
 - the **SMS** gateway provider (sending sign‑in codes and notifications),
 - push notification service providers (browser/system mechanism).
 

@@ -332,7 +332,7 @@ export default function Profile() {
         )}
         <div className="text-[11px] text-muted mt-2">
           {verState === "uptodate" ? `${t("version.upToDate")} · ` : verState === "available" ? `${t("version.available")} · ` : ""}
-          BookSero v{APP_VERSION}
+          Booktago v{APP_VERSION}
         </div>
       </div>
 
