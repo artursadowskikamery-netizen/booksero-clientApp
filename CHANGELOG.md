@@ -9,6 +9,31 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.52] — 2026-10-19 — Booksero to teraz Booktago
+
+- **Nowa nazwa w całej aplikacji:** ekrany, znak słowny „Book” + „tago”
+  w #0071E3, stopki wersji, manifest (nazwa i nazwa skrócona), tytuł strony,
+  powiadomienia, komunikaty błędów, 16 języków. Ikony bez zmian (biała „b”
+  na #0071E3).
+- **Nowy adres booktago.app.** app.booksero.com działa dalej równolegle,
+  bez przekierowania, dopóki panel nie przestawi kodów QR, linków i dopisku
+  WebOTP w SMS-ie. Plik powiązania domeny z aplikacją Androida
+  (assetlinks) jest serwowany na obu adresach, z tymi samymi odciskami.
+- **Polityka prywatności PL/EN** z nazwą Booktago pod booktago.app;
+  administrator i kontakt bez zmian. Stopka pokazuje adres, pod którym
+  ją otwarto.
+- **Baner „Włącz powiadomienia ponownie”** tylko na booktago.app:
+  zgoda przeglądarki jest przypisana do adresu.
+- **Powłoka iOS** otwiera booktago.app, a app.booksero.com zostaje
+  dozwolony. Adres uznawany jest za „swój” tylko przy dokładnej zgodności
+  albo jako poddomena (wcześniej wystarczało, że zawiera tekst domeny).
+- **Teksty do sklepów** w 16 językach: `docs/store/BOOKTAGO-WPISY.md`,
+  kontrola limitów `script/limity-wpisow.mjs`.
+- Bez zmian: identyfikator com.booksero.app, klucz podpisu, adres panelu
+  (`BOOKSERO_API_BASE`), klucze pamięci przeglądarki.
+
+---
+
 ## [1.0.51] — 2026-09-29 — Baner instalacji prowadzi do sklepów
 
 - Aplikacja jest w App Store i Google Play, więc baner „Zainstaluj

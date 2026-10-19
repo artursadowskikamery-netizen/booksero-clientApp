@@ -70,10 +70,10 @@ export function markdownToHtml(md: string): string {
 // aplikacja odpowiada pod dwoma adresami). Tylko z białej listy — nagłówka
 // Host nie wstawiamy do HTML na ślepo. Inny host (replit.app, localhost) →
 // adres docelowy.
-const HOSTY_STOPKI = new Set(["app.booktago.com", "app.booksero.com"]);
+const HOSTY_STOPKI = new Set(["booktago.app", "app.booksero.com"]);
 export function hostStopki(hostname?: string | null): string {
   const h = String(hostname || "").toLowerCase();
-  return HOSTY_STOPKI.has(h) ? h : "app.booktago.com";
+  return HOSTY_STOPKI.has(h) ? h : "booktago.app";
 }
 
 export function privacyPage(lang: PrivacyLang = "pl", hostname?: string | null): string {

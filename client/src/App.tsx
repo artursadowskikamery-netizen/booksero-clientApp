@@ -56,7 +56,7 @@ export default function App() {
       {/* Kolor lokalizacji dla WSZYSTKICH ekranów /salon/… — jeden właściciel */}
       <SalonAccent />
       <InstallBanner />
-      {/* Tylko na app.booktago.com: konto ma powiadomienia, ta przeglądarka nie */}
+      {/* Tylko na booktago.app: konto ma powiadomienia, ta przeglądarka nie */}
       <PushReprompt />
       <Switch>
         <Route path="/" component={Landing} />

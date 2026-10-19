@@ -62,7 +62,7 @@ func setAppStoreAsReferrer(contentController: WKUserContentController) {
 
 // Ciasteczko app-platform (strona po nim poznaje powłokę ze sklepu i chowa
 // zachętę do instalacji) — dla KAŻDEGO hosta aplikacji, bo od kroku 2
-// Booktago powłoka otwiera app.booktago.com i nadal app.booksero.com.
+// Booktago powłoka otwiera booktago.app i nadal app.booksero.com.
 func setCustomCookie(webView: WKWebView) {
     var cookieHosts = allowedOrigins
     if let rootHost = rootUrl.host, !cookieHosts.contains(rootHost) {
@@ -80,6 +80,15 @@ func setCustomCookie(webView: WKWebView) {
 
         webView.configuration.websiteDataStore.httpCookieStore.setCookie(_platformCookie)
     }
+}
+
+// Host należy do aplikacji tylko przy dokładnej zgodności albo jako jej
+// poddomena. Dawne dopasowanie „zawiera tekst" (range(of:)) wpuszczało do
+// powłoki obce adresy w rodzaju booktago.app.cudza-strona.com.
+func hostMatches(_ host: String, origin: String) -> Bool {
+    let h = host.lowercased()
+    let o = origin.lowercased()
+    return h == o || h.hasSuffix("." + o)
 }
 
 func calcWebviewFrame(webviewView: UIView, toolbarView: UIToolbar?) -> CGRect{
@@ -141,7 +150,7 @@ extension ViewController: WKUIDelegate, WKDownloadDelegate {
 
             if let requestHost = requestUrl.host {
                 // NOTE: Match auth origin first, because host origin may be a subset of auth origin and may therefore always match
-                let matchingAuthOrigin = authOrigins.first(where: { requestHost.range(of: $0) != nil })
+                let matchingAuthOrigin = authOrigins.first(where: { hostMatches(requestHost, origin: $0) })
                 if (matchingAuthOrigin != nil) {
                     decisionHandler(.allow)
                     if (toolbarView.isHidden) {
@@ -151,7 +160,7 @@ extension ViewController: WKUIDelegate, WKDownloadDelegate {
                     return
                 }
 
-                let matchingHostOrigin = allowedOrigins.first(where: { requestHost.range(of: $0) != nil })
+                let matchingHostOrigin = allowedOrigins.first(where: { hostMatches(requestHost, origin: $0) })
                 if (matchingHostOrigin != nil) {
                     // Open in main webview
                     decisionHandler(.allow)

@@ -209,7 +209,7 @@ export default function Landing() {
         navigate(`/r/${mR[1]}`);
         return;
       }
-      // Link ze slugiem (app.booktago.com/<slug>, app.booksero.com/<slug> albo
+      // Link ze slugiem (booktago.app/<slug>, app.booksero.com/<slug> albo
       // panel.*/<slug>) — host nie ma znaczenia, liczy się sama ścieżka
       // — ten sam QR z wizytówki działa w aparacie telefonu I w tym skanerze.
       const seg = u.pathname.split("/").filter(Boolean);

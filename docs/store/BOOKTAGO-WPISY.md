@@ -28,8 +28,8 @@ limit).
 
 | Pole | Wartość |
 |---|---|
-| Polityka prywatności — Google Play | https://app.booktago.com/polityka-prywatnosci |
-| Privacy Policy URL — App Store | https://app.booktago.com/privacy |
+| Polityka prywatności — Google Play | https://booktago.app/polityka-prywatnosci |
+| Privacy Policy URL — App Store | https://booktago.app/privacy |
 | Support URL — App Store | https://booktago.com (do potwierdzenia: strona z kontaktem musi działać w dniu S0) |
 | E-mail kontaktowy (oba sklepy) | developer@viviestetic.eu |
 | Nazwa dewelopera (Play) | Booktago |
@@ -41,7 +41,7 @@ limit).
 
 ```
 Version 1.1 changes the app name and home-screen name to Booktago and the web
-address loaded by the app to https://app.booktago.com. Features, publisher
+address loaded by the app to https://booktago.app. Features, publisher
 (VIVI ESTETIC SP. Z O.O.) and the test account are unchanged.
 ```
 
