@@ -1,18 +1,6 @@
-**WERSJA ROBOCZA DO PRZEGLĄDU PRAWNIKA (DRAFT FOR LEGAL REVIEW)**
-
-> NOTE FOR THE LAWYER AND THE DEVELOPER (not shown on the page): Booktago
-> version prepared on 2026-10-13 on branch `claude/booktago-krok2` (step 2 of
-> the rebranding). Compared with the published version ONLY the app and
-> platform name changes; the controller, the operator (VIVI ESTETIC
-> SP. Z O.O.) and the contact address developer@viviestetic.eu stay the same.
-> BEFORE MERGING INTO main: (1) written approval of the lawyer, (2) remove the
-> bold “WERSJA ROBOCZA…” line at the top (it is visible on the page — on
-> purpose, so that it cannot be published by mistake), (3) set “Last
-> updated” to the publication date.
-
 # Booktago App Privacy Policy
 
-_Last updated: 2026-10-13_
+_Last updated: 2026-10-19_
 
 > WORKING NOTE (not shown on the page): English translation of
 > `POLITYKA-PRYWATNOSCI.md`, published at `https://booktago.app/privacy`

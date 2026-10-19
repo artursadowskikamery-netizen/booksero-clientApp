@@ -1,18 +1,6 @@
-**WERSJA ROBOCZA DO PRZEGLĄDU PRAWNIKA**
-
-> NOTATKA DLA PRAWNIKA I PROGRAMISTY (nie pojawia się na stronie): wersja
-> z nazwą Booktago przygotowana 2026-10-13 na gałęzi `claude/booktago-krok2`
-> (krok 2 rebrandingu). Względem wersji opublikowanej zmienia się WYŁĄCZNIE
-> nazwa aplikacji i platformy; administrator danych, operator (VIVI ESTETIC
-> SP. Z O.O.) i adres kontaktowy developer@viviestetic.eu bez zmian.
-> PRZED SCALENIEM DO main: (1) pisemna akceptacja prawnika, (2) usunąć
-> pogrubioną linię „WERSJA ROBOCZA…” z góry pliku (jest widoczna na
-> stronie — celowo, żeby nie dało się jej opublikować przez pomyłkę),
-> (3) w „Ostatnia aktualizacja” wpisać dzień publikacji.
-
 # Polityka prywatności aplikacji Booktago
 
-_Ostatnia aktualizacja: 2026-10-13_
+_Ostatnia aktualizacja: 2026-10-19_
 
 > NOTATKA ROBOCZA (nie pojawia się na stronie): ten plik jest publikowany
 > automatycznie pod adresem `https://booktago.app/polityka-prywatnosci`
