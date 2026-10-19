@@ -1,6 +1,21 @@
 # Booksero w App Store (iOS) — stan i plan
 
-Stan na 2026-09-15.
+Stan na 2026-10-19.
+
+## WYSŁANE DO RECENZJI — 2026-10-19 23:39, wersja 1.1 (3) „Booktago”
+- Build z main 8e01b6a (MARKETING_VERSION 1.1, build 3), Team 9WBP3PU6FA;
+  nazwa w App Store Connect: Booktago, podtytuł EN „Salon bookings &
+  rewards”, PL „Wizyty w salonie i nagrody”. Lokalizacje karty: English (U.S.)
+  i Polish (teksty z `BOOKTAGO-WPISY.md`).
+- Zrzuty: Apple ma nowe pola „iPhone with Dynamic Island” — medium
+  (1206×2622) i large (1320×2868); stare 1284×2778 już nie przechodzą.
+  10 zrzutów w obu rozmiarach + 5 iPad 13" (2064×2752).
+- Polityka: EN https://booktago.app/privacy, PL
+  https://booktago.app/polityka-prywatnosci; Support URL https://booktago.app.
+- Notatka dla recenzenta: numer testowy wpisuje się na EKRANIE STARTOWYM
+  (otwiera wyłącznie salon demo — w prawdziwej firmie, np. VIVIZory, stały
+  kod jest „nieprawidłowy” z założenia, `server/services/recenzent.ts`
+  w panelu). Wydanie: automatyczne po akceptacji.
 
 ## ODRZUCONE 2026-09-15 — Guideline 2.1 „Information Needed" (nowe konto)
 Apple prosi o nagranie ekranu z fizycznego iPhone'a + 6 odpowiedzi.
