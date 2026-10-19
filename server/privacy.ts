@@ -66,7 +66,17 @@ export function markdownToHtml(md: string): string {
   return out.join("\n");
 }
 
-export function privacyPage(lang: PrivacyLang = "pl"): string {
+// Host w stopce = host, pod którym klientka czyta politykę (od kroku 2 ta sama
+// aplikacja odpowiada pod dwoma adresami). Tylko z białej listy — nagłówka
+// Host nie wstawiamy do HTML na ślepo. Inny host (replit.app, localhost) →
+// adres docelowy.
+const HOSTY_STOPKI = new Set(["app.booktago.com", "app.booksero.com"]);
+export function hostStopki(hostname?: string | null): string {
+  const h = String(hostname || "").toLowerCase();
+  return HOSTY_STOPKI.has(h) ? h : "app.booktago.com";
+}
+
+export function privacyPage(lang: PrivacyLang = "pl", hostname?: string | null): string {
   let md = "";
   try {
     md = readFileSync(PLIKI[lang], "utf8");
@@ -76,7 +86,7 @@ export function privacyPage(lang: PrivacyLang = "pl"): string {
       : "# Polityka prywatności\n\nDokument jest chwilowo niedostępny. Napisz: developer@viviestetic.eu";
   }
   const body = markdownToHtml(md);
-  const title = lang === "en" ? "Privacy Policy — Booksero" : "Polityka prywatności — Booksero";
+  const title = lang === "en" ? "Privacy Policy — Booktago" : "Polityka prywatności — Booktago";
   const other = lang === "en"
     ? '<a href="/polityka-prywatnosci">Wersja polska</a>'
     : '<a href="/privacy">English version</a>';
@@ -103,7 +113,7 @@ export function privacyPage(lang: PrivacyLang = "pl"): string {
 <body>
 <main>
 ${body}
-<footer>Booksero · <a href="/">app.booksero.com</a> · ${other}</footer>
+<footer>Booktago · <a href="/">${hostStopki(hostname)}</a> · ${other}</footer>
 </main>
 </body>
 </html>`;

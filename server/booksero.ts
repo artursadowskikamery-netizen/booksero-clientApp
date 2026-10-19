@@ -1,4 +1,4 @@
-// Serwerowy klient publicznego API Booksero. Bazowy URL z env (Replit) — sekret
+// Serwerowy klient publicznego API panelu Booktago. Bazowy URL z env (Replit) — sekret
 // BOOKSERO_API_BASE nadpisuje domyślny. Domyślny wskazuje panel (ten sam serwer
 // obsługuje /api/public/*). Potwierdzenie: <base>/api/public/plans zwraca JSON.
 //
@@ -7,7 +7,7 @@
 // deploymentu Replita miewa trwałe EAI_AGAIN dla własnych domen niestandardowych
 // (żądania w ogóle nie wychodziły). Adres *.replit.app jest ZWIĄZANY z konkretnym
 // wdrożeniem: przeniesienie/odtworzenie projektu backendu = nowy adres = aplikacja
-// traci połączenie. Objaw: w aplikacji „Brak połączenia z Booksero", w logach
+// traci połączenie. Objaw: w aplikacji „Brak połączenia z Booktago", w logach
 // [booksero] fetch failed. Naprawa: zaktualizować sekret BOOKSERO_API_BASE
 // (jeden wpis, bez wdrożenia kodu) i Republish.
 const BASE = process.env.BOOKSERO_API_BASE || "https://panel.booksero.com";
@@ -49,13 +49,13 @@ async function bookseroFetch(
       const cause = (e as { cause?: { code?: string } }).cause?.code || (e as Error).message;
       console.error(`[booksero] fetch failed (próba ${attempt}/3) → ${BASE}${path}: ${cause}`);
       if (attempt === 3) {
-        return { status: 502, ok: false, data: { message: "Brak połączenia z Booksero. Spróbuj za chwilę." } };
+        return { status: 502, ok: false, data: { message: "Brak połączenia z Booktago. Spróbuj za chwilę." } };
       }
       await new Promise((r) => setTimeout(r, attempt * 400));
     }
   }
   if (!res) {
-    return { status: 502, ok: false, data: { message: "Brak połączenia z Booksero. Spróbuj za chwilę." } };
+    return { status: 502, ok: false, data: { message: "Brak połączenia z Booktago. Spróbuj za chwilę." } };
   }
   const text = await res.text();
   let data: unknown = null;
@@ -63,7 +63,7 @@ async function bookseroFetch(
     try {
       data = JSON.parse(text);
     } catch {
-      data = { message: "Nieprawidłowa odpowiedź z Booksero" };
+      data = { message: "Nieprawidłowa odpowiedź z Booktago" };
     }
   }
   return { status: res.status, ok: res.ok, data };

@@ -8,11 +8,15 @@ struct Cookie {
 let gcmMessageIDKey = "00000000000" // update this with actual ID if using Firebase 
 
 // URL for first launch
-let rootUrl = URL(string: "https://app.booksero.com")!
+// Krok 2 Booktago: aplikacja startuje z nowego adresu. Stary host zostaje
+// dozwolony (linki z SMS-ów, QR i wizytówek z app.booksero.com otwierają się
+// w aplikacji, a nie w Safari).
+let rootUrl = URL(string: "https://app.booktago.com")!
 
 // allowed origin is for what we are sticking to pwa domain
-// This should also appear in Info.plist
-let allowedOrigins: [String] = ["app.booksero.com"]
+// This should also appear in Info.plist (WKAppBoundDomains) and in
+// Entitlements.plist (applinks / webcredentials)
+let allowedOrigins: [String] = ["app.booktago.com", "app.booksero.com"]
 
 // auth origins will open in modal and show toolbar for back into the main origin.
 // These should also appear in Info.plist

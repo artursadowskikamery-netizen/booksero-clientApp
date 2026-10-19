@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Booksero uses the camera to scan the QR code from your salon.</string>
+	<string>Booktago uses the camera to scan the QR code from your salon.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Booksero</string>
+	<string>Booktago</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -89,6 +89,7 @@
 	<true/>
 	<key>WKAppBoundDomains</key>
 	<array>
+		<string>app.booktago.com</string>
 		<string>app.booksero.com</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>

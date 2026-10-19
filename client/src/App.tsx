@@ -19,6 +19,7 @@ import Notifications from "./pages/Notifications";
 import PushOpen from "./pages/PushOpen";
 import SlugRedirect from "./pages/SlugRedirect";
 import InstallBanner from "./components/InstallBanner";
+import PushReprompt from "./components/PushReprompt";
 import SalonAccent from "./components/SalonAccent";
 
 // Przy starcie (zalogowany klient): raz wyślij sygnał instalacji (standalone)
@@ -55,6 +56,8 @@ export default function App() {
       {/* Kolor lokalizacji dla WSZYSTKICH ekranów /salon/… — jeden właściciel */}
       <SalonAccent />
       <InstallBanner />
+      {/* Tylko na app.booktago.com: konto ma powiadomienia, ta przeglądarka nie */}
+      <PushReprompt />
       <Switch>
         <Route path="/" component={Landing} />
         <Route path="/r/:code" component={ReferralLink} />

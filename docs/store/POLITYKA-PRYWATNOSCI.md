@@ -1,24 +1,36 @@
-# Polityka prywatności aplikacji BookSero
+**WERSJA ROBOCZA DO PRZEGLĄDU PRAWNIKA**
 
-_Ostatnia aktualizacja: 2026-09-13_
+> NOTATKA DLA PRAWNIKA I PROGRAMISTY (nie pojawia się na stronie): wersja
+> z nazwą Booktago przygotowana 2026-10-13 na gałęzi `claude/booktago-krok2`
+> (krok 2 rebrandingu). Względem wersji opublikowanej zmienia się WYŁĄCZNIE
+> nazwa aplikacji i platformy; administrator danych, operator (VIVI ESTETIC
+> SP. Z O.O.) i adres kontaktowy developer@viviestetic.eu bez zmian.
+> PRZED SCALENIEM DO main: (1) pisemna akceptacja prawnika, (2) usunąć
+> pogrubioną linię „WERSJA ROBOCZA…” z góry pliku (jest widoczna na
+> stronie — celowo, żeby nie dało się jej opublikować przez pomyłkę),
+> (3) w „Ostatnia aktualizacja” wpisać dzień publikacji.
+
+# Polityka prywatności aplikacji Booktago
+
+_Ostatnia aktualizacja: 2026-10-13_
 
 > NOTATKA ROBOCZA (nie pojawia się na stronie): ten plik jest publikowany
-> automatycznie pod adresem `https://app.booksero.com/polityka-prywatnosci`
-> (także `/privacy`) — ten adres wpisz w Google Play Console (Sklep →
-> Polityka prywatności) i w formularzu „Bezpieczeństwo danych". Cytaty
-> (linie zaczynające się od „>") są pomijane przy publikacji. Sekcje 1 i 2a
-> przepisane 2026-09-05 pod aplikację WIELU firm i wejście numerem telefonu —
-> DO POTWIERDZENIA PRZEZ PRAWNIKA przed publikacją w sklepie.
+> automatycznie pod adresem `https://app.booktago.com/polityka-prywatnosci`
+> (także `/privacy`; te same ścieżki odpowiadają pod app.booksero.com) — ten
+> adres wpisz w Google Play Console (Sklep → Polityka prywatności)
+> i w formularzu „Bezpieczeństwo danych". Cytaty (linie zaczynające się od
+> „>") są pomijane przy publikacji. Sekcje 1 i 2a przepisane 2026-09-05 pod
+> aplikację WIELU firm i wejście numerem telefonu.
 
 ## 1. Kto odpowiada za Twoje dane
 
-Aplikacja BookSero jest jedną aplikacją dla wielu niezależnych salonów.
+Aplikacja Booktago jest jedną aplikacją dla wielu niezależnych salonów.
 **Administratorem Twoich danych osobowych jest salon (firma), w którym masz
 kartotekę** — jego nazwę i dane widzisz w aplikacji po wejściu do salonu.
 Jeśli korzystasz z kilku salonów należących do różnych firm, każda z tych
 firm jest osobnym administratorem danych ze swojej kartoteki.
 
-Aplikację i platformę rezerwacyjną **Booksero** udostępnia
+Aplikację i platformę rezerwacyjną **Booktago** udostępnia
 **VIVI ESTETIC SP. Z O.O.**, ul. Promienna 6–10, 44‑240 Żory, Polska,
 e‑mail: **developer@viviestetic.eu** — jako operator aplikacji, przetwarzający
 dane na zlecenie salonów (podmiot przetwarzający). W sprawach dotyczących
@@ -66,7 +78,7 @@ należy do Ciebie (kod SMS).
 ## 4. Odbiorcy danych
 
 Dane mogą być przekazywane wyłącznie podmiotom niezbędnym do działania usługi:
-- dostawcy platformy **Booksero** (hosting, obsługa techniczna),
+- dostawcy platformy **Booktago** (hosting, obsługa techniczna),
 - dostawcy bramki **SMS** (wysyłka kodów logowania i powiadomień),
 - dostawcy usług powiadomień push (mechanizm przeglądarki/systemu).
 

@@ -3,7 +3,7 @@
   "version": "1.0.51",
   "type": "module",
   "license": "MIT",
-  "description": "BookSero — konsumencka aplikacja (PWA) platformy rezerwacyjnej Booksero.",
+  "description": "Booktago — konsumencka aplikacja (PWA) platformy rezerwacyjnej Booktago.",
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
     "build": "tsx script/build.ts",
