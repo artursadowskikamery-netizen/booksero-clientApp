@@ -156,7 +156,7 @@ export async function deviceSubscribed(): Promise<boolean> {
 
 // PONOWNA ZGODA NA NOWYM ADRESIE (krok 2 Booktago). Zgoda przeglądarki na
 // powiadomienia i subskrypcja push są przypięte do ORIGINU. Klientka, która
-// włączyła powiadomienia na app.booksero.com, na app.booktago.com ma zgodę
+// włączyła powiadomienia na app.booksero.com, na booktago.app ma zgodę
 // „default” i brak subskrypcji, choć jej KONTO dalej ma „włączone”. Wtedy
 // autoRejoinPush zwraca "needs-permission", a na nowym hoście dodatkowo
 // zapala baner „Włącz powiadomienia ponownie” (components/PushReprompt.tsx).
@@ -164,7 +164,7 @@ export async function deviceSubscribed(): Promise<boolean> {
 // automat. Na app.booksero.com nic się nie zmienia (brak banera).
 // Unieważnienie starych tokenów tej samej klientki to sprawa panelu (decyzja
 // 10b) — aplikacja wysyła subskrypcję tym samym wywołaniem co dotąd.
-const HOSTY_PONOWNEJ_ZGODY = new Set(["app.booktago.com"]);
+const HOSTY_PONOWNEJ_ZGODY = new Set(["booktago.app"]);
 export const PUSH_REPROMPT_EVENT = "bs-push-reprompt";
 let repromptPending = false;
 

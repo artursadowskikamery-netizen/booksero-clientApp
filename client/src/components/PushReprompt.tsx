@@ -12,8 +12,8 @@ import {
 } from "../lib/push";
 
 // Baner „Włącz powiadomienia ponownie” — krok 2 Booktago (nowy adres
-// app.booktago.com). Pokazywany TYLKO, gdy jednocześnie:
-//  - aplikacja działa pod hostem z listy w lib/push.ts (app.booktago.com),
+// booktago.app). Pokazywany TYLKO, gdy jednocześnie:
+//  - aplikacja działa pod hostem z listy w lib/push.ts (booktago.app),
 //  - klientka jest zalogowana, a jej KONTO ma powiadomienia włączone
 //    (autoRejoinPush dostał od serwera enabled=true i zgłosił potrzebę zgody),
 //  - zgoda przeglądarki w tym originie jest „default” (nie „denied”),

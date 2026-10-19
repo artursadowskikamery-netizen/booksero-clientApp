@@ -6,8 +6,8 @@
 	<string>production</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:app.booktago.com</string>
-		<string>webcredentials:app.booktago.com</string>
+		<string>applinks:booktago.app</string>
+		<string>webcredentials:booktago.app</string>
 		<string>applinks:app.booksero.com</string>
 		<string>webcredentials:app.booksero.com</string>
 	</array>

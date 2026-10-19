@@ -15,7 +15,7 @@
 _Ostatnia aktualizacja: 2026-10-13_
 
 > NOTATKA ROBOCZA (nie pojawia się na stronie): ten plik jest publikowany
-> automatycznie pod adresem `https://app.booktago.com/polityka-prywatnosci`
+> automatycznie pod adresem `https://booktago.app/polityka-prywatnosci`
 > (także `/privacy`; te same ścieżki odpowiadają pod app.booksero.com) — ten
 > adres wpisz w Google Play Console (Sklep → Polityka prywatności)
 > i w formularzu „Bezpieczeństwo danych". Cytaty (linie zaczynające się od

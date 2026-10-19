@@ -42,9 +42,9 @@ const bezTabeli = md.includes(START) ? md.slice(0, md.indexOf(START)) : md;
 if (/booksero/i.test(bezTabeli)) bledy.push("plik zawiera starą nazwę (booksero)");
 for (const m of bezTabeli.matchAll(/book\s?tago/gi)) {
   const dalej = bezTabeli.slice(m.index + m[0].length, m.index + m[0].length + 4);
-  // małą literą wolno tylko w adresie (booktago.com) i w identyfikatorach
-  // (gałąź claude/booktago-krok2, nazwy plików booktago-…)
-  const ok = m[0] === "Booktago" || (m[0] === "booktago" && /^(\.com|-)/.test(dalej));
+  // małą literą wolno tylko w adresach (booktago.com, booktago.app)
+  // i w identyfikatorach (gałąź claude/booktago-krok2, nazwy plików booktago-…)
+  const ok = m[0] === "Booktago" || (m[0] === "booktago" && /^(\.com|\.app|-)/.test(dalej));
   if (!ok) bledy.push(`zła pisownia marki: „${m[0]}${dalej}”`);
 }
 

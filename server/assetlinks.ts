@@ -1,5 +1,6 @@
-// Digital Asset Links dla TWA (Google Play) — dowód, że domena app.booksero.com
-// i aplikacja Androida to jedno. Bez poprawnego wpisu aplikacja ze sklepu
+// Digital Asset Links dla TWA (Google Play) — dowód, że domena i aplikacja
+// Androida to jedno. Trasa nie patrzy na host, więc ten sam plik serwują
+// booktago.app (od rebrandingu, adres w paczce) i app.booksero.com. Bez poprawnego wpisu aplikacja ze sklepu
 // pokazuje u góry pasek adresu, jak zwykła przeglądarka.
 //
 // IDENTYFIKATOR APLIKACJI: com.booksero.app — ustalony 2026-07-28, NIEODWRACALNY

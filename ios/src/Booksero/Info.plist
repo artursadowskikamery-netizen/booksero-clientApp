@@ -89,7 +89,7 @@
 	<true/>
 	<key>WKAppBoundDomains</key>
 	<array>
-		<string>app.booktago.com</string>
+		<string>booktago.app</string>
 		<string>app.booksero.com</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>

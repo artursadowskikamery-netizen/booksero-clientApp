@@ -15,7 +15,7 @@
 _Last updated: 2026-10-13_
 
 > WORKING NOTE (not shown on the page): English translation of
-> `POLITYKA-PRYWATNOSCI.md`, published at `https://app.booktago.com/privacy`
+> `POLITYKA-PRYWATNOSCI.md`, published at `https://booktago.app/privacy`
 > (the same path also answers on app.booksero.com). Keep both files in sync.
 > The Polish text is the original for the lawyer; when the Polish text
 > changes, update this file in the same commit.
