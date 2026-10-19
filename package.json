@@ -1,6 +1,6 @@
 {
   "name": "booksero-clientapp",
-  "version": "1.0.52",
+  "version": "1.0.53",
   "type": "module",
   "license": "MIT",
   "description": "Booktago — konsumencka aplikacja (PWA) platformy rezerwacyjnej Booktago.",

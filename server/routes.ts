@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { bookseroGet, bookseroPost, bookseroPatch, bookseroDelete } from "./booksero";
 import { APP_VERSION } from "@shared/version";
 import { ASSET_LINKS } from "./assetlinks";
+import { APPLE_APP_SITE_ASSOCIATION } from "./apple-app-site-association";
 import { privacyPage } from "./privacy";
 
 const enc = encodeURIComponent;
@@ -20,6 +21,12 @@ export function registerRoutes(app: Express) {
   // blokuje ścieżki z kropką (.well-known). Treść w server/assetlinks.ts.
   app.get("/.well-known/assetlinks.json", (_req, res) =>
     res.type("application/json").send(JSON.stringify(ASSET_LINKS)));
+
+  // Apple App Site Association dla powłoki iOS (linki otwierają aplikację).
+  // Bez rozszerzenia, typ application/json, bez przekierowania — wymóg Apple.
+  // Treść w server/apple-app-site-association.ts.
+  app.get("/.well-known/apple-app-site-association", (_req, res) =>
+    res.type("application/json").send(JSON.stringify(APPLE_APP_SITE_ASSOCIATION)));
 
   // Polityka prywatności pod publicznym adresem — wymóg Google Play. Trasa
   // MUSI być zarejestrowana przed statyką, inaczej przechwyci ją aplikacja
@@ -107,16 +114,28 @@ export function registerRoutes(app: Express) {
   app.post("/api/app/entry", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/app/entry`, req.body ?? {}, loc(req))));
 
+  // WebOTP: panel kończy SMS z kodem dopiskiem „@<host> #kod", dzięki któremu
+  // telefon sam wkleja kod — ale tylko na adresie z dopisku. Podajemy panelowi
+  // host, pod którym działa aplikacja, WYŁĄCZNIE przy dokładnym trafieniu
+  // w listę; inny host (np. *.replit.app, brak Host) = bez nagłówka, panel
+  // użyje domyślnego app.booksero.com. Kontrakt: panel poz. 558/568.
+  // Nie używać hostStopki z privacy.ts — ta dla obcego hosta zwraca booktago.app.
+  const WEBOTP_HOSTY = new Set(["app.booksero.com", "booktago.app"]);
+  const webotp = (req: Request): Record<string, string> => {
+    const h = String(req.hostname || "").toLowerCase();
+    return WEBOTP_HOSTY.has(h) ? { "X-Webotp-Host": h } : {};
+  };
+
   // „Masz już u nas kartotekę?" — SMS → lista firm → wejście bez drugiego SMS-a.
   app.post("/api/client-auth/find/request", async (req, res) =>
-    relay(res, await bookseroPost(`/api/public/client-auth/find/request`, req.body ?? {}, loc(req))));
+    relay(res, await bookseroPost(`/api/public/client-auth/find/request`, req.body ?? {}, loc(req), webotp(req))));
   app.post("/api/client-auth/find/verify", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client-auth/find/verify`, req.body ?? {}, loc(req))));
   app.post("/api/client-auth/find/enter", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client-auth/find/enter`, req.body ?? {}, loc(req))));
 
   app.post("/api/client-auth/request-code", async (req, res) =>
-    relay(res, await bookseroPost(`/api/public/client-auth/request-code`, req.body, loc(req))));
+    relay(res, await bookseroPost(`/api/public/client-auth/request-code`, req.body, loc(req), webotp(req))));
 
   app.post("/api/client-auth/verify", async (req, res) =>
     relay(res, await bookseroPost(`/api/public/client-auth/verify`, req.body, loc(req))));

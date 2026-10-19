@@ -48,11 +48,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             if let url = comps?.url {
                 // Handle it inside our web view in a SPA-friendly way.
-                Booksero.webView.evaluateJavaScript("location.href = '\(url)'")
+                Booksero.webView.load(URLRequest(url: url))
             }
         }
     }
 
+    // Booktago (2026-10-19): linki z zewnątrz wczytujemy przez load(URLRequest),
+    // nie przez evaluateJavaScript("location.href = '...'"). Adres wklejony
+    // w tekst skryptu bez zabezpieczenia pozwalał spreparowanym linkiem
+    // (apostrof w ścieżce) uruchomić obcy kod w aplikacji; plik
+    // apple-app-site-association uaktywnia tę ścieżkę. Efekt dla klientki ten
+    // sam: przypisanie location.href i tak przeładowuje stronę. Nawigację
+    // dalej filtruje decidePolicyFor (tylko hosty z allowedOrigins).
     // This function is called when our app is already running and the user clicks a universal link.
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         // Handle universal links into our app when the app is already running.
@@ -66,7 +73,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         // Handle it inside our web view in a SPA-friendly way.
-        Booksero.webView.evaluateJavaScript("location.href = '\(universalLink)'")
+        Booksero.webView.load(URLRequest(url: universalLink))
     }
 
     // This function is called if our app is already loaded and the user activates the app via shortcut
@@ -74,7 +81,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                      performActionFor shortcutItem: UIApplicationShortcutItem,
                      completionHandler: @escaping (Bool) -> Void) {
         if let shortcutUrl = URL.init(string: shortcutItem.type) {
-            Booksero.webView.evaluateJavaScript("location.href = '\(shortcutUrl)'");
+            Booksero.webView.load(URLRequest(url: shortcutUrl))
         }
     }
 

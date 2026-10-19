@@ -9,6 +9,25 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.53] — 2026-10-19 — Kod z SMS-a na booktago.app, linki otwierają aplikację na iPhonie
+
+- **Kod z SMS-a wkleja się sam także na booktago.app.** Przy logowaniu
+  kodem i przy wejściu po numerze serwer aplikacji podaje panelowi adres,
+  pod którym działa (nagłówek `X-Webotp-Host`), a panel kończy SMS
+  dopiskiem z tym adresem. Nagłówek idzie tylko dla booktago.app
+  i app.booksero.com; dla innego adresu panel zostaje przy starym.
+  Kontrakt z panelem: poz. 558/568.
+- **Plik `/.well-known/apple-app-site-association`** na obu adresach.
+  Link do aplikacji (SMS, kod QR zeskanowany aparatem) otwiera na iPhonie
+  zainstalowaną aplikację na właściwym adresie. Polityka prywatności,
+  `/api/*` i `/.well-known/*` są wyłączone. Wcześniej pod tym adresem
+  serwer oddawał stronę aplikacji.
+- **Powłoka iOS:** linki z zewnątrz wczytywane bezpiecznie, bez składania
+  skryptu z adresu. Spreparowany link z apostrofem mógł wcześniej
+  uruchomić obcy kod w aplikacji, a nowy plik Apple uaktywnia tę ścieżkę.
+
+---
+
 ## [1.0.52] — 2026-10-19 — Booksero to teraz Booktago
 
 - **Nowa nazwa w całej aplikacji:** ekrany, znak słowny „Book” + „tago”
