@@ -16,6 +16,11 @@ Stan na 2026-10-19.
   (otwiera wyłącznie salon demo — w prawdziwej firmie, np. VIVIZory, stały
   kod jest „nieprawidłowy” z założenia, `server/services/recenzent.ts`
   w panelu). Wydanie: automatyczne po akceptacji.
+- 2026-10-20: wersja 1.1 już w App Store jako Booktago, ale jako deweloper
+  widnieje „Booksero” (pole Company Name z pierwszej aplikacji, nie do zmiany
+  w App Store Connect). Prośba do Apple Developer Support o zmianę na
+  VIVI ESTETIC SP. Z O.O.: Membership and Account → Account Information
+  Update, Case ID 103003170843 (odpowiedź mailem na developer@viviestetic.eu).
 
 ## ODRZUCONE 2026-09-15 — Guideline 2.1 „Information Needed" (nowe konto)
 Apple prosi o nagranie ekranu z fizycznego iPhone'a + 6 odpowiedzi.
