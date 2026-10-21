@@ -1,6 +1,15 @@
 # Booksero w App Store (iOS) — stan i plan
 
-Stan na 2026-10-19.
+Stan na 2026-10-21.
+
+## WYSŁANE DO RECENZJI — 2026-10-21, wersja 1.1.1 (4)
+- Powód: App Store pokazywał „Języki: Angielski” — powłoka deklarowała tylko
+  en. Build z main afe1a4d: CFBundleLocalizations (16 języków, norweski jako
+  nb), knownRegions, DEVELOPMENT_TEAM 9WBP3PU6FA wpisany w projekt.
+- „What's New” EN/PL o liście 16 języków; notatka dla recenzenta: 1.1.1 bez
+  zmian funkcjonalnych. Po publikacji sprawdzić wiersz „Języki” w App Store.
+- Sekcja „Dostawca” (DUNS, adres, telefon, e-mail) to wymóg DSA dla firm
+  w UE — nie do ukrycia; telefon można zmienić w App Store Connect → Business.
 
 ## WYSŁANE DO RECENZJI — 2026-10-19 23:39, wersja 1.1 (3) „Booktago”
 - Build z main 8e01b6a (MARKETING_VERSION 1.1, build 3), Team 9WBP3PU6FA;
