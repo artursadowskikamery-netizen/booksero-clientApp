@@ -1,0 +1,3 @@
+/* Nazwa pod ikoną i opis zgody na aparat — język telefonu. */
+"CFBundleDisplayName" = "Booktago";
+"NSCameraUsageDescription" = "Booktago usa la fotocamera per scansionare il codice QR del tuo salone.";

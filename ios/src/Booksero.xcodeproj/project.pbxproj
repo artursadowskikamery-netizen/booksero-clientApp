@@ -20,6 +20,7 @@
 		CDC0FE292388222C002C8D56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE252388222B002C8D56 /* Main.storyboard */; };
 		CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */; };
 		E1E260C850014D6B34B487B0 /* Pods_Booksero.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9D7FFB2FBE6EEBCA807B6A /* Pods_Booksero.framework */; };
+		FF07BDB9AE66C7665257C476 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9D01FD377169374BE803B74 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,22 @@
 		BEE8E5C625AE96C07F8AADED /* Pods-Booksero.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Booksero.debug.xcconfig"; path = "Target Support Files/Pods-Booksero/Pods-Booksero.debug.xcconfig"; sourceTree = "<group>"; };
 		CDC0FE262388222B002C8D56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Booksero/Base.lproj/Main.storyboard"; sourceTree = "<group>"; };
 		CDC0FE282388222B002C8D56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Booksero/Base.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
+		95916A7923D15796DD591C07 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = "Booksero/pl.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		049C51E8299B2F8987E2EDBA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "Booksero/en.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		211FBB12ED687AC6B5B0AB9F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = "Booksero/de.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		7A079709FFDE3499662ACF53 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = "Booksero/nl.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		266055F8087BAE4FBAB83D73 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = "Booksero/cs.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		5F094CAA2B9BDA63561B8976 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = "Booksero/sv.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		40292FD1B3C416F89FC8B4EF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = "Booksero/es.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		90069550E8A382EC6D495601 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = "Booksero/fr.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		19DB85CA4EE164B32995BD1D /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = "Booksero/it.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C727BB8DCA5B83716A170887 /* hr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hr; path = "Booksero/hr.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		8F67B9513D7303BE4B4C24EF /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = "Booksero/el.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		E00197AF988E7FCBB143FE68 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = "Booksero/tr.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		17B142E3B0089985E1097B80 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = "Booksero/bg.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		4B5B7EFFB9E437A7EE480F50 /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = "Booksero/fi.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		CD9BAB865526A6A256315983 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = "Booksero/nb.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		CDD97E5E68A7C8EB5B6BEBAA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = "Booksero/uk.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +103,7 @@
 				595F23A125CEFBFE0053416C /* ViewController.swift */,
 				CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */,
 				CDC0FE252388222B002C8D56 /* Main.storyboard */,
+				C9D01FD377169374BE803B74 /* InfoPlist.strings */,
 				595F23A425CEFBFE0053416C /* WebView.swift */,
 				30FCACC6A7BF53CD6D9CF6C0 /* Pods */,
 				90E46E861CB86F5FAF46BED9 /* Frameworks */,
@@ -174,6 +192,7 @@
 				CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */,
 				595F23A725CEFBFE0053416C /* Assets.xcassets in Resources */,
 				25D3517F267A48E0002E5DC0 /* GoogleService-Info.plist in Resources */,
+				FF07BDB9AE66C7665257C476 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,6 +272,29 @@
 				CDC0FE282388222B002C8D56 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		C9D01FD377169374BE803B74 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				95916A7923D15796DD591C07 /* pl */,
+				049C51E8299B2F8987E2EDBA /* en */,
+				211FBB12ED687AC6B5B0AB9F /* de */,
+				7A079709FFDE3499662ACF53 /* nl */,
+				266055F8087BAE4FBAB83D73 /* cs */,
+				5F094CAA2B9BDA63561B8976 /* sv */,
+				40292FD1B3C416F89FC8B4EF /* es */,
+				90069550E8A382EC6D495601 /* fr */,
+				19DB85CA4EE164B32995BD1D /* it */,
+				C727BB8DCA5B83716A170887 /* hr */,
+				8F67B9513D7303BE4B4C24EF /* el */,
+				E00197AF988E7FCBB143FE68 /* tr */,
+				17B142E3B0089985E1097B80 /* bg */,
+				4B5B7EFFB9E437A7EE480F50 /* fi */,
+				CD9BAB865526A6A256315983 /* nb */,
+				CDD97E5E68A7C8EB5B6BEBAA /* uk */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -387,7 +429,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Booksero/Entitlements/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 9WBP3PU6FA;
 				INFOPLIST_FILE = "Booksero/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -395,8 +437,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
-				CURRENT_PROJECT_VERSION = 4;
+				MARKETING_VERSION = 1.1.2;
+				CURRENT_PROJECT_VERSION = 5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.booksero.app";
 				PRODUCT_NAME = "Booksero";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -415,7 +457,7 @@
 				CLANG_ENABLE_MODULES = NO;
 				CODE_SIGN_ENTITLEMENTS = "Booksero/Entitlements/Entitlements.plist";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 9WBP3PU6FA;
 				INFOPLIST_FILE = "Booksero/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -423,8 +465,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
-				CURRENT_PROJECT_VERSION = 4;
+				MARKETING_VERSION = 1.1.2;
+				CURRENT_PROJECT_VERSION = 5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.booksero.app";
 				PRODUCT_NAME = "Booksero";
 				SUPPORTS_MACCATALYST = YES;
