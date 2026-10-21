@@ -1,6 +1,19 @@
 # Booksero w App Store (iOS) — stan i plan
 
-Stan na 2026-10-21.
+Stan na 2026-10-22.
+
+## WYSŁANE DO RECENZJI — 2026-10-22, wersja 1.1.2 (5)
+- 1.1.1 (sama lista CFBundleLocalizations) NIE zmieniła wiersza „Języki”
+  w App Store — nadal „Angielski”. 1.1.2 (main a146482) dodaje 16 folderów
+  <język>.lproj/InfoPlist.strings (nazwa + opis zgody na aparat). Po
+  publikacji sprawdzić wiersz „Języki”.
+- Karta sklepu: EN, PL + nowe DE, NL, FR, NB, SV, UK (opisy, słowa
+  kluczowe, Support URL, What's New; Privacy URL booktago.app/privacy).
+- Apple odrzucił nazwę „Booktago” w lokalizacjach cs, es, it, hr, el, tr,
+  fi („app name already being used” — rezerwacja innego konta, nie nasza;
+  w koncie jest jedna aplikacja). Tam karta angielska. Bułgarskiego nie ma
+  w App Store Connect. Opcje na później: znak towarowy + claim albo wariant
+  nazwy w tych językach (decyzja właściciela).
 
 ## WYSŁANE DO RECENZJI — 2026-10-21, wersja 1.1.1 (4)
 - Powód: App Store pokazywał „Języki: Angielski” — powłoka deklarowała tylko
