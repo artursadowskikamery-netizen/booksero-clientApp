@@ -66,9 +66,11 @@ export default function TenantSelect() {
     navigate(`/salon/${salonId}`);
   };
 
-  // Jeśli w wybranym mieście jest jeden salon — od razu do kalendarza.
+  // Jeśli w wybranym mieście jest jeden salon — od razu do kalendarza. Nie wtedy,
+  // gdy klientka ma też inne firmy: ten ekran (zakładka „Salon”) pokazuje je
+  // w „Twoje pozostałe firmy”, a przeskok by tę listę zasłonił.
   useEffect(() => {
-    if (cityObj && salons.length === 1) wejdz(salons[0].id);
+    if (cityObj && salons.length === 1 && inneFirmy.length === 0) wejdz(salons[0].id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cityObj, salons]);
 

@@ -9,6 +9,20 @@ Data w formacie RRRR-MM-DD.
 
 ---
 
+## [1.0.54] — 2026-11-20 — „Moje salony”: przejście do innego salonu bez wylogowania
+
+- **Przełącznik „Moje salony”.** Logo i nazwa salonu w nagłówku są teraz
+  przyciskiem. Otwiera się lista ostatnio odwiedzanych salonów i firm, do
+  których klientka już weszła; jedno stuknięcie przenosi do wybranego salonu.
+  Sesja do każdej firmy była już zapamiętywana, ale jedyną drogą do innego
+  salonu było „Wyloguj”, które kasuje sesje wszystkich firm — stąd zbędne
+  SMS-y przy każdej zmianie salonu.
+- **„Dodaj salon”** w tym samym oknie prowadzi na ekran startowy (QR, nazwa,
+  numer telefonu) bez wylogowania.
+- **Zakładka „Salon”** nie przeskakuje od razu do jedynej lokalizacji firmy,
+  gdy klientka ma też inne firmy — lista „Twoje pozostałe firmy” jest widoczna.
+- Ostatnio odwiedzane salony zapamiętują firmę (tenantId) — do listy w oknie.
+
 ## [1.0.53] — 2026-10-19 — Kod z SMS-a na booktago.app, linki otwierają aplikację na iPhonie
 
 - **Kod z SMS-a wkleja się sam także na booktago.app.** Przy logowaniu

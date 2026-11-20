@@ -7,6 +7,9 @@ export interface RecentSalon {
   name: string;
   city?: string | null;
   logo?: string | null;
+  // Firma (sieć) salonu — okno „Moje salony” pokazuje po niej, czy klientka
+  // ma tu już sesję. Starsze wpisy jej nie mają.
+  tenantId?: string | null;
   at: number; // ostatnia wizyta (ms) — sortowanie i porządek listy
 }
 
@@ -35,7 +38,7 @@ export function saveRecentSalon(s: Omit<RecentSalon, "at">): void {
   if (!s.id || !s.name) return;
   try {
     const logo = s.logo && s.logo.length <= LOGO_MAX ? s.logo : null;
-    const entry: RecentSalon = { id: s.id, name: s.name, city: s.city ?? null, logo, at: Date.now() };
+    const entry: RecentSalon = { id: s.id, name: s.name, city: s.city ?? null, logo, tenantId: s.tenantId ?? null, at: Date.now() };
     const rest = loadRecentSalons().filter((x) => x.id !== s.id);
     localStorage.setItem(KEY, JSON.stringify([entry, ...rest].slice(0, MAX)));
   } catch {

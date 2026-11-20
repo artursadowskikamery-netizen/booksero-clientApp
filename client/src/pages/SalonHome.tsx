@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
-import { Camera, Users, Bell, Sparkles, Clock } from "lucide-react";
+import { Camera, Users, Bell, Sparkles, Clock, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api, ApiError } from "../lib/api";
 import { saveAccent } from "../lib/themes";
@@ -11,6 +11,7 @@ import { saveLastSalon } from "../lib/lastSalon";
 import { saveRecentSalon, removeRecentSalon } from "../lib/recentSalons";
 import { promoLine } from "../lib/promo";
 import BottomNav from "../components/BottomNav";
+import MySalons from "../components/MySalons";
 
 // Ekran główny salonu w stylu prototypu: appbar (logo+nazwa+dzwonek), galeria
 // (ukryta gdy brak zdjęć) z licznikiem i kropkami, CTA, usługi, zespół.
@@ -20,6 +21,7 @@ export default function SalonHome() {
   const [, navigate] = useLocation();
   const { t, i18n } = useTranslation();
   const [dot, setDot] = useState(0);
+  const [salonsOpen, setSalonsOpen] = useState(false);
   const stripRef = useRef<HTMLDivElement>(null);
 
   const salonQ = useQuery({ queryKey: ["salon", salonId], queryFn: () => api.salon(salonId), enabled: !!salonId });
@@ -47,6 +49,7 @@ export default function SalonHome() {
       name: salonQ.data.salon.name,
       city: salonQ.data.salon.city,
       logo: salonQ.data.salon.logo,
+      tenantId: tid,
     });
   }, [salonQ.data, accent, salonId]);
 
@@ -141,19 +144,29 @@ export default function SalonHome() {
     <div className="max-w-md mx-auto min-h-screen p-4 pb-24">
       {/* Appbar */}
       <header className="flex items-center gap-3 py-2">
-        {s.salon.logo ? (
-          <img src={s.salon.logo} alt="" className="w-10 h-10 rounded-xl object-cover" />
-        ) : (
-          <div className="w-10 h-10 rounded-xl bg-brand text-brand-contrast grid place-items-center font-extrabold">
-            {initials(s.salon.name) || "S"}
+        {/* Logo i nazwa = przełącznik „Moje salony” (inne salony bez wylogowania). */}
+        <button
+          onClick={() => setSalonsOpen(true)}
+          className="flex items-center gap-3 min-w-0 text-left"
+          aria-label={t("common.mySalons")}
+        >
+          {s.salon.logo ? (
+            <img src={s.salon.logo} alt="" className="w-10 h-10 rounded-xl object-cover shrink-0" />
+          ) : (
+            <div className="w-10 h-10 rounded-xl bg-brand text-brand-contrast grid place-items-center font-extrabold shrink-0">
+              {initials(s.salon.name) || "S"}
+            </div>
+          )}
+          <div className="min-w-0">
+            <div className="font-bold leading-tight truncate flex items-center gap-1">
+              <span className="truncate">{s.salon.name}</span>
+              <ChevronDown size={16} className="text-muted shrink-0" />
+            </div>
+            <div className="text-xs text-muted truncate">
+              {[s.salon.city, s.salon.address].filter(Boolean).join(" · ")}
+            </div>
           </div>
-        )}
-        <div className="min-w-0">
-          <div className="font-bold leading-tight truncate">{s.salon.name}</div>
-          <div className="text-xs text-muted truncate">
-            {[s.salon.city, s.salon.address].filter(Boolean).join(" · ")}
-          </div>
-        </div>
+        </button>
         {/* Dzwonek = skrzynka powiadomień; chmurka z liczbą nieprzeczytanych. */}
         <button
           onClick={() => navigate(`/salon/${salonId}/notifications`)}
@@ -168,6 +181,8 @@ export default function SalonHome() {
           )}
         </button>
       </header>
+
+      {salonsOpen && <MySalons currentSalonId={salonId} onClose={() => setSalonsOpen(false)} />}
 
       {/* Galeria — tylko gdy są zdjęcia */}
       {shown.length > 0 && (
