@@ -182,7 +182,7 @@ export default function SalonHome() {
         </button>
       </header>
 
-      {salonsOpen && <MySalons currentSalonId={salonId} onClose={() => setSalonsOpen(false)} />}
+      {salonsOpen && <MySalons currentSalonId={salonId} tenantId={tenantId} onClose={() => setSalonsOpen(false)} />}
 
       {/* Galeria — tylko gdy są zdjęcia */}
       {shown.length > 0 && (

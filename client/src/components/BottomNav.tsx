@@ -1,16 +1,21 @@
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Store, CalendarPlus, Clock, Star, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
+import MySalons, { maWieleSalonow } from "./MySalons";
 
 type Tab = "salon" | "book" | "visits" | "rewards" | "profile";
 
-// Dolne menu. "Salon" prowadzi do listy salonów sieci (wybór salonu tenanta);
-// prezentacja konkretnego salonu otwiera się po jego wybraniu.
+// Dolne menu. "Salon": klientka z kilkoma salonami dostaje okno „Moje salony”
+// (przejście do innego salonu bez wylogowania, decyzja właściciela
+// 2026-11-20); z jednym salonem — jak dotąd lista salonów sieci (wybór salonu
+// tenanta), a przy jednej lokalizacji prosto do salonu.
 export default function BottomNav({ salonId, active }: { salonId: string; active?: Tab }) {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
+  const [salonsOpen, setSalonsOpen] = useState(false);
 
   // Tenant bieżącego salonu — zapytanie jest współdzielone (cache react-query)
   // ze stronami, które i tak pobierają dane salonu.
@@ -40,7 +45,7 @@ export default function BottomNav({ salonId, active }: { salonId: string; active
         {items.map((it) => (
           <button
             key={it.key}
-            onClick={() => navigate(it.to)}
+            onClick={() => (it.key === "salon" && maWieleSalonow() ? setSalonsOpen(true) : navigate(it.to))}
             className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold ${
               active === it.key ? "text-brand" : "text-muted"
             }`}
@@ -50,6 +55,7 @@ export default function BottomNav({ salonId, active }: { salonId: string; active
           </button>
         ))}
       </div>
+      {salonsOpen && <MySalons currentSalonId={salonId} tenantId={tenantId} onClose={() => setSalonsOpen(false)} />}
     </nav>
   );
 }

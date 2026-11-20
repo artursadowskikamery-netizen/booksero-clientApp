@@ -1,5 +1,6 @@
 import { useLocation } from "wouter";
-import { Check, ChevronRight, Plus, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Check, ChevronRight, MapPin, Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { listSessions } from "../lib/auth";
@@ -14,13 +15,40 @@ import { loadRecentSalons } from "../lib/recentSalons";
 //
 // Lista = ostatnio odwiedzane salony + firmy z zapamiętaną sesją, których
 // żaden salon nie jest na tej liście (wejście przez /t/…). „Dodaj salon”
-// prowadzi na ekran startowy (QR, nazwa, numer) — bez wylogowania.
-export default function MySalons({ currentSalonId, onClose }: { currentSalonId: string; onClose: () => void }) {
-  const [, navigate] = useLocation();
-  const { t } = useTranslation();
+// prowadzi na ekran startowy (QR, nazwa, numer) — bez wylogowania. Firma
+// z kilkoma lokalizacjami ma też wiersz „Wszystkie lokalizacje” (/t/…) —
+// dotąd prowadziła tam zakładka „Salon”, którą teraz zajmuje to okno.
+function mojeSalony() {
   const recent = loadRecentSalons();
   const firmyZSalonem = new Set(recent.map((r) => r.tenantId).filter(Boolean));
   const firmyBezSalonu = listSessions().filter((s) => !firmyZSalonem.has(s.tenantId));
+  return { recent, firmyBezSalonu };
+}
+
+// Czy klientka ma więcej niż jeden salon — wtedy zakładka „Salon” otwiera
+// to okno zamiast prowadzić prosto do salonu.
+export function maWieleSalonow(): boolean {
+  const { recent, firmyBezSalonu } = mojeSalony();
+  return recent.length + firmyBezSalonu.length > 1;
+}
+
+export default function MySalons({
+  currentSalonId,
+  tenantId,
+  onClose,
+}: {
+  currentSalonId: string;
+  tenantId?: string | null;
+  onClose: () => void;
+}) {
+  const [, navigate] = useLocation();
+  const { t } = useTranslation();
+  const { recent, firmyBezSalonu } = mojeSalony();
+  const tenantQ = useQuery({ queryKey: ["tenant", tenantId], queryFn: () => api.tenant(tenantId!), enabled: !!tenantId });
+  const lokalizacji = (tenantQ.data?.countries ?? []).reduce(
+    (n, co) => n + co.cities.reduce((m, ci) => m + ci.salons.length, 0),
+    0,
+  );
 
   const go = (to: string) => {
     onClose();
@@ -87,6 +115,19 @@ export default function MySalons({ currentSalonId, onClose }: { currentSalonId: 
             </button>
           ))}
         </div>
+
+        {tenantId && lokalizacji > 1 && (
+          <button
+            onClick={() => go(`/t/${tenantId}`)}
+            className="w-full mt-3 flex items-center gap-3 rounded-xl border border-line p-3 text-left"
+          >
+            <MapPin size={18} className="text-brand shrink-0" />
+            <span className="flex-1 min-w-0 text-sm font-bold truncate">
+              {t("common.allLocations")}{tenantQ.data?.name ? ` · ${tenantQ.data.name}` : ""}
+            </span>
+            <ChevronRight size={16} className="text-muted shrink-0" />
+          </button>
+        )}
 
         <button
           onClick={() => go("/")}

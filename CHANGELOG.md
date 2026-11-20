@@ -19,8 +19,13 @@ Data w formacie RRRR-MM-DD.
   SMS-y przy każdej zmianie salonu.
 - **„Dodaj salon”** w tym samym oknie prowadzi na ekran startowy (QR, nazwa,
   numer telefonu) bez wylogowania.
-- **Zakładka „Salon”** nie przeskakuje od razu do jedynej lokalizacji firmy,
-  gdy klientka ma też inne firmy — lista „Twoje pozostałe firmy” jest widoczna.
+- **Zakładka „Salon” w dolnym menu** (decyzja właściciela) otwiera to samo
+  okno „Moje salony”, gdy klientka ma więcej niż jeden salon. Z jednym
+  salonem działa jak dotąd. Firma z kilkoma lokalizacjami ma w oknie wiersz
+  „Wszystkie lokalizacje” (dotychczasowy ekran wyboru lokalizacji).
+- Ekran wyboru lokalizacji nie przeskakuje od razu do jedynej lokalizacji
+  firmy, gdy klientka ma też inne firmy — lista „Twoje pozostałe firmy” jest
+  widoczna.
 - Ostatnio odwiedzane salony zapamiętują firmę (tenantId) — do listy w oknie.
 
 ## [1.0.53] — 2026-10-19 — Kod z SMS-a na booktago.app, linki otwierają aplikację na iPhonie
